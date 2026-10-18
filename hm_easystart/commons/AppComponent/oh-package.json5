@@ -1,0 +1,13 @@
+{
+  "name": "@easystart/app-component",
+  "version": "1.0.0",
+  "description": "应用级组件公共包：应用交互规范载体（SnackBar/Dialog/Sheet 反馈组件 + AttributeModifier 样式族）。指南 §17.4 AppUI 档的首个落地。",
+  "main": "Index.ets",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
+    "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
+    "@quizzyjoy/vitalui": "file:../../quizzyjoy/VitalUI"
+  }
+}

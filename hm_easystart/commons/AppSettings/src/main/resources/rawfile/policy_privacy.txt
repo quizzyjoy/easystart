@@ -1,0 +1,12 @@
+隐私政策（模板占位）
+
+本文件为 趣开发 EasyStart 模板的占位文本，不构成真实隐私政策。
+
+fork 本模板发布应用前，请：
+1. 用贵应用真实的隐私政策全文替换本文件全部内容；
+2. 逐项列明应用采集的信息类型、用途、存储位置与第三方共享情况；
+3. 注明生效日期与联系方式；
+4. 如应用上架华为应用市场，请同时满足审核对隐私政策的格式与披露要求。
+
+This is a placeholder shipped with the EasyStart template. Replace it with
+your real privacy policy before publishing any forked application.

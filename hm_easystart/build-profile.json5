@@ -1,0 +1,213 @@
+{
+  app: {
+    // 签名配置由使用者自行生成（DevEco Studio → File → Project Structure → Signing Configs），
+    // 或在下方 signingConfigs 内填入自己的 material。本开源仓不提供任何签名材料。
+    signingConfigs: [],
+    products: [
+      {
+        name: 'default',
+        // 配置好自己的签名后，取消下一行注释并把 signingConfigs[0].name 对齐
+        // signingConfig: 'default',
+        targetSdkVersion: '26.0.0',
+        compatibleSdkVersion: '6.1.0(23)',
+        runtimeOS: 'HarmonyOS',
+        buildOption: {
+          strictMode: {
+            caseSensitiveCheck: true,
+            useNormalizedOHMUrl: true,
+          },
+        },
+      },
+    ],
+    buildModeSet: [
+      {
+        name: 'debug',
+      },
+      {
+        name: 'release',
+      },
+    ],
+  },
+  modules: [
+    {
+      name: 'entry',
+      srcPath: './product/entry',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'entry_pc',
+      srcPath: './product/entry_pc',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'entry_tv',
+      srcPath: './product/entry_tv',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'entry_wearable',
+      srcPath: './product/entry_wearable',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Foundation',
+      srcPath: './quizzyjoy/Foundation',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Platform',
+      srcPath: './quizzyjoy/Platform',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'AppCommon',
+      srcPath: './commons/AppCommon',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'AppPreferences',
+      srcPath: './commons/AppPreferences',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'AppRoutes',
+      srcPath: './commons/AppRoutes',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'AppSettings',
+      srcPath: './commons/AppSettings',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'AppComponent',
+      srcPath: './commons/AppComponent',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'VitalUI',
+      srcPath: './quizzyjoy/VitalUI',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      name: 'HomeFeature',
+      srcPath: './features/HomeFeature',
+      targets: [
+        {
+          name: 'default',
+          applyToProducts: [
+            'default',
+          ],
+        },
+      ],
+    },
+    {
+      "name": "DemoFeature",
+      "srcPath": "./features/DemoFeature",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "WidgetCommon",
+      "srcPath": "./features/WidgetCommon",
+      "targets": [
+        {
+          "name": "default",
+          "applyToProducts": [
+            "default"
+          ]
+        }
+      ]
+    }
+  ]
+}

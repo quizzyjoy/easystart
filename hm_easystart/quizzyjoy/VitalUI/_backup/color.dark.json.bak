@@ -1,0 +1,24 @@
+{
+  "color": [
+    {
+      "name": "bp_card_bg",
+      "value": "#1E1E1E"
+    },
+    {
+      "name": "bp_text_primary",
+      "value": "#E5E5E7"
+    },
+    {
+      "name": "bp_text_secondary",
+      "value": "#9BA0A6"
+    },
+    {
+      "name": "bp_divider",
+      "value": "#2C2C2E"
+    },
+    {
+      "name": "bp_skeleton",
+      "value": "#2A2A2C"
+    }
+  ]
+}

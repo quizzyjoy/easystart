@@ -1,0 +1,20 @@
+{
+  "string": [
+    {
+      "name": "vitalui_module_desc",
+      "value": "Common component library (charts, color picker, loading)"
+    },
+    {
+      "name": "vitalui_color_follow_theme",
+      "value": "Follow theme"
+    },
+    {
+      "name": "vitalui_color_tap_to_change",
+      "value": "Tap to change color"
+    },
+    {
+      "name": "vitalui_color_change",
+      "value": "Change"
+    }
+  ]
+}

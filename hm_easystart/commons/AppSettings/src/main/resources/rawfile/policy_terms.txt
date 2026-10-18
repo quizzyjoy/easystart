@@ -1,0 +1,11 @@
+用户协议（模板占位）
+
+本文件为 趣开发 EasyStart 模板的占位文本，不构成真实用户协议。
+
+fork 本模板发布应用前，请：
+1. 用贵应用真实的用户协议 / 服务条款全文替换本文件全部内容；
+2. 列明服务内容、用户行为规范、知识产权、免责声明与争议解决方式；
+3. 注明生效日期。
+
+This is a placeholder shipped with the EasyStart template. Replace it with
+your real user agreement before publishing any forked application.

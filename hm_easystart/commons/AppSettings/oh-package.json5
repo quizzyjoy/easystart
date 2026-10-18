@@ -1,0 +1,15 @@
+{
+  "name": "@easystart/app-settings",
+  "version": "1.0.0",
+  "description": "应用级设置域：设置独立子页（v3.13 三组完备：外观/通用/关于）+ 关于/政策/许可二级子页 + 强调色取色（指南 §3.1 应用级公共按域分模块）。",
+  "main": "Index.ets",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@easystart/app-preferences": "file:../AppPreferences",
+    "@easystart/app-component": "file:../AppComponent",
+    "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
+    "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
+    "@quizzyjoy/vitalui": "file:../../quizzyjoy/VitalUI"
+  }
+}

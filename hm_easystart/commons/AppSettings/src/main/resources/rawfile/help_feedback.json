@@ -1,0 +1,5 @@
+{
+  "_readme": "帮助反馈占位数据（fork 替换点）：email / qqGroup 为空字符串时对应行隐藏，两者皆空显示空态。",
+  "email": "feedback@example.com",
+  "qqGroup": "123456789"
+}

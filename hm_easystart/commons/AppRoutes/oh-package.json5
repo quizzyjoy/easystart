@@ -1,0 +1,9 @@
+{
+  "name": "@easystart/app-routes",
+  "version": "1.0.0",
+  "description": "应用级路由名注册表：跨入口共享的路由名与深链常量（AppCommon 按域分模块规划的首个落地，指南 §3.1）。",
+  "main": "Index.ets",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {}
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@easystart/widget-common",
+  "version": "1.0.0",
+  "description": "服务卡片数据域：卡片展示数据组装（跨进程读偏好）+ formId→规格注册表（v3.27 按域分模块，指南 §17.5 预留位落地）。",
+  "main": "Index.ets",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
+    "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
+    "@easystart/app-preferences": "file:../../commons/AppPreferences"
+  }
+}

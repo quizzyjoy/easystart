@@ -1,0 +1,13 @@
+# 混淆规则（仅 release 构建生效，由 build-profile.json5 buildOptionSet.release 接线）
+# 完整说明: https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/source-obfuscation
+# 基线对齐官方 sample_in_harmonyos products/phone：property/toplevel/export 三开，filename 关闭
+
+-enable-property-obfuscation
+-enable-toplevel-obfuscation
+# -enable-filename-obfuscation    # 文件名混淆：动态加载/资源路径风险高，官方 phone 同款关闭
+-enable-export-obfuscation
+
+# keep 清单——按需追加，禁止预防性堆积：
+# -keep-property-name   # JSON 反序列化字段名、跨语言（NAPI/端云）边界字段名
+# -keep-global-name     # 反射引用的全局名
+# -keep <path>          # 整文件保留（官方用法：跨模块相对路径 ../../features/...）

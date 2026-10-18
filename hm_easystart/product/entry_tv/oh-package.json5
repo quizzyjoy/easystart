@@ -1,0 +1,18 @@
+{
+  "name": "entry_tv",
+  "version": "1.0.0",
+  "description": "TV 独立入口模块。只做装配，不含业务。TV 不支持 HdsTabs，使用原生 Tabs。",
+  "main": "",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
+    "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
+    "@easystart/app-common": "file:../../commons/AppCommon",
+    "@easystart/app-component": "file:../../commons/AppComponent",
+    "@easystart/app-routes": "file:../../commons/AppRoutes",
+    "@quizzyjoy/vitalui": "file:../../quizzyjoy/VitalUI",
+    "@easystart/app-settings": "file:../../commons/AppSettings",
+    "@easystart/demo-feature": "file:../../features/DemoFeature"
+  }
+}

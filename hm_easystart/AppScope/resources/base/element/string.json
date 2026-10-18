@@ -1,0 +1,28 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "趣开发"
+    },
+    {
+      "name": "tab_home",
+      "value": "首页"
+    },
+    {
+      "name": "tab_gallery",
+      "value": "画廊"
+    },
+    {
+      "name": "tab_device",
+      "value": "设备"
+    },
+    {
+      "name": "harmonyos_dev_assistant",
+      "value": "0.1.70"
+    },
+    {
+      "name": "harmonyos_dev_assistant_feature",
+      "value": "harmonyos-multi-device"
+    }
+  ]
+}

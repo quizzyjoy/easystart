@@ -1,0 +1,9 @@
+{
+  "name": "@easystart/app-preferences",
+  "version": "1.0.0",
+  "description": "应用级偏好持久化契约：设置偏好键 / 字号系数 / 强调色校验的单一真相源（指南 §3.1 按域分模块，与 AppRoutes 同类零依赖）。",
+  "main": "Index.ets",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {}
+}

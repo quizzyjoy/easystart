@@ -1,0 +1,21 @@
+{
+  "forms": [
+    {
+      "name": "WidgetCard",
+      "description": "$string:WidgetCard_desc",
+      "src": "./ets/widget/pages/WidgetCard.ets",
+      "uiSyntax": "arkts",
+      "isDefault": true,
+      "colorMode": "auto",
+      "supportDimensions": [
+        "2*2"
+      ],
+      "defaultDimension": "2*2",
+      "updateEnabled": true,
+      "updateDuration": 1,
+      "window": {
+        "designWidth": 720
+      }
+    }
+  ]
+}

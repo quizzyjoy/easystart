@@ -1,0 +1,9 @@
+{
+  "string": [
+    { "name": "module_desc", "value": "手表入口模块" },
+    { "name": "EntryWearableAbility_desc", "value": "手表主入口" },
+    { "name": "EntryWearableAbility_label", "value": "趣开发" },
+    { "name": "WearableFormAbility_desc", "value": "service card skeleton" },
+    { "name": "WidgetCard_desc", "value": "偏好摘要卡片" }
+  ]
+}

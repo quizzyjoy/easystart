@@ -1,0 +1,20 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "EasyStart"
+    },
+    {
+      "name": "tab_home",
+      "value": "Home"
+    },
+    {
+      "name": "tab_gallery",
+      "value": "Gallery"
+    },
+    {
+      "name": "tab_device",
+      "value": "Device"
+    }
+  ]
+}

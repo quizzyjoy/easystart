@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>鸿蒙工程目录设计指南</title>
+<style>
+:root{--ink:#111;--mut:#555;--line:#dcdcdc;--link:#0000EE;--bg:#fff;--code:#f5f5f5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",Roboto,Helvetica,Arial,sans-serif;
+ font-size:16px;line-height:1.62;-webkit-text-size-adjust:100%}
+.wrap{max-width:940px;margin:0 auto;padding:56px 28px 96px}
+h1{font-size:30px;line-height:1.25;margin:0 0 6px;letter-spacing:-.01em}
+h2{font-size:22px;margin:52px 0 12px;padding-top:18px;border-top:1px solid var(--line);letter-spacing:-.01em}
+h3{font-size:17px;margin:30px 0 8px}
+h4{font-size:15px;margin:22px 0 6px;color:var(--mut)}
+p{margin:0 0 14px;max-width:66ch}
+ul,ol{max-width:70ch;padding-left:22px;margin:0 0 14px}
+li{margin:4px 0}
+a{color:var(--link);text-decoration:underline}
+code{background:var(--code);padding:1px 5px;border-radius:2px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13px}
+pre{background:var(--code);border:1px solid var(--line);padding:14px;overflow:auto;margin:0 0 18px}
+pre code{background:none;padding:0;font-size:12.5px;line-height:1.55}
+blockquote{margin:0 0 14px;padding:2px 0 2px 14px;border-left:3px solid var(--line);color:var(--mut)}
+hr{border:0;border-top:1px solid var(--line);margin:34px 0}
+.tw{overflow-x:auto;margin:0 0 20px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#fafafa;font-weight:600}
+.meta{color:var(--mut);font-size:14px;margin-bottom:26px}
+footer{margin-top:64px;padding-top:16px;border-top:1px solid var(--line);color:var(--mut);font-size:13px}
+@media(max-width:640px){.wrap{padding:32px 16px 64px}h1{font-size:24px}h2{font-size:19px}table{font-size:13px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1 id="h0">鸿蒙工程目录设计指南</h1>
+<blockquote>基线：<strong>API 23</strong>（compatibleSdkVersion <code>6.1.0(23)</code>，targetSdkVersion <code>26.0.0</code>）· 状态管理 <strong>V2</strong> · UI 组件 <strong>HDS（UIDesignKit）</strong></blockquote>
+<blockquote>配套范例工程：<code>hm_blueprint/</code>（模板骨架）与 <code>hm_partynow/</code>（实装后工程），两者结构完全一致且均已编译通过。</blockquote>
+<hr>
+<h2 id="h7">0. 适用范围</h2>
+<p>本指南描述一套经过实机验证的 HarmonyOS 应用工程组织方式，适用于需要同时覆盖 <strong>手机 / 平板 / 2in1 / TV / 手表</strong> 的多端应用，也适用于单设备应用（可裁剪掉多余入口模块）。</p>
+<p><strong>三条硬约束（本指南的所有结论都建立在其上）</strong>：</p>
+<div class="tw"><table><tr><th>约束</th><th>内容</th><th>依据</th></tr><tr><th>C1</th><th>同一应用、<strong>同一设备类型只允许一个 entry 类型 HAP</strong></th><th>官方 FAQ <code>faqs-package-structure-28</code></th></tr><tr><td>C2</td><td>断点阈值<strong>由平台定义</strong>，业务代码禁止硬编码像素值</td><td>最佳实践 <code>bpta-multi-device-responsive-layout</code></td></tr><tr><td>C3</td><td>HDS 组件有明确的<strong>设备支持矩阵</strong>，不支持时回退原生组件并登记例外</td><td>SDK <code>api-version/UIDesignKit.json</code> 实测</td></tr></table></div>
+<hr>
+<h2 id="h21">1. 顶层设计原则</h2>
+<div class="tw"><table><tr><th>编号</th><th>原则</th><th>说明</th></tr><tr><th>P1</th><th><strong>目录名 = 模块名 = 包名</strong></th><th>三者同名可消除"看到 import 不知道对应哪个目录"的认知成本</th></tr><tr><td>P2</td><td><strong>严格单向依赖</strong></td><td><code>entry → features → commons</code>，禁止反向与跨 feature 直连</td></tr><tr><td>P3</td><td><strong>能力下沉、差异上浮</strong></td><td>通用能力沉到 <code>commons</code>；设备/断点差异留在入口层与页面层</td></tr><tr><td>P4</td><td><strong>一个入口一个 module</strong></td><td>设备形态差异用 module 隔离，不用 <code>if (deviceType)</code> 在页面里分叉</td></tr><tr><td>P5</td><td><strong>状态管理统一 V2</strong></td><td>新代码只用 V2 装饰器，禁止新增 V1 用法</td></tr><tr><td>P6</td><td><strong>样式令牌集中在 AppScope</strong></td><td>颜色等设计令牌放应用级资源，模块内不重复定义</td></tr><tr><td>P7</td><td><strong>可编译是底线</strong></td><td>任何结构方案都必须能通过 <code>devecocli build</code> 并产出签名 HAP</td></tr></table></div>
+<hr>
+<h2 id="h35">2. 完整目录树</h2>
+<p>以下是范例工程 <code>hm_blueprint/</code> 的实测结构（<code>hm_partynow/</code> 完全一致）：</p>
+<pre><code>hm_blueprint/
+├── AppScope/                              # 应用级资源与配置（全局唯一）
+│   ├── app.json5                          # bundleName / 版本 / 图标 / 标签
+│   └── resources/
+│       ├── base/element/color.json        # ★ 设计令牌（浅色）
+│       ├── base/element/string.json
+│       ├── base/media/                    # 应用图标、分层图标
+│       └── dark/element/color.json        # ★ 设计令牌（深色）
+│
+├── commons/                               # 公共层：按"依赖方向 + 语义"分三段，互不越界
+│   ├── foundation/                        # ① 基础设施层：与 UI、与业务都无关
+│   │   ├── Index.ets                      # ★ 模块唯一导出入口
+│   │   ├── src/main/module.json5          # type: har
+│   │   ├── src/main/ets/
+│   │   │   ├── log/                       # 日志：分级 / 结构化 / 可插拔 sink
+│   │   │   │   ├── LogLevel.ets           # 级别定义与语义
+│   │   │   │   ├── LogSink.ets            # 输出目标接口 + Console/Memory 实现
+│   │   │   │   └── Logger.ets             # 统一出口（禁止业务直连 hilog）
+│   │   │   ├── error/                     # 异常：错误码 / 错误类型 / 映射 / 全局兜底
+│   │   │   │   ├── ErrorCode.ets          # 错误码规范（域×10000 + 序号）
+│   │   │   │   ├── AppError.ets           # 唯一错误类型 + 三级严重度
+│   │   │   │   ├── ErrorMapper.ets        # 系统异常 → AppError
+│   │   │   │   └── GlobalErrorHandler.ets # 未捕获异常兜底 + 上报接入点
+│   │   │   ├── result/Result.ets          # Result&lt;T&gt;：用返回值表达可预期失败
+│   │   │   └── util/                      # 纯工具：无副作用、无状态
+│   │   │       ├── Assert.ets             # 前置条件断言（fail fast）
+│   │   │       └── MaskUtil.ets           # 敏感信息脱敏
+│   │   ├── build-profile.json5
+│   │   ├── hvigorfile.ts                  # harTasks
+│   │   └── oh-package.json5               # name: @blueprint/foundation
+│   │
+│   ├── runtime/                           # ② 运行环境层：把系统能力适配成工程可用形态
+│   │   ├── Index.ets
+│   │   ├── src/main/module.json5          # type: har
+│   │   ├── src/main/ets/
+│   │   │   ├── breakpoint/                # 断点：规格 + 管理器
+│   │   │   │   ├── BreakpointConstants.ets
+│   │   │   │   └── BreakpointManager.ets
+│   │   │   ├── theme/ColorModeManager.ets # 颜色模式
+│   │   │   ├── capability/CapabilityManager.ets  # 能力检测
+│   │   │   ├── device/AppEnvManager.ets          # API 与设备信息
+│   │   │   └── compat/CompatManager.ets          # 兼容性处理
+│   │   ├── build-profile.json5
+│   │   ├── hvigorfile.ts                  # harTasks
+│   │   └── oh-package.json5               # name: @blueprint/runtime（依赖 foundation）
+│   │
+│   └── uikit/                             # ③ 表现层：纯组件与动效
+│       ├── Index.ets
+│       ├── src/main/ets/
+│       │   ├── motion/MotionSpec.ets      # 动效时长/曲线常量（唯一来源）
+│       │   ├── motion/MotionEffects.ets   # 预置过渡效果
+│       │   └── component/
+│       │       ├── CommonTypes.ets        # 组件统一 API 约定
+│       │       ├── ActionCard.ets         # 通用卡片（含按压反馈）
+│       │       ├── SkeletonBlock.ets      # 骨架屏（呼吸动画）
+│       │       └── StateContainer.ets     # 四态容器（加载/空/错误/内容）
+│       ├── build-profile.json5
+│       ├── hvigorfile.ts                  # harTasks
+│       └── oh-package.json5               # name: @blueprint/uikit
+│
+├── features/                              # 业务特性层（HAR，按业务域拆分）
+│   └── demo/
+│       ├── Index.ets
+│       ├── src/main/ets/
+│       │   ├── data/DemoRepository.ets    # 数据访问（唯一出口）
+│       │   └── viewmodel/DemoViewModel.ets# 视图模型（V2 可观测状态）
+│       ├── build-profile.json5
+│       ├── hvigorfile.ts                  # harTasks
+│       └── oh-package.json5               # name: @blueprint/demo
+│
+├── entry/                                 # 入口层：手机 / 平板 / 2in1（统一入口）
+│   ├── src/main/module.json5              # type: entry, deviceTypes: phone/tablet/2in1
+│   ├── src/main/ets/
+│   │   ├── entryability/EntryAbility.ets  # 生命周期 + 能力初始化
+│   │   ├── entrybackupability/EntryBackupAbility.ets
+│   │   └── pages/Index.ets                # HdsNavigation + HdsTabs + 断点布局
+│   ├── src/mock/ src/ohosTest/ src/test/
+│   ├── build-profile.json5
+│   ├── hvigorfile.ts                      # hapTasks
+│   └── oh-package.json5
+│
+├── entry_tv/                              # 入口层：TV（独立入口）
+│   ├── src/main/module.json5              # type: entry, deviceTypes: tv
+│   ├── src/main/ets/
+│   │   ├── entryability/EntryTvAbility.ets
+│   │   └── pages/TvIndex.ets              # 10-foot UI；Tab 用原生 Tabs（HDS 例外）
+│   ├── build-profile.json5
+│   ├── hvigorfile.ts                      # hapTasks
+│   └── oh-package.json5
+│
+├── entry_wearable/                        # 入口层：手表（独立入口）
+│   ├── src/main/module.json5              # type: entry, deviceTypes: wearable
+│   ├── src/main/ets/
+│   │   ├── entryability/EntryWearableAbility.ets
+│   │   └── pages/WearableIndex.ets        # 单列单页，无 Tab
+│   ├── build-profile.json5
+│   ├── hvigorfile.ts                      # hapTasks
+│   └── oh-package.json5
+│
+├── hvigor/hvigor-config.json5             # 构建工具版本
+├── build-profile.json5                    # ★ 工程级：签名 + 产品 + modules 清单
+├── oh-package.json5                       # 工程级依赖（devDependencies）
+├── hvigorfile.ts                          # appTasks
+└── code-linter.json5                      # 静态检查规则</code></pre>
+<p>★ 标记的是<strong>理解本结构的关键文件</strong>。</p>
+<hr>
+<h2 id="h150">3. 分层职责</h2>
+<div class="tw"><table><tr><th>层</th><th>目录</th><th>职责</th><th>明确不做的事</th></tr><tr><th>应用级</th><th><code>AppScope/</code></th><th>bundleName、版本、应用图标、<strong>设计令牌</strong></th><th>不放任何 ArkTS 代码</th></tr><tr><td>入口层</td><td><code>entry</code> <code>entry_tv</code> <code>entry_wearable</code></td><td>生命周期、窗口、系统能力初始化、路由分流、<strong>形态专属布局</strong></td><td>不写业务规则；不直接被其他模块依赖</td></tr><tr><td>业务特性层</td><td><code>features/&lt;业务域&gt;</code></td><td>一个业务域一个模块：页面视图、ViewModel、Repository</td><td>不直接依赖其他 feature；不碰系统能力（走 commons）</td></tr><tr><td>基础设施层</td><td><code>commons/foundation</code></td><td>日志、异常、错误码、Result、断言、脱敏</td><td>不依赖 ArkUI，不含业务语义</td></tr><tr><td>运行环境层</td><td><code>commons/runtime</code></td><td>断点、颜色模式、能力检测、设备信息、兼容</td><td>不含业务语义与 UI</td></tr><tr><td>公共组件层</td><td><code>commons/uikit</code></td><td>通用组件、动效规范、组件 API 约定</td><td>不依赖任何 feature</td></tr><tr><td>配置层</td><td>根目录 json5 / hvigor</td><td>构建、签名、产品、检查规则</td><td>—</td></tr></table></div>
+<p><strong>归属判据（放进哪一层？）</strong></p>
+<ol>
+<li>这段代码<strong>只有某个设备形态才需要</strong> → 入口层。</li>
+<li>这段代码<strong>只有某个业务域才需要</strong> → 该 feature。</li>
+<li>这段代码<strong>多个业务域都要用</strong> → <code>commons</code>。</li>
+<li>这段代码<strong>和业务无关、是系统能力的封装</strong> → <code>commons/runtime</code>。</li>
+<li>这段代码<strong>连系统能力都不涉及</strong>（日志、异常、纯计算）→ <code>commons/foundation</code>。</li>
+<li>拿不准 → 先放 feature，出现第二个使用方时再上移（禁止提前抽象）。</li>
+</ol>
+<hr>
+<h2 id="h173">4. 命名规范</h2>
+<h3 id="h175">4.1 目录 / 模块 / 包</h3>
+<div class="tw"><table><tr><th>对象</th><th>规则</th><th>正例</th><th>反例</th></tr><tr><th>入口模块目录</th><th><code>entry</code> / <code>entry_&lt;形态&gt;</code></th><th><code>entry_tv</code></th><th><code>tvEntry</code>、<code>entryTv</code></th></tr><tr><td>公共层目录</td><td><code>commons/&lt;语义层&gt;</code></td><td><code>commons/foundation</code></td><td><code>common/utils</code></td></tr><tr><td>业务模块目录</td><td><code>features/&lt;业务名&gt;</code></td><td><code>features/demo</code></td><td><code>features/feature1</code></td></tr><tr><td>模块名（module.json5）</td><td>与目录同名</td><td><code>base</code></td><td><code>BaseModule</code></td></tr><tr><td>包名（oh-package）</td><td><code>@&lt;应用域&gt;/&lt;模块名&gt;</code></td><td><code>@blueprint/base</code></td><td><code>base</code>、<code>@/base</code></td></tr><tr><td>目录一律</td><td>camelCase 或纯小写</td><td><code>entrybackupability</code></td><td><code>EntryAbility/</code></td></tr></table></div>
+<h3 id="h186">4.2 文件</h3>
+<div class="tw"><table><tr><th>类型</th><th>规则</th><th>正例</th></tr><tr><th>ArkTS 源码</th><th><strong>PascalCase.ets</strong>（与其中主类型同名）</th><th><code>BreakpointManager.ets</code></th></tr><tr><td>模块导出入口</td><td>固定 <code>Index.ets</code>（大写 I 开头）</td><td><code>commons/foundation/Index.ets</code></td></tr><tr><td>组件文件</td><td>与组件 struct 同名</td><td><code>ActionCard.ets</code></td></tr><tr><td>配置文件</td><td>全小写连字符</td><td><code>build-profile.json5</code>、<code>oh-package.json5</code></td></tr></table></div>
+<blockquote>⚠️ <strong>实测踩坑</strong>：工程开启 <code>strictMode.caseSensitiveCheck: true</code> 后，文件名大小写必须与 import 完全一致。若用脚本批量生成文件，务必确认没有被小写化——本项目就因此报过 <code>Module-srcEntry not found</code>。</blockquote>
+<h3 id="h197">4.3 类型与装饰器</h3>
+<div class="tw"><table><tr><th>对象</th><th>规则</th><th>正例</th></tr><tr><th>组件 struct</th><th>PascalCase，名词</th><th><code>StateContainer</code></th></tr><tr><td>类 / 枚举</td><td>PascalCase</td><td><code>BreakpointType</code>、<code>ViewState</code></td></tr><tr><td>V2 组件</td><td><code>@ComponentV2</code> + <code>@Local/@Param/@Event</code></td><td>—</td></tr><tr><td>可观测模型</td><td><code>@ObservedV2</code> 类 + <code>@Trace</code> 字段</td><td><code>DemoViewModel</code></td></tr><tr><td>全局单例</td><td><code>@ObservedV2</code> 类 + <code>getInstance()</code></td><td><code>BreakpointManager</code></td></tr><tr><td>常量类</td><td>PascalCase + <code>static readonly</code></td><td><code>MotionSpec.DURATION_NORMAL</code></td></tr></table></div>
+<h3 id="h208">4.4 变量 / 常量 / 方法</h3>
+<div class="tw"><table><tr><th>对象</th><th>规则</th></tr><tr><th>局部变量、参数</th><th>camelCase</th></tr><tr><td>私有成员</td><td>camelCase，可加 <code>private</code></td></tr><tr><td>常量</td><td>类内 <code>static readonly</code></td></tr><tr><td>布尔</td><td>以 <code>is</code> / <code>has</code> / <code>should</code> 开头：<code>isWide</code></td></tr><tr><td>事件回调</td><td><code>on</code> + 动词：<code>onAction</code>、<code>onRetry</code></td></tr><tr><td>异步方法</td><td>动词开头，返回 <code>Promise&lt;T&gt;</code>：<code>fetchItems</code></td></tr></table></div>
+<h3 id="h219">4.5 资源命名</h3>
+<div class="tw"><table><tr><th>类型</th><th>前缀约定</th><th>例</th></tr><tr><th>颜色令牌（应用级）</th><th><code>bp_</code></th><th><code>bp_text_primary</code>、<code>bp_card_bg</code></th></tr><tr><td>字符串</td><td>模块内语义名</td><td><code>EntryTvAbility_label</code></td></tr><tr><td>尺寸（float）</td><td><code>&lt;模块&gt;_&lt;用途&gt;</code></td><td><code>tv_page_padding</code></td></tr><tr><td>媒体</td><td>语义名，禁止 <code>1.png</code></td><td><code>startIcon</code>、<code>layered_image</code></td></tr><tr><td>profile</td><td>固定名</td><td><code>main_pages.json</code>、<code>backup_config.json</code></td></tr></table></div>
+<h3 id="h229">4.6 路由与页面</h3>
+<div class="tw"><table><tr><th>对象</th><th>规则</th><th>例</th></tr><tr><th>页面目录</th><th>固定在 <code>pages/</code></th><th><code>entry/src/main/ets/pages/Index.ets</code></th></tr><tr><td>页面组件名</td><td>PascalCase，<code>&lt;域&gt;Index</code></td><td><code>TvIndex</code>、<code>WearableIndex</code></td></tr><tr><td>路由名常量</td><td>SCREAMING_SNAKE</td><td><code>const ROUTE_DETAIL = 'demoDetail'</code></td></tr><tr><td>路由参数</td><td>命名路由优先，禁止裸字符串散落</td><td><code>pushPathByName(ROUTE_DETAIL, id, true)</code></td></tr></table></div>
+<hr>
+<hr>
+<h2 id="h242">5. 依赖方向与禁止项</h2>
+<h3 id="h244">5.1 依赖方向（严格单向）</h3>
+<pre><code>        ┌──────────────────────────────────────────┐
+        │            入口层（HAP, entry）            │
+        │  entry   entry_tv   entry_wearable        │
+        └───────┬───────────────────────┬──────────┘
+                │                       │
+                ▼                       ▼
+        ┌──────────────────────────────────────────┐
+        │         业务特性层（HAR, features）         │
+        │      features/demo  features/...          │
+        └───────┬───────────────────────┬──────────┘
+                │                       │
+                ▼                       ▼
+        ┌──────────────────┐   ┌──────────────────┐
+        │ commons/runtime  │   │  commons/uikit   │
+        │ 运行环境（HAR）     │   │  通用组件（HAR）    │
+        └────────┬─────────┘   └──────────────────┘
+                 │
+                 ▼
+        ┌──────────────────┐
+        │commons/foundation│
+        │ 基础设施（HAR）     │
+        └──────────────────┘</code></pre>
+<h3 id="h271">5.2 依赖许可矩阵</h3>
+<p>行 = 依赖方，列 = 被依赖方。✅ 允许，❌ 禁止。</p>
+<div class="tw"><table><tr><th>↓依赖方 \ 被依赖方→</th><th>entry</th><th>entry_tv</th><th>entry_wearable</th><th>features/*</th><th>foundation</th><th>runtime</th><th>uikit</th></tr><tr><th><strong>entry</strong></th><th>❌</th><th>❌</th><th>❌</th><th>✅</th><th>✅</th><th>✅</th><th>✅</th></tr><tr><td><strong>entry_tv</strong></td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td><strong>entry_wearable</strong></td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td>**features/* **</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td><td>✅</td></tr><tr><td><strong>commons/runtime</strong></td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td><td>❌</td><td>❌</td></tr><tr><td><strong>commons/uikit</strong></td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr><tr><td><strong>commons/foundation</strong></td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td><td>❌</td></tr></table></div>
+<h3 id="h285">5.3 禁止项清单（硬性）</h3>
+<div class="tw"><table><tr><th>编号</th><th>禁止</th><th>原因</th><th>正确做法</th></tr><tr><th>F1</th><th>feature 反向依赖 entry</th><th>入口是叶子，反向依赖会形成环</th><th>需要入口状态时，用 <code>commons/runtime</code> 的单例或具名路由</th></tr><tr><td>F2</td><td>feature 之间直接互相 import</td><td>业务域耦合，拆包即断</td><td>共享逻辑上移到 <code>commons</code>；跨域跳转走具名路由</td></tr><tr><td>F3</td><td><code>commons</code> 依赖任何上层；或 <code>foundation</code> 反向依赖 <code>runtime</code></td><td>破坏单向依赖</td><td>依赖方向只能是 entry → features → runtime → foundation</td></tr><tr><td>F4</td><td>在 <code>commons/foundation</code> 或 <code>commons/runtime</code> 写业务逻辑</td><td>基础层被业务污染后无法复用</td><td>业务语义放 feature</td></tr><tr><td>F5</td><td>循环依赖</td><td>编译期报错、运行期未定义</td><td>抽公共部分下沉</td></tr><tr><td>F6</td><td>深链其他模块内部路径 <code>xxx/src/main/ets/...</code></td><td>破坏封装，重构即断</td><td>只从对方 <code>Index.ets</code> 导入</td></tr><tr><td>F7</td><td>在页面里硬编码颜色值</td><td>深浅色失效</td><td>用 <code>$r('app.color.bp_*')</code> 令牌</td></tr><tr><td>F8</td><td>在业务代码硬编码断点像素阈值</td><td>设备阈值可能被产品化调整</td><td>用 <code>UIContext.getWindowWidthBreakpoint()</code></td></tr><tr><td>F9</td><td>用 <code>deviceInfo.deviceType</code> 做布局分支</td><td>同一设备多窗口形态会判断错</td><td>布局只依据断点；设备类型只用于能力检测</td></tr><tr><td>F10</td><td>新增 V1 状态装饰器</td><td>与 V2 混用会产生双重代理陷阱</td><td>统一 V2</td></tr><tr><td>F11</td><td>在 <code>@Entry</code> 组件里放业务规则</td><td>入口只做装配</td><td>逻辑放 ViewModel</td></tr><tr><td>F12</td><td>Tab 用原生 <code>Tabs</code>、导航用原生 <code>Navigation</code>（除已登记例外）</td><td>与设计系统不一致</td><td><code>HdsTabs</code> / <code>HdsNavigation</code></td></tr></table></div>
+<hr>
+<h2 id="h304">6. 多设备入口组织</h2>
+<h3 id="h306">6.1 入口划分（依据 C1：同设备类型只允许一个 entry HAP）</h3>
+<div class="tw"><table><tr><th>入口 module</th><th>deviceTypes</th><th>覆盖形态</th><th>首页</th></tr><tr><th><code>entry</code></th><th><code>phone</code> / <code>tablet</code> / <code>2in1</code></th><th>手机、平板、2in1（统一入口）</th><th><code>pages/Index.ets</code></th></tr><tr><td><code>entry_tv</code></td><td><code>tv</code></td><td>智慧屏</td><td><code>pages/TvIndex.ets</code></td></tr><tr><td><code>entry_wearable</code></td><td><code>wearable</code></td><td>智能穿戴</td><td><code>pages/WearableIndex.ets</code></td></tr></table></div>
+<p>三者的 <code>deviceTypes</code> <strong>互不重叠</strong>，因此不违反 C1，可以共存于同一应用。</p>
+<h3 id="h316">6.2 各入口 module.json5 关键配置</h3>
+<pre><code>// entry/src/main/module.json5  —— 统一入口
+{
+  "module": {
+    "name": "entry",
+    "type": "entry",
+    "mainElement": "EntryAbility",
+    "deviceTypes": ["phone", "tablet", "2in1"],
+    "pages": "$profile:main_pages",
+    "abilities": [{
+      "name": "EntryAbility",
+      "srcEntry": "./ets/entryability/EntryAbility.ets",
+      "exported": true,
+      "skills": [{ "entities": ["entity.system.home"], "actions": ["ohos.want.action.home"] }]
+    }],
+    "extensionAbilities": [{ /* EntryBackupAbility，备份能力 */ }]
+  }
+}</code></pre>
+<pre><code>// entry_tv/src/main/module.json5  —— TV 入口
+{ "module": { "name": "entry_tv", "type": "entry", "mainElement": "EntryTvAbility",
+  "deviceTypes": ["tv"], "pages": "$profile:main_pages", "abilities": [{ "name": "EntryTvAbility", /* ... */ }] } }</code></pre>
+<pre><code>// entry_wearable/src/main/module.json5  —— 手表入口
+{ "module": { "name": "entry_wearable", "type": "entry", "mainElement": "EntryWearableAbility",
+  "deviceTypes": ["wearable"], "pages": "$profile:main_pages", "abilities": [{ "name": "EntryWearableAbility", /* ... */ }] } }</code></pre>
+<h3 id="h350">6.3 入口分流链路</h3>
+<pre><code>设备安装应用
+  → 系统读取各 HAP 的 module.json5.deviceTypes
+  → 与当前设备类型匹配的唯一 entry HAP 被安装
+  → 该 HAP 的 mainElement Ability 启动
+  → 加载各自 pages/profile/main_pages.json 的首个页面
+  → 页面内再按断点切换布局</code></pre>
+<p><strong>关键点：分流发生在安装期（deviceTypes 匹配），不是运行期 <code>if</code>。</strong> 运行时只需要处理断点，不需要处理"我是什么设备"。</p>
+<h3 id="h363">6.4 各形态 UI 组织差异</h3>
+<div class="tw"><table><tr><th>形态</th><th>导航</th><th>内容组织</th><th>交互</th></tr><tr><th>phone / tablet / 2in1</th><th><code>HdsTabs</code>（sm/md 底部；lg/xl 侧边）+ <code>HdsNavigation</code> 分栏</th><th>列表（md 2 列、lg+ 3 列）</th><th>触摸</th></tr><tr><td>TV</td><td>原生 <code>Tabs</code>（HDS 例外）</td><td>横向内容带（content rail）</td><td>遥控器方向键 + 焦点</td></tr><tr><td>手表</td><td>无 Tab，单页</td><td>单列、首屏出结论</td><td>旋钮 / 手势</td></tr></table></div>
+<hr>
+<h2 id="h373">7. 断点系统</h2>
+<h3 id="h375">7.1 断点定义（官方阈值，按<strong>应用窗口宽度</strong>）</h3>
+<div class="tw"><table><tr><th>断点</th><th>窗口宽度（vp）</th><th>典型形态</th><th>栅格列数</th></tr><tr><th><code>xs</code></th><th>&lt; 320</th><th>智能穿戴</th><th>4</th></tr><tr><td><code>sm</code></td><td>[320, 600)</td><td>手机竖屏、小折叠</td><td>4</td></tr><tr><td><code>md</code></td><td>[600, 840)</td><td>平板竖屏、手机横屏、折叠展开</td><td>8</td></tr><tr><td><code>lg</code></td><td>[840, 1440)</td><td>平板横屏、智慧屏</td><td>12</td></tr><tr><td><code>xl</code></td><td>≥ 1440</td><td>2in1 全屏、折叠电脑</td><td>12</td></tr></table></div>
+<p><strong>纪律（C2）</strong>：取值一律来自 <code>UIContext.getWindowWidthBreakpoint()</code> / <code>getWindowHeightBreakpoint()</code>，不自己写 <code>if (width &lt; 600)</code>。</p>
+<h3 id="h387">7.2 实现（<code>commons/runtime</code>）</h3>
+<ul>
+<li><code>constant/BreakpointConstants.ets</code>：把平台枚举映射为语义名 + 栅格列数 + <code>isWide()</code>。</li>
+<li><code>service/BreakpointManager.ets</code>：<code>@ObservedV2</code> 单例，监听 <code>windowSizeChange</code>，把断点写入 <code>@Trace</code> 字段。</li>
+<li>初始化位置：<code>EntryAbility.onWindowStageCreate</code> 的 <code>loadContent</code> 回调内（此时断点查询才有效）。</li>
+</ul>
+<pre><code>// 订阅侧（V2 组件）—— 声明 @Local 后直接读 @Trace 字段即自动刷新
+@Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+// build 中：
+Text(`breakpoint = ${this.breakpoint.breakpoint}`)
+List().lanes(this.viewModel.columns(this.breakpoint.breakpoint))</code></pre>
+<h3 id="h401">7.3 断点驱动布局示例</h3>
+<p><code>entry/src/main/ets/pages/Index.ets</code> 中：</p>
+<pre><code>.mode(this.breakpoint.isWide() ? NavigationMode.Split : NavigationMode.Stack)
+.barPosition(this.breakpoint.isWide() ? BarPosition.Start : BarPosition.End)
+.lanes(this.viewModel.columns(this.breakpoint.breakpoint))   // sm=1 / md=2 / lg,xl=3</code></pre>
+<h3 id="h411">7.4 监听手段选择</h3>
+<div class="tw"><table><tr><th>手段</th><th>用途</th><th>本项目定位</th></tr><tr><th><code>window.on('windowSizeChange')</code> + <code>UIContext.getWindowWidthBreakpoint()</code></th><th>断点主链路</th><th><strong>主链路</strong></th></tr><tr><td><code>display.on('change')</code></td><td>旋转 / 分辨率（时序早于 window）</td><td>旋转专用</td></tr><tr><td><code>display.on('foldStatusChange')</code></td><td>折叠态变化</td><td>折叠专用</td></tr><tr><td><code>@Env(SystemProperties.BREAK_POINT)</code>（API 22+）</td><td>组件内声明式读断点</td><td>可选补充，不作为唯一断点源</td></tr></table></div>
+<hr>
+<h2 id="h422">8. 基础能力清单</h2>
+<p>用户点名的 5 项 + 建议补充的能力，落位如下：</p>
+<div class="tw"><table><tr><th>能力</th><th>落位</th><th>实现要点</th><th>状态</th></tr><tr><th>颜色模式管理</th><th><code>commons/runtime/.../theme/ColorModeManager.ets</code></th><th>跟随系统 / 强制深浅色；<code>setColorMode</code>；<code>onConfigurationUpdate</code> 同步</th><th>✅ 已实现</th></tr><tr><td>兼容性处理</td><td><code>commons/runtime/.../compat/CompatManager.ets</code></td><td>按 API 版本分支（<code>runByApi</code>）、降级调用（<code>safeCall</code>）</td><td>✅ 已实现</td></tr><tr><td>能力检测</td><td><code>commons/runtime/.../capability/CapabilityManager.ets</code></td><td><code>canIUse(syscap)</code> + API 版本 + 设备形态</td><td>✅ 已实现</td></tr><tr><td>API 与设备管理</td><td><code>commons/runtime/.../device/AppEnvManager.ets</code></td><td>bundleName / 版本 / sdkApiVersion / deviceType / 型号快照</td><td>✅ 已实现</td></tr><tr><td>旋转与窗口形态</td><td><code>BreakpointManager</code>（窗口尺寸）+ 页面 <code>lanes</code> 自适应</td><td>旋转后由 <code>windowSizeChange</code> 自动重算断点</td><td>✅ 已实现</td></tr><tr><td><strong>日志</strong></td><td><code>commons/foundation/.../log/Logger.ets</code></td><td>统一 hilog 出口，禁止业务直连 hilog，便于接埋点</td><td>✅ 已实现</td></tr><tr><td><strong>异常与埋点</strong></td><td><code>commons/foundation/.../error/GlobalErrorHandler.ets</code></td><td>✅ 已实现全局兜底；上报通过 <code>addReporter()</code> 接入</td><td>✅ 已实现</td></tr><tr><td><strong>资源国际化</strong></td><td><code>resources/&lt;qualifier&gt;/element/string.json</code></td><td>按语言目录分文件，代码只用 <code>$r('app.string.*')</code></td><td>⬜ 建议补充</td></tr><tr><td><strong>权限与安全</strong></td><td><code>module.json5.requestPermissions</code> + <code>commons/runtime/PermissionManager</code></td><td>运行时申请集中封装</td><td>⬜ 建议补充</td></tr><tr><td><strong>网络与存储</strong></td><td>建议 <code>commons/data/</code>（Network / Preferences / Database）</td><td>统一超时、重试、序列化</td><td>⬜ 建议补充</td></tr><tr><td><strong>更新与灰度</strong></td><td>建议 <code>commons/runtime/UpdateManager</code></td><td>版本检查、灰度开关接入点</td><td>⬜ 建议补充</td></tr><tr><td><strong>主题与字号</strong></td><td><code>AppScope/resources/</code> 主题令牌 + 配置监听</td><td>大字体模式适配</td><td>⬜ 建议补充</td></tr></table></div>
+<blockquote>表格中"建议补充"项是本指南对用户原始需求之外的必要性补充，均给出了落位，不影响当前骨架编译。</blockquote>
+<hr>
+<h2 id="h445">9. 通用组件与动效规范</h2>
+<h3 id="h447">9.1 组件统一 API 约定</h3>
+<ol>
+<li>外观参数走 <code>@Param</code>，<strong>必须带默认值</strong>；</li>
+<li>交互回调走 <code>@Event</code>，命名 <code>onXxx</code>；</li>
+<li>组件内部不持有全局单例，依赖由外部注入；</li>
+<li>组件不直接发请求，数据由 ViewModel 传入。</li>
+</ol>
+<h3 id="h454">9.2 现有组件</h3>
+<div class="tw"><table><tr><th>组件</th><th>文件</th><th>能力</th></tr><tr><th><code>ActionCard</code></th><th><code>commons/uikit/.../ActionCard.ets</code></th><th>通用卡片；按压缩放反馈（<code>scale</code> + 统一时长/曲线）</th></tr><tr><td><code>SkeletonBlock</code></td><td><code>.../SkeletonBlock.ets</code></td><td>骨架屏；透明度呼吸动画（<code>iterations: -1, playMode: Alternate</code>）</td></tr><tr><td><code>StateContainer</code></td><td><code>.../StateContainer.ets</code></td><td>四态容器：加载 / 空 / 错误 / 内容；错误态带重试回调</td></tr><tr><td><code>MotionSpec</code></td><td><code>.../motion/MotionSpec.ets</code></td><td>动效时长（150/250/350ms）与曲线常量</td></tr><tr><td><code>MotionEffects</code></td><td><code>.../motion/MotionEffects.ets</code></td><td><code>listItem()</code> 增删过渡、<code>pageTransition()</code> 转场、<code>appearParam()</code></td></tr></table></div>
+<h3 id="h464">9.3 动效覆盖情况</h3>
+<div class="tw"><table><tr><th>动效类型</th><th>覆盖</th><th>实现</th></tr><tr><th>手势反馈</th><th>✅</th><th><code>ActionCard</code> 按压 <code>scale 0.97</code></th></tr><tr><td>加载态</td><td>✅</td><td><code>SkeletonBlock</code> 呼吸 + <code>StateContainer.LOADING</code></td></tr><tr><td>列表增删过渡</td><td>✅</td><td><code>MotionEffects.listItem()</code>（OPACITY 非对称）</td></tr><tr><td>转场</td><td>✅</td><td><code>MotionEffects.pageTransition()</code></td></tr><tr><td><strong>建议补充</strong></td><td>⬜</td><td>共享元素转场、列表项滑出删除、下拉刷新、Toast/Snackbar 进出场、旋转屏过渡动画</td></tr></table></div>
+<hr>
+<h2 id="h476">10. HDS 替换清单</h2>
+<h3 id="h478">10.1 对照表</h3>
+<div class="tw"><table><tr><th>原组件</th><th>替换为</th><th>导入</th><th>起始 API</th><th>支持设备</th></tr><tr><th><code>Tabs</code></th><th><code>HdsTabs</code></th><th><code>@kit.UIDesignKit</code></th><th>6.0.0(20)</th><th>phone / tablet / 2in1 / car</th></tr><tr><td><code>Navigation</code></td><td><code>HdsNavigation</code></td><td><code>@kit.UIDesignKit</code></td><td>5.1.0(18)</td><td>phone / tablet / 2in1 / car / <strong>tv</strong></td></tr><tr><td><code>NavDestination</code></td><td><code>HdsNavDestination</code></td><td><code>@kit.UIDesignKit</code></td><td>5.1.0(18)</td><td>phone / tablet / 2in1 / car / <strong>tv</strong></td></tr></table></div>
+<pre><code>// 唯一正确导入方式（应用侧不要从 @hms.hds.* 直接导入）
+import { HdsNavigation, HdsNavDestination, HdsTabs, HdsTabsController } from '@kit.UIDesignKit';</code></pre>
+<blockquote>在 <code>targetSdkVersion 26.0.0</code> 下<strong>无需</strong>手动导入 <code>HdsTabsAttribute</code> 等类型，编译工具链自动识别（本项目实测通过）。</blockquote>
+<h3 id="h493">10.2 例外清单（必须登记，逐条给原因）</h3>
+<div class="tw"><table><tr><th>#</th><th>场景</th><th>原因（实测依据）</th><th>替代方案</th></tr><tr><th>E1</th><th><strong>TV 形态的 Tab</strong></th><th><code>HdsTabsAttribute</code> / <code>HdsTabsController</code> / <code>HdsTabsOptions</code> 的 <code>deviceTypes</code> 均为 phone/tablet/2in1/car，<strong>不含 tv</strong></th><th>用原生 <code>Tabs</code>（本项目 <code>entry_tv/pages/TvIndex.ets</code> 即如此实现）</th></tr><tr><td>E2</td><td><strong>手表形态的 Tab</strong></td><td>同上，矩阵不含 wearable</td><td>手表为单页单列，无 Tab 场景</td></tr><tr><td>E3</td><td>列表 / 网格容器</td><td>HDS 只提供列表<strong>项</strong>（<code>HdsListItem</code> / <code>HdsListItemCard</code>），无 <code>List</code> / <code>Grid</code> / <code>WaterFlow</code></td><td>原生 <code>List</code> + <code>HdsListItem</code></td></tr><tr><td>E4</td><td>模态弹窗</td><td>HDS 只有 <code>HdsSnackBar</code>（非模态），无模态对话框</td><td>原生 <code>Dialog</code> / <code>promptAction</code></td></tr><tr><td>E5</td><td>表单输入控件</td><td>无独立表单组件</td><td>原生 <code>TextInput</code> / <code>Select</code> 等</td></tr><tr><td>E6</td><td>顶部 Tab / 分段控件</td><td>HDS 只做底部页签语义</td><td>原生 <code>Tabs</code> 或 <code>SegmentButtonV2</code></td></tr><tr><td>E7</td><td><code>HdsColorPicker</code></td><td>起始 <strong>26.0.0</strong>，API 23 不可用</td><td>自研取色器 / 原生 Picker</td></tr><tr><td>E8</td><td>HDS 沉浸视效</td><td>模拟器不支持（点光源/按压阴影/流光），与真机有差异</td><td>真机验证为准</td></tr></table></div>
+<h3 id="h506">10.3 路由构建器的 Linter 提示（已知误报）</h3>
+<p><code>devecocli check arkts</code> 的 <code>nav-destination-root-node</code> 规则会对 <code>HdsNavDestination</code> 报</p>
+<p>"Route builder renders 'Column' without a 'NavDestination' root"。该规则不认识 HDS 组件，</p>
+<p>属误报；运行期已验证 TV / 2in1 / 真机上导航与首帧渲染正常（见第 15 节证据）。</p>
+<hr>
+<h2 id="h514">11. 状态管理 V2 规范</h2>
+<h3 id="h516">11.1 装饰器清单</h3>
+<div class="tw"><table><tr><th>装饰器</th><th>用途</th><th>本项目用法</th></tr><tr><th><code>@ComponentV2</code></th><th>V2 组件</th><th>所有新组件</th></tr><tr><td><code>@Local</code></td><td>组件内部可变状态</td><td><code>@Local viewModel</code>、<code>@Local breakpoint</code></td></tr><tr><td><code>@Param</code></td><td>父传子的不可变参数</td><td><code>@Param title: string = ''</code></td></tr><tr><td><code>@Event</code></td><td>子通知父的回调</td><td><code>@Event onAction: () =&gt; void</code></td></tr><tr><td><code>@ObservedV2</code> + <code>@Trace</code></td><td>可观测模型（细粒度）</td><td><code>DemoViewModel</code>、<code>BreakpointManager</code></td></tr><tr><td><code>@Monitor</code></td><td>深度监听变化</td><td>需要副作用时</td></tr><tr><td><code>@Computed</code></td><td>派生值</td><td>列数、是否宽屏</td></tr><tr><td><code>@Provider</code> / <code>@Consumer</code></td><td>跨层级注入</td><td>子树隔离 / 单测注入假断点</td></tr></table></div>
+<h3 id="h529">11.2 V1 → V2 对照</h3>
+<div class="tw"><table><tr><th>V1</th><th>V2 等价</th><th>迁移要点</th></tr><tr><th><code>@State</code></th><th><code>@Local</code></th><th>直接替换</th></tr><tr><td><code>@Prop</code></td><td><code>@Param</code></td><td>V2 的 <code>@Param</code> 默认不可变；需可变则配合 <code>@Once</code> 或本地副本</td></tr><tr><td><code>@Link</code> / <code>@ObjectLink</code></td><td><code>@Param</code> + <code>@Event</code>（双向用手动回传）</td><td>子组件不再直接改父状态</td></tr><tr><td><code>@Provide</code> / <code>@Consume</code></td><td><code>@Provider</code> / <code>@Consumer</code></td><td>语义基本一致</td></tr><tr><td><code>@Observed</code> + <code>@ObjectLink</code></td><td><code>@ObservedV2</code> + <code>@Trace</code></td><td>观测粒度更细，可按字段刷新</td></tr><tr><td><code>@Watch</code></td><td><code>@Monitor</code></td><td>支持多字段监听</td></tr><tr><td><code>AppStorage</code></td><td><code>AppStorageV2</code></td><td>V2 专用全局存储</td></tr><tr><td><code>ForEach</code></td><td><code>Repeat</code></td><td>大数据量列表优先 <code>Repeat</code></td></tr></table></div>
+<h3 id="h542">11.3 硬性规则</h3>
+<ol>
+<li><strong>不新增 V1 用法</strong>；存量 V1 需登记并排期迁移。</li>
+<li>禁止在同一个 <code>@ObservedV2</code> 类中出现 V1 装饰器。</li>
+<li>跨 V1/V2 传递对象时需消除双重代理（<code>UIUtils.enableV2Compatibility</code>）。</li>
+<li>组件只读 <code>@Trace</code> 字段即完成订阅，<strong>不需要</strong> <code>@ObjectLink</code> 或逐层透传。</li>
+</ol>
+<h3 id="h549">11.4 现状核验（grep 实测）</h3>
+<p>骨架工程中状态装饰器分布：<code>@ComponentV2</code> 6 · <code>@ObservedV2</code> 4 · <code>@Local</code> 9 · <code>@Param</code> 15 · <code>@Event</code> 3 · <code>@Trace</code> 10，<strong>V1 装饰器 0 处</strong>。</p>
+<hr>
+<h2 id="h555">12. 分包方案</h2>
+<h3 id="h557">12.1 何时拆</h3>
+<div class="tw"><table><tr><th>信号</th><th>动作</th></tr><tr><th>单个 feature 编译 &gt; 30s 且改动频繁</th><th>拆成独立 HAP（动态特性）</th></tr><tr><td>只在特定场景使用的大体积能力（如某个 Kit 全家桶）</td><td>拆成 HSP 按需加载</td></tr><tr><td>多产品共用同一能力</td><td>抽成 HSP（单例共享内存）</td></tr></table></div>
+<h3 id="h565">12.2 HAR vs HSP</h3>
+<div class="tw"><table><tr><th>维度</th><th>HAR（静态共享包）</th><th>HSP（动态共享包）</th></tr><tr><th>打包方式</th><th>编译进使用方</th><th>独立打包、运行时加载</th></tr><tr><td>是否单例</td><td>否（每个使用方一份）</td><td><strong>是</strong>（全局一份）</td></tr><tr><td>典型用途</td><td>二方/三方库、组件库</td><td>元服务分包预加载、按需加载、需单例的状态</td></tr><tr><td>本项目定位</td><td><code>commons/foundation</code>、<code>commons/runtime</code>、<code>commons/uikit</code></td><td>若需全局单例能力，改 HSP</td></tr></table></div>
+<h3 id="h574">12.3 动态分包要点</h3>
+<ul>
+<li>feature 型 HAP 设 <code>"deliveryWithInstall": false</code>，由主包按需安装。</li>
+<li>跨 HAP 跳转用系统路由表 <code>router_map.json</code> + <code>NavPushPathHelper</code>，<strong>不要</strong>用 Navigation 直接跨 HAP 跳转（会失败）。</li>
+<li>详细手动创建步骤见配套文档《分包手动创建清单》。</li>
+</ul>
+<hr>
+<h2 id="h582">13. 扩展与维护</h2>
+<div class="tw"><table><tr><th>我要…</th><th>动这些地方</th></tr><tr><th>在已有 feature 里加一个页面</th><th>① <code>features/&lt;x&gt;/src/main/ets/pages/</code> 加 <code>&lt;名&gt;Index.ets</code>；② 在入口 <code>Index.ets</code> 的 <code>pageMap</code> 中注册路由；③ 加 <code>ROUTE_*</code> 常量</th></tr><tr><td>加一个通用组件</td><td>① <code>commons/uikit/src/main/ets/component/</code> 加组件；② 在 <code>commons/uikit/Index.ets</code> 导出；③ 样式令牌如需新增，加到 <code>AppScope/resources/*/element/color.json</code></td></tr><tr><td>加一项基础能力</td><td>① 按语义放进 <code>commons/runtime/src/main/ets/&lt;语义域&gt;/</code>（或 <code>commons/foundation</code> 若是纯基础设施）；② <code>Index.ets</code> 导出；③ 如需在启动时初始化，在三个入口 Ability 的 <code>onCreate</code> 中接入</td></tr><tr><td>加一个业务特性</td><td>① 复制 <code>features/demo</code> 结构建 <code>features/&lt;新域&gt;</code>；② <code>module.json5</code> name 改为新域、<code>oh-package.json5</code> name 改为 <code>@&lt;域&gt;/&lt;新域&gt;</code>；③ 根 <code>build-profile.json5</code> 的 <code>modules</code> 追加；④ 需要的入口 <code>oh-package.json5</code> 加 <code>file:</code> 依赖</td></tr><tr><td>加一个设备入口</td><td>① 复制 <code>entry_tv</code> 结构；② <code>module.json5</code> 改 <code>name</code> / <code>mainElement</code> / <code>deviceTypes</code>（<strong>必须与已有入口不重叠</strong>）；③ 根 <code>build-profile.json5</code> 追加 module；④ 新建对应 Ability 并在 <code>onCreate</code>/<code>onWindowStageCreate</code> 接入三大能力</td></tr><tr><td>改设计令牌</td><td>只改 <code>AppScope/resources/base/element/color.json</code> 与 <code>.../dark/element/color.json</code>，全工程同步生效</td></tr><tr><td>改动效</td><td>只改 <code>commons/uikit/.../motion/MotionSpec.ets</code>，禁止在页面里写魔法数字</td></tr></table></div>
+<hr>
+<h2 id="h596">14. 正例 / 反例对照</h2>
+<div class="tw"><table><tr><th>#</th><th>反例</th><th>为什么错</th><th>正例</th></tr><tr><th>1</th><th>在 <code>entry/pages/Index.ets</code> 里写 <code>if (deviceInfo.deviceType === 'tv')</code> 切布局</th><th>同一设备多窗口形态判断错；入口会膨胀</th><th>布局只按断点；设备差异由 deviceTypes 在安装期分流</th></tr><tr><td>2</td><td><code>features/a</code> 直接 <code>import { X } from '../b/...'</code></td><td>业务域耦合，拆包即断</td><td>共享逻辑上移 <code>commons</code>；跨域跳转走具名路由</td></tr><tr><td>3</td><td><code>commons/foundation</code> 或 <code>commons/runtime</code> 里 <code>import { PartyModel } from '@blueprint/demo'</code></td><td>基础层被业务污染，方向反转</td><td>基础层只依赖系统 API 与下层模块</td></tr><tr><td>4</td><td>页面写 <code>.fontColor('#182431')</code></td><td>深色模式失效</td><td><code>.fontColor($r('app.color.bp_text_primary'))</code></td></tr><tr><td>5</td><td><code>if (windowWidth &lt; 600) { ... }</code></td><td>阈值被产品化调整后失效（违反 C2）</td><td><code>UIContext.getWindowWidthBreakpoint()</code></td></tr><tr><td>6</td><td>每个 feature 各自写一套加载/空/错误态</td><td>全应用观感不一致</td><td>统一用 <code>StateContainer</code></td></tr><tr><td>7</td><td>动画时长散落写 <code>duration: 200</code></td><td>动效语言不统一</td><td>引用 <code>MotionSpec.DURATION_NORMAL</code></td></tr><tr><td>8</td><td>从 <code>xxx/src/main/ets/service/X</code> 深链导入</td><td>破坏封装</td><td>只从模块 <code>Index.ets</code> 导入</td></tr><tr><td>9</td><td>TV 入口用 <code>HdsTabs</code></td><td>设备矩阵不含 tv，行为未定义</td><td>用原生 <code>Tabs</code> 并登记例外 E1</td></tr><tr><td>10</td><td>新代码用 <code>@State</code></td><td>与 V2 混用产生双重代理</td><td>用 <code>@Local</code></td></tr><tr><td>11</td><td>颜色令牌定义在 uikit 模块内</td><td>跨模块引用不被静态检查识别，且语义上应在应用级</td><td>放 <code>AppScope/resources/*/element/color.json</code></td></tr><tr><td>12</td><td>手表入口也建 Tab</td><td>手表无此交互语义</td><td>单页单列，例外 E2</td></tr><tr><td>13</td><td>组件内直接 <code>new Repository()</code> 发请求</td><td>不可测、难替换</td><td>Repository 由 ViewModel 持有</td></tr><tr><td>14</td><td>自定义组件带尾随构建闭包后再链式调属性 <code>Comp() { ... }.width()</code></td><td>ArkTS 解析失败（实测报 <code>Declaration or statement expected</code>）</td><td>外层再包一层容器承载样式</td></tr></table></div>
+<hr>
+<h2 id="h617">15. 异常处理 · 代码健壮性 · 日志规范</h2>
+<h3 id="h619">15.0 一句话总纲</h3>
+<p><strong>基础层提供能力，业务层只表达意图，边界统一兜底。</strong></p>
+<p>具体说：日志与异常的全部原语（Logger / AppError / Result / 断言 / 脱敏）由 <code>commons/foundation</code> 提供；业务代码只负责"用 Result 表达可预期失败、用 AppError 表达意外失败"；真正的 try-catch 只允许出现在<strong>能力边界</strong>上，由 <code>GlobalErrorHandler</code> 兜住最后一道。</p>
+<h3 id="h625">15.1 目录落位</h3>
+<div class="tw"><table><tr><th>目录</th><th>职责</th><th>关键文件</th><th>依赖</th></tr><tr><th><code>commons/foundation/src/main/ets/log/</code></th><th>日志：分级、结构化、可插拔输出</th><th><code>LogLevel.ets</code> · <code>LogSink.ets</code> · <code>Logger.ets</code></th><th>无</th></tr><tr><td><code>commons/foundation/src/main/ets/error/</code></td><td>异常：错误码、错误类型、映射、全局兜底</td><td><code>ErrorCode.ets</code> · <code>AppError.ets</code> · <code>ErrorMapper.ets</code> · <code>GlobalErrorHandler.ets</code></td><td>仅 log</td></tr><tr><td><code>commons/foundation/src/main/ets/result/</code></td><td>可预期失败的返回值表达</td><td><code>Result.ets</code></td><td>仅 error</td></tr><tr><td><code>commons/foundation/src/main/ets/util/</code></td><td>纯工具：无状态、无副作用</td><td><code>Assert.ets</code> · <code>MaskUtil.ets</code></td><td>无</td></tr></table></div>
+<p><strong>为什么这么分</strong>：日志与异常是"基础设施"，不属于任何业务域，也不依赖 ArkUI，所以放 <code>foundation</code> 而不是跟断点、颜色模式混在一起。这样 <code>runtime</code>、<code>uikit</code>、<code>features</code>、<code>entry</code> 都能安全依赖它，且不会形成反向依赖。</p>
+<h3 id="h636">15.2 异常分级：先决定"该不该 throw"</h3>
+<p>这是异常设计里最关键的一步。<strong>不是所有失败都该抛异常</strong>：</p>
+<div class="tw"><table><tr><th>级别</th><th>什么情况</th><th>表达方式</th><th>调用方该做什么</th><th>是否上报</th></tr><tr><th><strong>EXPECTED</strong>（可预期）</th><th>校验不通过、无数据、未登录、重复提交</th><th><code>Result.fail(AppError.expected(...))</code>，<strong>不要 throw</strong></th><th>直接处理（显示空态/提示），属正常业务分支</th><th>❌ 不上报</th></tr><tr><td><strong>RECOVERABLE</strong>（可恢复）</td><td>网络超时、临时失败、能力不可用</td><td><code>throw AppError.recoverable(...)</code></td><td>重试 / 降级 / 兜底</td><td>✅ 上报</td></tr><tr><td><strong>FATAL</strong>（致命）</td><td>数据损坏、状态不可恢复、不可继续</td><td><code>throw AppError.fatal(...)</code> 并上抛</td><td>跳到全局兜底，页面做安全降级</td><td>✅ 必上报</td></tr></table></div>
+<p><strong>决策流程（照这个走就不会错）</strong>：</p>
+<pre><code>这个失败是"业务设计的一部分"吗？
+  ├─ 是（无数据、校验不过）→ 用 Result 返回，不 throw
+  └─ 否 → 它能被调用方恢复吗？
+           ├─ 能（重试/降级能解决）→ throw AppError.recoverable
+           └─ 不能（继续执行会错得更离谱）→ throw AppError.fatal</code></pre>
+<p><strong>为什么这样分</strong>：如果把"无数据"也当异常抛，日志里会塞满噪音，真正的线上故障被淹没；反过来，如果网络超时只返回个 null，调用方就不知道该重试还是该放弃。分级的意义是<strong>让"必须处理"在类型和日志上都可见</strong>。</p>
+<h3 id="h658">15.3 throw 规范（硬性 8 条）</h3>
+<div class="tw"><table><tr><th>#</th><th>规则</th><th>反例</th></tr><tr><th>T1</th><th>只允许 <code>throw AppError</code>（或其子类）</th><th>~~<code>throw '加载失败'</code>~~、~~<code>throw new Error('x')</code>~~</th></tr><tr><td>T2</td><td>构造 AppError 必须给 <code>domain</code>，否则无法归因</td><td>~~<code>AppError.recoverable(1, 'fail')</code>~~（缺 domain）</td></tr><tr><td>T3</td><td>预期内的失败不 throw，用 <code>Result</code></td><td>~~拿不到数据就 <code>throw AppError.expected(...)</code>~~</td></tr><tr><td>T4</td><td>禁止空 catch</td><td>~~<code>catch (e) {}</code>~~</td></tr><tr><td>T5</td><td>禁止用 catch 掩盖版本差异</td><td>~~<code>try { newApi() } catch { }</code>~~ → 应用能力检测 + 降级分支</td></tr><tr><td>T6</td><td>异步必须处理：<code>await</code> 或 <code>.catch()</code>，或上抛到边界</td><td>~~<code>doAsync();</code>（不 await 不 catch）~~</td></tr><tr><td>T7</td><td>异常信息不许拼敏感数据</td><td>~~<code>AppError.recoverable(1, 'token=' + token)</code>~~</td></tr><tr><td>T8</td><td>抛出前不需要记日志，由边界统一记</td><td>~~<code>catch(e){ Logger.error(...); throw e; }</code>~~（会重复记录）</td></tr></table></div>
+<blockquote>T8 容易被忽略：<strong>同一异常只记一次日志</strong>，位置在边界或全局兜底，不是在每一层 catch 里。</blockquote>
+<h3 id="h673">15.4 错误码规范</h3>
+<p>编码规则：<code>域(2位) * 10000 + 序号(4位)</code>，共 6 位。</p>
+<div class="tw"><table><tr><th>域</th><th>值</th><th>示例</th></tr><tr><th>COMMON</th><th>0</th><th><code>0</code> 未知；<code>1</code> 入参非法；<code>2</code> 状态非法；<code>3</code> 能力不可用；<code>4</code> 超时</th></tr><tr><td>NETWORK</td><td>10</td><td><code>100001</code> 连接失败</td></tr><tr><td>STORAGE</td><td>20</td><td><code>200001</code> 写入失败</td></tr><tr><td>PERMISSION</td><td>30</td><td><code>300001</code> 未授权</td></tr><tr><td>UI</td><td>40</td><td><code>400001</code> 渲染异常</td></tr><tr><td>BUSINESS</td><td>50</td><td><code>500001</code> 业务规则拒绝</td></tr></table></div>
+<p>约定：错误码<strong>一经发布不得改变语义</strong>，废弃只做注释不复用；业务域错误码由各 feature 在自己的常量类里按同一规则申请，不要都堆进 <code>foundation</code>。</p>
+<pre><code>// commons/foundation/.../error/ErrorCode.ets
+export enum ErrorDomain { COMMON = 0, NETWORK = 10, STORAGE = 20, PERMISSION = 30, UI = 40, BUSINESS = 50 }
+
+export class ErrorCode {
+  static readonly UNKNOWN: number = 0;
+  static readonly PARAM_INVALID: number = 1;
+  static readonly ILLEGAL_STATE: number = 2;
+  static readonly CAPABILITY_UNAVAILABLE: number = 3;
+  static readonly TIMEOUT: number = 4;
+
+  static make(domain: ErrorDomain, sequence: number): number {
+    return domain * 10000 + sequence;
+  }
+}</code></pre>
+<h3 id="h705">15.5 try-catch 只允许出现在 4 类边界</h3>
+<div class="tw"><table><tr><th>边界</th><th>位置</th><th>做什么</th></tr><tr><th>① 系统 API 调用</th><th><code>commons/runtime/**</code></th><th>捕获 <code>BusinessError</code> → <code>ErrorMapper.fromBusiness()</code></th></tr><tr><td>② 网络 / 数据访问</td><td><code>features/*/data/**</code></td><td>捕获后转 <code>Result.fail(AppError)</code>，不让异常穿透到 ViewModel</td></tr><tr><td>③ 跨模块调用</td><td>feature 之间、feature → 运行时</td><td>同上，模块边界必须翻译成自己的错误语义</td></tr><tr><td>④ 全局兜底</td><td><code>GlobalErrorHandler</code></td><td>接住所有漏网异常，落日志 + 上报</td></tr></table></div>
+<p><strong>内部纯逻辑不要 try-catch</strong>：让异常自然上抛到边界，这样代码干净，且异常不会被中途"吞掉"。</p>
+<pre><code>// features/demo/.../data/DemoRepository.ets —— 边界②的标准写法
+async fetchItems(): Promise&lt;Result&lt;DemoItem[]&gt;&gt; {
+  Logger.info(DOMAIN, TAG, 'fetchItems start');
+  try {
+    const items = await this.request();          // 可能抛系统异常
+    if (items.length === 0) {
+      return Result.fail(AppError.expected(1, 'empty data set', DOMAIN));  // 可预期失败
+    }
+    return Result.ok(items);
+  } catch (err) {
+    return Result.fail(ErrorMapper.from(err, DOMAIN, 'fetchItems'));       // 意外失败 → Result
+  }
+}</code></pre>
+<h3 id="h732">15.6 全局兜底与上报</h3>
+<pre><code>// 每个入口 Ability 的 onCreate 里调用一次
+GlobalErrorHandler.install();
+
+// 接入崩溃/埋点平台（应用侧自己接）
+GlobalErrorHandler.addReporter((error: AppError) =&gt; {
+  // 上报 error.code / error.domain / error.level / error.toLog()
+});</code></pre>
+<p>职责边界：<code>GlobalErrorHandler</code> 保证<strong>一定有日志</strong>、<strong>一定有机会上报</strong>、<strong>EXPECTED 级别不上报</strong>。</p>
+<blockquote>实测踩坑：<code>ErrorObserver</code> 类型<strong>未通过 <code>@kit.AbilityKit</code> 导出</strong>，直接 <code>import '@ohos.app.ability.ErrorObserver'</code> 会报模块无法解析。因此工程里用<strong>结构化匹配的普通类</strong>（具备 <code>onUnhandledException</code> / <code>onException</code> 两个方法）传给 <code>errorManager.on('error', ...)</code>。</blockquote>
+<h3 id="h748">15.7 日志规范</h3>
+<p><strong>级别语义（写的时候按这个判断）</strong>：</p>
+<div class="tw"><table><tr><th>级别</th><th>用在哪</th><th>例子</th><th>发布版</th></tr><tr><th>DEBUG</th><th>开发期细节：入参出参、状态流转</th><th><code>select id=3</code></th><th>默认裁剪</th></tr><tr><td>INFO</td><td>关键业务节点</td><td>页面进入/退出、流程开始/结束、配置生效</td><td>保留</td></tr><tr><td>WARN</td><td>可自动恢复、走了降级</td><td>syscap 不可用走兜底、重试第 2 次</td><td>保留</td></tr><tr><td>ERROR</td><td>需人工介入的失败</td><td>接口失败、解析失败、状态非法</td><td>保留</td></tr><tr><td>FATAL</td><td>进程级致命</td><td>未捕获异常、数据损坏</td><td>保留</td></tr></table></div>
+<p><strong>四条硬性要求</strong>：</p>
+<ol>
+<li><strong>必须给 domain + tag</strong>：<code>Logger.info('demo', 'DemoViewModel', 'loaded 4 items')</code>。没有 domain 的日志在线上等于没有。</li>
+<li><strong>禁止业务代码直连 hilog</strong>：否则无法统一裁剪、上报、脱敏。</li>
+<li><strong>敏感信息必须脱敏</strong>：手机号/邮箱/token/姓名过 <code>MaskUtil</code>；hilog 的 <code>%{public}s</code> 只放非敏感内容。</li>
+<li><strong>禁止在循环体内打 DEBUG</strong>：批量数据只打汇总（<code>loaded 4 items</code>），不要逐条打。</li>
+</ol>
+<p><strong>结构化 + 可插拔</strong>：</p>
+<pre><code>// 默认输出到 hilog；需要落盘或上报时追加 sink，业务代码零改动
+Logger.addSink(new MemorySink());        // 本地诊断/单测
+// Logger.setMinLevel(LogLevel.WARN);    // 发布版裁剪 DEBUG</code></pre>
+<p><strong>该打与不该打</strong>：</p>
+<div class="tw"><table><tr><th>✅ 该打</th><th>❌ 不该打</th></tr><tr><th>页面/能力生命周期节点</th><th>循环体内逐条数据</th></tr><tr><td>关键分支（走了降级、命中缓存）</td><td>每帧/每次滑动</td></tr><tr><td>失败（带错误码与 domain）</td><td>完整用户隐私数据</td></tr><tr><td>耗时（开始/结束配对）</td><td>为了"方便调试"长期保留的临时日志</td></tr></table></div>
+<h3 id="h784">15.8 异常与日志的分工</h3>
+<p>一句话：<strong>异常负责"传递与处理"，日志负责"留痕与归因"，两者不要互相替代。</strong></p>
+<div class="tw"><table><tr><th>场景</th><th>谁负责</th><th>说明</th></tr><tr><th>可预期失败</th><th>Result 返回给调用方</th><th>不产生异常日志</th></tr><tr><td>意外失败</td><td>AppError 上抛</td><td>由<strong>边界或全局兜底</strong>记一次日志</td></tr><tr><td>需要人工介入</td><td>ERROR 日志 + 上报</td><td>走 <code>GlobalErrorHandler.notify()</code></td></tr><tr><td>调试细节</td><td>DEBUG 日志</td><td>发布版裁剪</td></tr></table></div>
+<h3 id="h795">15.9 健壮性检查清单</h3>
+<p>写任何"会失败"的代码前，逐条过：</p>
+<ul>
+<li>[ ] 入参是否用 <code>Assert</code> 校验了？（fail fast，别让非法值传播）</li>
+<li>[ ] 这个失败是 EXPECTED 还是 RECOVERABLE / FATAL？分类对吗？</li>
+<li>[ ] 调用系统 API / 网络前，是否先做了能力检测（<code>CapabilityManager.hasSysCap</code>）？</li>
+<li>[ ] 超时、重试、降级策略写了吗？（集中在 data 层，不要散落）</li>
+<li>[ ] 返回值是否可能为 undefined/null？空值语义是否显式处理？</li>
+<li>[ ] 异步是否都被 await 或 catch？有没有"发了不管"的 Promise？</li>
+<li>[ ] 状态非法（未初始化就调用）是否有明确报错，而不是静默返回？</li>
+<li>[ ] 失败路径是否都有日志，且带 domain + code？</li>
+<li>[ ] 是否有重复记录同一异常（层层 catch 各记一次）？</li>
+<li>[ ] 用户可见的失败是否有 UI 呈现（走 <code>StateContainer</code>）？</li>
+</ul>
+<h3 id="h810">15.10 反例对照</h3>
+<div class="tw"><table><tr><th>#</th><th>反例</th><th>为什么错</th><th>正例</th></tr><tr><th>1</th><th><code>throw '加载失败'</code></th><th>ArkTS 禁止 throw 任意类型；且无法归因</th><th><code>throw AppError.recoverable(100001, 'load failed', 'demo')</code></th></tr><tr><td>2</td><td><code>catch (e) {}</code></td><td>异常被吞，线上无从查起</td><td><code>catch (e) { return Result.fail(ErrorMapper.from(e, DOMAIN)); }</code></td></tr><tr><td>3</td><td>每层都 <code>catch</code> + <code>Logger.error</code> + 重新 throw</td><td>同一异常被记 N 次，日志淹没</td><td>只在边界记一次，其余层直接上抛</td></tr><tr><td>4</td><td>无数据也 <code>throw</code></td><td>正常业务分支进了 ERROR 日志</td><td><code>Result.fail(AppError.expected(...))</code></td></tr><tr><td>5</td><td><code>Logger.info(TAG, 'msg')</code>（无 domain）</td><td>日志无法按业务域检索</td><td><code>Logger.info(DOMAIN, TAG, 'msg')</code></td></tr><tr><td>6</td><td><code>Logger.info('user', 'login', \</code>phone=${phone}\<code>)</code></td><td>隐私泄漏到日志</td><td><code>MaskUtil.phone(phone)</code> 后再打</td></tr><tr><td>7</td><td>循环里逐条 <code>Logger.debug</code></td><td>日志量爆炸、拖慢主线程</td><td>循环外打汇总</td></tr><tr><td>8</td><td><code>if (version &gt;= 15) { newApi() } else { oldApi() }</code> 散落在业务代码</td><td>版本判断逻辑散落</td><td>收敛进 <code>CompatManager.runByApi()</code></td></tr><tr><td>9</td><td>业务代码直接 <code>hilog.info(...)</code></td><td>绕过统一出口，无法裁剪/上报</td><td>一律走 <code>Logger</code></td></tr><tr><td>10</td><td><code>try { newApi() } catch { /* 忽略 */ }</code> 掩盖版本差异</td><td>真出错时静默失败</td><td>能力检测 + 显式降级分支 + WARN 日志</td></tr></table></div>
+<hr>
+<h2 id="h826">16. 实测验证证据</h2>
+<h3 id="h828">15.1 构建</h3>
+<div class="tw"><table><tr><th>工程</th><th>命令</th><th>结果</th></tr><tr><th><code>hm_blueprint</code></th><th><code>devecocli build --modules entry entry_tv entry_wearable</code></th><th>✅ BUILD SUCCESSFUL，产出 3 个已签名 HAP</th></tr><tr><td><code>hm_partynow</code></td><td>同上</td><td>✅ BUILD SUCCESSFUL，产出 3 个已签名 HAP</td></tr></table></div>
+<p>产物（<code>hm_partynow</code>）：</p>
+<div class="tw"><table><tr><th>文件</th><th>大小</th></tr><tr><th><code>entry/build/default/outputs/default/entry-default-signed.hap</code></th><th>265.0 KB</th></tr><tr><td><code>entry_tv/build/default/outputs/default/entry_tv-default-signed.hap</code></td><td>248.6 KB</td></tr><tr><td><code>entry_wearable/build/default/outputs/default/entry_wearable-default-signed.hap</code></td><td>243.6 KB</td></tr></table></div>
+<h3 id="h843">15.2 多形态运行（真实设备日志摘录）</h3>
+<div class="tw"><table><tr><th>形态</th><th>设备</th><th>实测日志</th><th>断点</th><th>窗口宽</th></tr><tr><th>手机（统一入口）</th><th>真机 HUAWEI Mate 80（VYG-AL30，API 26）</th><th><code>[BreakpointManager] attached, breakpoint=sm, widthVp=365.7142857142857</code></th><th><strong>sm</strong></th><th>365.7 vp</th></tr><tr><td>折叠屏（统一入口）</td><td>模拟器 foldable（API 23）</td><td><code>[BreakpointManager] attached, breakpoint=md, widthVp=711.68</code></td><td><strong>md</strong></td><td>711.7 vp</td></tr><tr><td>2in1（统一入口）</td><td>模拟器 2in1（API 23）</td><td><code>[BreakpointManager] attached, breakpoint=lg, widthVp=1100.000013803181</code></td><td><strong>lg</strong></td><td>1100 vp</td></tr><tr><td>智慧屏（TV 独立入口）</td><td>模拟器 tv（API 24）</td><td><code>[BreakpointManager] attached, breakpoint=lg, widthVp=1280</code></td><td><strong>lg</strong></td><td>1280 vp</td></tr><tr><td>智能穿戴（手表独立入口）</td><td>模拟器 wearable（API 23）</td><td><code>[BreakpointManager] attached, breakpoint=xs, widthVp=233</code></td><td><strong>xs</strong></td><td>233 vp</td></tr></table></div>
+<p>同时验证到的旁证：</p>
+<ul>
+<li><code>[AppEnvManager] AppEnv(bundle=com.quizzyjoy.partynow, ver=1.0.0, api=23, device=2in1|tv|phone, model=...)</code> —— 设备与 API 信息链路正常。</li>
+<li><code>[ColorModeManager] system color mode synced, dark=true|false</code> —— 真机处于深色模式时正确识别。</li>
+<li>真机日志中出现 <code>C03900/HDS_tabs</code> 命名空间 —— HdsTabs 已在真实渲染链中生效。</li>
+<li>TV 形态 <code>EntryTvAbility</code> 独立启动成功；手表形态 <code>EntryWearableAbility</code> 独立启动成功 —— 多入口分流正确。</li>
+</ul>
+<h3 id="h860">15.3 静态检查</h3>
+<div class="tw"><table><tr><th>检查</th><th>结果</th></tr><tr><th><code>devecocli check lint</code></th><th>✅ Issues: 0 / Errors: 0 / Warnings: 0</th></tr><tr><td><code>devecocli check arkts</code></td><td>⚠️ 25 条：24 条 <code>app-resource-name-check</code> + 1 条 <code>nav-destination-root-node</code>，均为已知误报，理由见 §16.4</td></tr></table></div>
+<h3 id="h867">15.4 误报说明</h3>
+<ul>
+<li><code>app-resource-name-check</code>：该规则<strong>不解析 AppScope 与跨模块 HAR 资源</strong>，因此引用 <code>@blueprint/uikit</code> 令牌或应用级 <code>$r('app.color.bp_*)</code> 时全部报"Unknown resource name"。反证：<code>devecocli build</code> 全量通过并产出已签名 HAP，说明资源在真实编译链中可解析。</li>
+<li><code>nav-destination-root-node</code>：规则不认识 <code>HdsNavDestination</code>，见 §10.3。</li>
+</ul>
+<h2 id="hfig">附录 B · 多形态运行证据（实机 / 模拟器截图）</h2>
+<p>以下为五种形态下的实际运行截图，断点值取自设备日志（见正文 §16.2）。</p>
+<div class="tw"><table>
+<tr><th>形态</th><th>断点 / 窗口宽</th><th>截图</th></tr>
+<tr><td>智能穿戴（手表独立入口 entry_wearable）</td><td>xs · 233 vp</td><td><img src="assets/device-wearable-xs.png" alt="手表 xs 断点运行截图" style="max-width:150px;height:auto"></td></tr>
+<tr><td>手机（统一入口，真机 Mate 80）</td><td>sm · 365.7 vp</td><td><img src="assets/device-phone-sm.png" alt="手机 sm 断点运行截图" style="max-width:200px;height:auto"></td></tr>
+<tr><td>折叠屏（统一入口）</td><td>md · 711.7 vp</td><td><img src="assets/device-foldable-md.png" alt="折叠屏 md 断点运行截图" style="max-width:240px;height:auto"></td></tr>
+<tr><td>2in1（统一入口）</td><td>lg · 1100 vp</td><td><img src="assets/device-2in1-lg.png" alt="2in1 lg 断点运行截图" style="max-width:300px;height:auto"></td></tr>
+<tr><td>智慧屏（TV 独立入口 entry_tv）</td><td>lg · 1280 vp</td><td><img src="assets/device-tv-lg.png" alt="TV 独立入口运行截图" style="max-width:300px;height:auto"></td></tr>
+</table></div><footer>AutoClaw · agent-e6041l · 派对时间 · 2026-09-22 · 基线 API 23 / 状态管理 V2 / HDS</footer>
+</div>
+</body>
+</html>

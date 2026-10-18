@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "手机 / 平板入口模块"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "手机 / 平板主入口"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "趣开发"
+    },
+    {
+      "name": "EntryFormAbility_desc",
+      "value": "service card skeleton"
+    },
+    {
+      "name": "WidgetCard_desc",
+      "value": "偏好摘要卡片"
+    }
+  ]
+}

@@ -1,0 +1,400 @@
+{
+  "string": [
+    {
+      "name": "settings_title",
+      "value": "设置"
+    },
+    {
+      "name": "settings_select_placeholder",
+      "value": "选择左侧设置项"
+    },
+    {
+      "name": "settings_group_about",
+      "value": "关于"
+    },
+    {
+      "name": "settings_group_general",
+      "value": "外观与通用"
+    },
+    {
+      "name": "settings_group_interaction",
+      "value": "互动与反馈"
+    },
+    {
+      "name": "settings_group_prefs",
+      "value": "通用偏好"
+    },
+    {
+      "name": "settings_group_storage",
+      "value": "存储与系统"
+    },
+    {
+      "name": "settings_appearance",
+      "value": "主题外观"
+    },
+    {
+      "name": "settings_appearance_desc",
+      "value": "显示模式与强调色"
+    },
+    {
+      "name": "settings_general_title",
+      "value": "通用设置"
+    },
+    {
+      "name": "settings_general_desc",
+      "value": "语言、字体大小、触感、屏幕显示与旋转方向"
+    },
+    {
+      "name": "settings_orientation",
+      "value": "屏幕方向"
+    },
+    {
+      "name": "settings_orientation_desc",
+      "value": "锁定屏幕的旋转方向"
+    },
+    {
+      "name": "opt_orientation_auto",
+      "value": "跟随系统"
+    },
+    {
+      "name": "opt_orientation_portrait",
+      "value": "竖屏"
+    },
+    {
+      "name": "opt_orientation_landscape",
+      "value": "横屏"
+    },
+    {
+      "name": "settings_font_size",
+      "value": "字体大小"
+    },
+    {
+      "name": "settings_font_size_desc",
+      "value": "标准档跟随系统字体，其余档位在此基础上缩放"
+    },
+    {
+      "name": "opt_font_xs",
+      "value": "小"
+    },
+    {
+      "name": "opt_font_sm",
+      "value": "较小"
+    },
+    {
+      "name": "opt_font_md",
+      "value": "标准"
+    },
+    {
+      "name": "opt_font_lg",
+      "value": "较大"
+    },
+    {
+      "name": "opt_font_xl",
+      "value": "大"
+    },
+    {
+      "name": "settings_display_mode",
+      "value": "显示模式"
+    },
+    {
+      "name": "settings_display_mode_desc",
+      "value": "控制应用界面的浅色与深色外观"
+    },
+    {
+      "name": "opt_follow_system",
+      "value": "跟随系统"
+    },
+    {
+      "name": "opt_light",
+      "value": "浅色"
+    },
+    {
+      "name": "opt_dark",
+      "value": "深色"
+    },
+    {
+      "name": "settings_accent_desc",
+      "value": "点按色块唤起取色面板，支持色板、光谱、滑杆三种方式；重启后自动恢复。"
+    },
+    {
+      "name": "settings_accent_reset",
+      "value": "恢复默认强调色"
+    },
+    {
+      "name": "settings_accent_preview",
+      "value": "效果预览"
+    },
+    {
+      "name": "settings_accent_preview_primary",
+      "value": "主按钮"
+    },
+    {
+      "name": "settings_accent_preview_secondary",
+      "value": "描边按钮"
+    },
+    {
+      "name": "settings_accent_preview_tag",
+      "value": "品牌标签"
+    },
+    {
+      "name": "settings_accent_restoring",
+      "value": "正在恢复上次选择…"
+    },
+    {
+      "name": "settings_language",
+      "value": "语言"
+    },
+    {
+      "name": "settings_language_desc",
+      "value": "“跟随系统”将在重启应用后生效"
+    },
+    {
+      "name": "settings_haptic",
+      "value": "触感反馈"
+    },
+    {
+      "name": "settings_haptic_desc",
+      "value": "按键点击与操作时的震动反馈"
+    },
+    {
+      "name": "settings_keep_screen_on",
+      "value": "屏幕常亮"
+    },
+    {
+      "name": "settings_keep_screen_on_desc",
+      "value": "使用时屏幕保持点亮，不自动熄灭"
+    },
+    {
+      "name": "settings_clear_cache",
+      "value": "清除缓存"
+    },
+    {
+      "name": "settings_clear_cache_desc",
+      "value": "删除使用过程中产生的临时文件"
+    },
+    {
+      "name": "settings_cache_calculating",
+      "value": "计算中…"
+    },
+    {
+      "name": "settings_clear_cache_confirm_msg",
+      "value": "将清除缓存目录中的临时文件，已下载的文件与账号数据不受影响。"
+    },
+    {
+      "name": "settings_dialog_cancel",
+      "value": "取消"
+    },
+    {
+      "name": "settings_clear_cache_ok",
+      "value": "清除"
+    },
+    {
+      "name": "settings_cache_cleared",
+      "value": "缓存已清理"
+    },
+    {
+      "name": "settings_language_restart_hint",
+      "value": "已设为跟随系统，重启应用后生效"
+    },
+    {
+      "name": "settings_about",
+      "value": "关于本应用"
+    },
+    {
+      "name": "settings_privacy",
+      "value": "隐私政策"
+    },
+    {
+      "name": "settings_terms",
+      "value": "用户协议"
+    },
+    {
+      "name": "settings_license",
+      "value": "开源许可"
+    },
+    {
+      "name": "about_version_name",
+      "value": "版本名称"
+    },
+    {
+      "name": "about_version_code",
+      "value": "版本号"
+    },
+    {
+      "name": "about_api_level",
+      "value": "API 级别"
+    },
+    {
+      "name": "about_device_type",
+      "value": "设备形态"
+    },
+    {
+      "name": "about_product_model",
+      "value": "设备型号"
+    },
+    {
+      "name": "settings_check_update",
+      "value": "检查更新"
+    },
+    {
+      "name": "settings_rate",
+      "value": "给我们评分"
+    },
+    {
+      "name": "settings_market_unavailable",
+      "value": "未检测到可用的应用市场，请稍后再试"
+    },
+    {
+      "name": "settings_rawfile_missing",
+      "value": "文本暂未提供，请在应用资源中补充。"
+    },
+    {
+      "name": "settings_account_title",
+      "value": "账号"
+    },
+    {
+      "name": "settings_account_tap_login",
+      "value": "点击登录"
+    },
+    {
+      "name": "settings_account_login",
+      "value": "登录"
+    },
+    {
+      "name": "settings_account_phone_hint",
+      "value": "请输入手机号"
+    },
+    {
+      "name": "settings_account_code_hint",
+      "value": "请输入验证码"
+    },
+    {
+      "name": "settings_account_get_code",
+      "value": "获取验证码"
+    },
+    {
+      "name": "settings_account_third_party",
+      "value": "第三方登录"
+    },
+    {
+      "name": "settings_account_delete",
+      "value": "注销账号"
+    },
+    {
+      "name": "settings_account_delete_desc",
+      "value": "注销后账号数据将被删除"
+    },
+    {
+      "name": "settings_account_preview_note",
+      "value": "预览模板：账号体系尚未接入，以下操作仅作交互演示。"
+    },
+    {
+      "name": "settings_account_preview_toast",
+      "value": "预览模板：该功能暂未接入"
+    },
+    {
+      "name": "settings_announcement",
+      "value": "公告"
+    },
+    {
+      "name": "settings_announcement_desc",
+      "value": "查看应用的最新动态"
+    },
+    {
+      "name": "settings_announcement_empty",
+      "value": "暂无公告"
+    },
+    {
+      "name": "settings_version_log",
+      "value": "版本更新日志"
+    },
+    {
+      "name": "settings_version_log_desc",
+      "value": "每个版本的更新记录"
+    },
+    {
+      "name": "settings_version_log_empty",
+      "value": "暂无更新记录"
+    },
+    {
+      "name": "settings_help_feedback",
+      "value": "帮助与反馈"
+    },
+    {
+      "name": "settings_help_feedback_desc",
+      "value": "常见问题与联系我们"
+    },
+    {
+      "name": "settings_help_feedback_email",
+      "value": "反馈邮箱"
+    },
+    {
+      "name": "settings_help_feedback_qq_group",
+      "value": "QQ 交流群"
+    },
+    {
+      "name": "settings_feedback_copy_ok",
+      "value": "已复制"
+    },
+    {
+      "name": "settings_feedback_copy_fail",
+      "value": "复制失败，请重试"
+    },
+    {
+      "name": "settings_feedback_qq_fallback",
+      "value": "已复制群号，请手动搜索加入"
+    },
+    {
+      "name": "settings_feedback_empty",
+      "value": "暂无反馈渠道"
+    },
+    {
+      "name": "settings_developer",
+      "value": "开发者团队"
+    },
+    {
+      "name": "settings_developer_desc",
+      "value": "认识应用背后的团队"
+    },
+    {
+      "name": "settings_developer_empty",
+      "value": "暂无开发者信息"
+    },
+    {
+      "name": "settings_sdk_list",
+      "value": "第三方 SDK 清单"
+    },
+    {
+      "name": "settings_sdk_list_desc",
+      "value": "应用使用的第三方组件与来源"
+    },
+    {
+      "name": "settings_share",
+      "value": "分享给朋友"
+    },
+    {
+      "name": "settings_share_desc",
+      "value": "把应用推荐给身边的人"
+    },
+    {
+      "name": "settings_system_settings",
+      "value": "系统设置"
+    },
+    {
+      "name": "settings_system_settings_desc",
+      "value": "通知、权限等系统侧配置"
+    },
+    {
+      "name": "settings_data_invalid",
+      "value": "内容暂不可用，请稍后再试"
+    },
+    {
+      "name": "settings_footer_copyright",
+      "value": "© %s %s"
+    },
+    {
+      "name": "settings_footer_icp",
+      "value": ""
+    }
+  ]
+}

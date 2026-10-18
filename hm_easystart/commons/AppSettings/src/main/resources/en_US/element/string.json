@@ -1,0 +1,400 @@
+{
+  "string": [
+    {
+      "name": "settings_title",
+      "value": "Settings"
+    },
+    {
+      "name": "settings_select_placeholder",
+      "value": "Select a setting on the left"
+    },
+    {
+      "name": "settings_group_about",
+      "value": "About"
+    },
+    {
+      "name": "settings_group_general",
+      "value": "Appearance & General"
+    },
+    {
+      "name": "settings_group_interaction",
+      "value": "Interaction & Feedback"
+    },
+    {
+      "name": "settings_group_prefs",
+      "value": "Preferences"
+    },
+    {
+      "name": "settings_group_storage",
+      "value": "Storage & System"
+    },
+    {
+      "name": "settings_appearance",
+      "value": "Appearance"
+    },
+    {
+      "name": "settings_appearance_desc",
+      "value": "Display mode and accent color"
+    },
+    {
+      "name": "settings_general_title",
+      "value": "General"
+    },
+    {
+      "name": "settings_general_desc",
+      "value": "Language, font size, haptics, screen and rotation"
+    },
+    {
+      "name": "settings_orientation",
+      "value": "Screen orientation"
+    },
+    {
+      "name": "settings_orientation_desc",
+      "value": "Lock the screen rotation"
+    },
+    {
+      "name": "opt_orientation_auto",
+      "value": "Auto-rotate"
+    },
+    {
+      "name": "opt_orientation_portrait",
+      "value": "Portrait"
+    },
+    {
+      "name": "opt_orientation_landscape",
+      "value": "Landscape"
+    },
+    {
+      "name": "settings_font_size",
+      "value": "Font size"
+    },
+    {
+      "name": "settings_font_size_desc",
+      "value": "Standard follows the system; other levels scale on top of it"
+    },
+    {
+      "name": "opt_font_xs",
+      "value": "Small"
+    },
+    {
+      "name": "opt_font_sm",
+      "value": "Smaller"
+    },
+    {
+      "name": "opt_font_md",
+      "value": "Standard"
+    },
+    {
+      "name": "opt_font_lg",
+      "value": "Larger"
+    },
+    {
+      "name": "opt_font_xl",
+      "value": "Large"
+    },
+    {
+      "name": "settings_display_mode",
+      "value": "Display mode"
+    },
+    {
+      "name": "settings_display_mode_desc",
+      "value": "Switch between light and dark appearance"
+    },
+    {
+      "name": "opt_follow_system",
+      "value": "Follow system"
+    },
+    {
+      "name": "opt_light",
+      "value": "Light"
+    },
+    {
+      "name": "opt_dark",
+      "value": "Dark"
+    },
+    {
+      "name": "settings_accent_desc",
+      "value": "Tap the color swatch to open the picker (palette, spectrum, sliders). Restored on relaunch."
+    },
+    {
+      "name": "settings_accent_reset",
+      "value": "Reset accent color"
+    },
+    {
+      "name": "settings_accent_preview",
+      "value": "Preview"
+    },
+    {
+      "name": "settings_accent_preview_primary",
+      "value": "Primary"
+    },
+    {
+      "name": "settings_accent_preview_secondary",
+      "value": "Secondary"
+    },
+    {
+      "name": "settings_accent_preview_tag",
+      "value": "Brand tag"
+    },
+    {
+      "name": "settings_accent_restoring",
+      "value": "Restoring last selection…"
+    },
+    {
+      "name": "settings_language",
+      "value": "Language"
+    },
+    {
+      "name": "settings_language_desc",
+      "value": "“Follow system” takes effect after restarting the app"
+    },
+    {
+      "name": "settings_haptic",
+      "value": "Haptics"
+    },
+    {
+      "name": "settings_haptic_desc",
+      "value": "Vibration feedback for taps and actions"
+    },
+    {
+      "name": "settings_keep_screen_on",
+      "value": "Keep screen on"
+    },
+    {
+      "name": "settings_keep_screen_on_desc",
+      "value": "Screen stays lit while the app is in use"
+    },
+    {
+      "name": "settings_clear_cache",
+      "value": "Clear cache"
+    },
+    {
+      "name": "settings_clear_cache_desc",
+      "value": "Remove temporary files generated during use"
+    },
+    {
+      "name": "settings_cache_calculating",
+      "value": "Calculating…"
+    },
+    {
+      "name": "settings_clear_cache_confirm_msg",
+      "value": "Temporary files in the cache directory will be removed. Downloads and account data are not affected."
+    },
+    {
+      "name": "settings_dialog_cancel",
+      "value": "Cancel"
+    },
+    {
+      "name": "settings_clear_cache_ok",
+      "value": "Clear"
+    },
+    {
+      "name": "settings_cache_cleared",
+      "value": "Cache cleared"
+    },
+    {
+      "name": "settings_language_restart_hint",
+      "value": "Set to follow system. Restart the app to apply."
+    },
+    {
+      "name": "settings_about",
+      "value": "About"
+    },
+    {
+      "name": "settings_privacy",
+      "value": "Privacy policy"
+    },
+    {
+      "name": "settings_terms",
+      "value": "User agreement"
+    },
+    {
+      "name": "settings_license",
+      "value": "Open-source licenses"
+    },
+    {
+      "name": "about_version_name",
+      "value": "Version name"
+    },
+    {
+      "name": "about_version_code",
+      "value": "Version code"
+    },
+    {
+      "name": "about_api_level",
+      "value": "API level"
+    },
+    {
+      "name": "about_device_type",
+      "value": "Device type"
+    },
+    {
+      "name": "about_product_model",
+      "value": "Device model"
+    },
+    {
+      "name": "settings_check_update",
+      "value": "Check for updates"
+    },
+    {
+      "name": "settings_rate",
+      "value": "Rate us"
+    },
+    {
+      "name": "settings_market_unavailable",
+      "value": "No app market detected. Please try again later."
+    },
+    {
+      "name": "settings_rawfile_missing",
+      "value": "Text is not available yet. Please add it to the app resources."
+    },
+    {
+      "name": "settings_account_title",
+      "value": "Account"
+    },
+    {
+      "name": "settings_account_tap_login",
+      "value": "Tap to sign in"
+    },
+    {
+      "name": "settings_account_login",
+      "value": "Sign in"
+    },
+    {
+      "name": "settings_account_phone_hint",
+      "value": "Enter phone number"
+    },
+    {
+      "name": "settings_account_code_hint",
+      "value": "Enter verification code"
+    },
+    {
+      "name": "settings_account_get_code",
+      "value": "Get code"
+    },
+    {
+      "name": "settings_account_third_party",
+      "value": "Third-party sign-in"
+    },
+    {
+      "name": "settings_account_delete",
+      "value": "Delete account"
+    },
+    {
+      "name": "settings_account_delete_desc",
+      "value": "Account data will be erased after deletion"
+    },
+    {
+      "name": "settings_account_preview_note",
+      "value": "Preview template: the account system is not connected yet; the actions below are for interaction preview only."
+    },
+    {
+      "name": "settings_account_preview_toast",
+      "value": "Preview template: this feature is not available yet"
+    },
+    {
+      "name": "settings_announcement",
+      "value": "Announcements"
+    },
+    {
+      "name": "settings_announcement_desc",
+      "value": "Latest updates about this app"
+    },
+    {
+      "name": "settings_announcement_empty",
+      "value": "No announcements yet"
+    },
+    {
+      "name": "settings_version_log",
+      "value": "What's new"
+    },
+    {
+      "name": "settings_version_log_desc",
+      "value": "Changes in each release"
+    },
+    {
+      "name": "settings_version_log_empty",
+      "value": "No release notes yet"
+    },
+    {
+      "name": "settings_help_feedback",
+      "value": "Help & feedback"
+    },
+    {
+      "name": "settings_help_feedback_desc",
+      "value": "FAQ and ways to contact us"
+    },
+    {
+      "name": "settings_help_feedback_email",
+      "value": "Feedback email"
+    },
+    {
+      "name": "settings_help_feedback_qq_group",
+      "value": "QQ group"
+    },
+    {
+      "name": "settings_feedback_copy_ok",
+      "value": "Copied"
+    },
+    {
+      "name": "settings_feedback_copy_fail",
+      "value": "Copy failed. Please try again."
+    },
+    {
+      "name": "settings_feedback_qq_fallback",
+      "value": "Group number copied. Please search and join manually."
+    },
+    {
+      "name": "settings_feedback_empty",
+      "value": "No feedback channels yet"
+    },
+    {
+      "name": "settings_developer",
+      "value": "Development team"
+    },
+    {
+      "name": "settings_developer_desc",
+      "value": "Meet the team behind this app"
+    },
+    {
+      "name": "settings_developer_empty",
+      "value": "No developer info yet"
+    },
+    {
+      "name": "settings_sdk_list",
+      "value": "Third-party SDK list"
+    },
+    {
+      "name": "settings_sdk_list_desc",
+      "value": "Third-party components used by this app"
+    },
+    {
+      "name": "settings_share",
+      "value": "Share with friends"
+    },
+    {
+      "name": "settings_share_desc",
+      "value": "Recommend this app to people around you"
+    },
+    {
+      "name": "settings_system_settings",
+      "value": "System settings"
+    },
+    {
+      "name": "settings_system_settings_desc",
+      "value": "Notification and permission options in system settings"
+    },
+    {
+      "name": "settings_data_invalid",
+      "value": "Content is unavailable. Please try again later."
+    },
+    {
+      "name": "settings_footer_copyright",
+      "value": "© %s %s"
+    },
+    {
+      "name": "settings_footer_icp",
+      "value": ""
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@quizzyjoy/platform",
+  "version": "1.0.0",
+  "description": "平台层：所有 @ohos/@kit 系统调用的唯一发生地。断点、窗口、屏幕、设备形态、颜色模式、能力检测、兼容、网络、存储、权限、国际化、震动。依赖 foundation，不依赖 vitalui。",
+  "main": "Index.ets",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@quizzyjoy/foundation": "file:../Foundation"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "手机 / 平板 / 2in1 统一入口模块。只做装配，不含业务。",
+  "main": "",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
+    "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
+    "@easystart/app-common": "file:../../commons/AppCommon",
+    "@easystart/app-component": "file:../../commons/AppComponent",
+    "@easystart/app-routes": "file:../../commons/AppRoutes",
+    "@easystart/app-settings": "file:../../commons/AppSettings",
+    "@quizzyjoy/vitalui": "file:../../quizzyjoy/VitalUI",
+    "@easystart/home-feature": "file:../../features/HomeFeature",
+    "@easystart/demo-feature": "file:../../features/DemoFeature",
+    "@easystart/widget-common": "file:../../features/WidgetCommon"
+  }
+}

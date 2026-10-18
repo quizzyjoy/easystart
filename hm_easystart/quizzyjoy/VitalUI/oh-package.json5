@@ -1,0 +1,11 @@
+{
+  "name": "@quizzyjoy/vitalui",
+  "version": "1.0.0",
+  "description": "通用组件（含 Canvas 图表家族、取色器、Loading）、动效与主题管理。纯表现层，零 @kit 导入，依赖 foundation（数值令牌），不依赖 platform / 业务。",
+  "main": "Index.ets",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@quizzyjoy/foundation": "file:../Foundation"
+  }
+}

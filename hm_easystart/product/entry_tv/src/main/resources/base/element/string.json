@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "TV 入口模块"
+    },
+    {
+      "name": "EntryTvAbility_desc",
+      "value": "TV 主入口"
+    },
+    {
+      "name": "EntryTvAbility_label",
+      "value": "趣开发 TV"
+    }
+  ]
+}

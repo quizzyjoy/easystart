@@ -1,0 +1,28 @@
+开源许可（模板占位）
+
+一、本模板许可
+
+趣开发 EasyStart 模板基于 Apache License, Version 2.0 发布。
+你可在遵守该许可的前提下使用、复制、修改与再分发本模板。
+Apache-2.0 许可证全文：https://www.apache.org/licenses/LICENSE-2.0
+
+二、商标声明
+
+HarmonyOS、鸿蒙、HDS（HarmonyOS Design System）及相关标识为华为技术有限公司
+的商标或注册商标。本模板仅用于演示基于 HarmonyOS 的应用开发范式，不代表与华为
+存在关联或获得背书。fork 应用不得在未获授权的情况下使用上述商标作为应用名称、
+图标或宣传素材。
+
+三、第三方组件
+
+fork 应用引入的全部开源组件及其许可证，应由 fork 方在本节逐一追加列明
+（组件名 / 版本 / 许可证 / 来源地址）。模板自身运行时依赖 HarmonyOS 系统 SDK
+与系统组件（HDS），相关权利归各自权利人所有。
+
+------------------------------------------------------------
+
+Open-source notices (template placeholder)
+
+EasyStart is licensed under the Apache License, Version 2.0.
+HarmonyOS and HDS are trademarks of Huawei Technologies Co., Ltd.
+Forks must append the full license list of every third-party component they add.

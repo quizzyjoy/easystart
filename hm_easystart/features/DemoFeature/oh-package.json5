@@ -1,0 +1,14 @@
+{
+  "name": "@easystart/demo-feature",
+  "version": "1.0.0",
+  "description": "基建演示聚合域：组件画廊/设备能力面板等模板自检页——fork 后整包删除（指南 §3.1 示范域定位的物理落点）。",
+  "main": "Index.ets",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
+    "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
+    "@quizzyjoy/vitalui": "file:../../quizzyjoy/VitalUI",
+    "@easystart/app-component": "file:../../commons/AppComponent"
+  }
+}

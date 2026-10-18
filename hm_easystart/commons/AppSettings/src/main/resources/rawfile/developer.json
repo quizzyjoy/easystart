@@ -1,0 +1,11 @@
+{
+  "_readme": "开发者信息：intro 为简介，members 内每条含 name / role / bio；全部置空显示空态。",
+  "intro": "趣开发由独立开发者维护，聚焦 HarmonyOS 多端设计与工程实践。",
+  "members": [
+    {
+      "name": "闫东阳",
+      "role": "独立开发者",
+      "bio": "负责趣开发的设计、开发与维护。"
+    }
+  ]
+}

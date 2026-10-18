@@ -1,0 +1,24 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "2in1 PC 入口模块"
+    },
+    {
+      "name": "PcAbility_desc",
+      "value": "2in1 PC 主入口"
+    },
+    {
+      "name": "PcAbility_label",
+      "value": "趣开发"
+    },
+    {
+      "name": "PcFormAbility_desc",
+      "value": "service card skeleton"
+    },
+    {
+      "name": "WidgetCard_desc",
+      "value": "偏好摘要卡片"
+    }
+  ]
+}

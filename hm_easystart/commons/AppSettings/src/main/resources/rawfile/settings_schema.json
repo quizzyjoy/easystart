@@ -1,0 +1,228 @@
+{
+  "_readme": "设置页 schema（v3.30，TODO-021）——结构进模板、内容 fork 填。fork 在此增删组/行/控件/偏好键即得定制设置页，无需改代码：行型 nav|switch|select|slider|action|info|builtin；组型 list|grid；文案 '$r:键名'=域三语资源键，其余为字面量直写；icon.tint 取 c01~c20（chart_cXX 深浅双份令牌）；icon.style chip=圆形彩底贴片（默认）/tint=仅着色；新符号在 fork 侧 SettingsSchema.registerSymbol 一行注册；业务联动（如切域刷卡片）经 SettingsSchemaHooks.register(prefKey, cb) 注册；deviceTypes 限定设备形态（AppEnvManager.deviceType 取值）。通用行（switch/select/slider）prefKey 自动持久化。默认 schema 与 v3.28 信息架构逐行等价（行为零改验收基线）。",
+  "pages": {
+    "home": {
+      "groups": [
+        {
+          "id": "appearance_general",
+          "type": "list",
+          "title": "$r:settings_group_general",
+          "rows": [
+            {
+              "id": "appearance_entry",
+              "type": "nav",
+              "route": "appearance",
+              "icon": { "symbol": "paintbrush_fill", "tint": "c01" },
+              "title": "$r:settings_appearance",
+              "subtitle": "$r:settings_appearance_desc",
+              "valueSource": "displayMode"
+            },
+            {
+              "id": "general_entry",
+              "type": "nav",
+              "route": "general",
+              "icon": { "symbol": "slider_horizontal_2", "tint": "c06" },
+              "title": "$r:settings_general_title",
+              "subtitle": "$r:settings_general_desc"
+            }
+          ]
+        },
+        {
+          "id": "interaction",
+          "type": "list",
+          "title": "$r:settings_group_interaction",
+          "rows": [
+            {
+              "id": "announcement",
+              "type": "nav",
+              "route": "announcement",
+              "icon": { "symbol": "bell_fill", "tint": "c09" },
+              "title": "$r:settings_announcement",
+              "subtitle": "$r:settings_announcement_desc"
+            },
+            {
+              "id": "version_log",
+              "type": "nav",
+              "route": "versionLog",
+              "icon": { "symbol": "doc_text_badge_clock_fill", "tint": "c12" },
+              "title": "$r:settings_version_log",
+              "subtitle": "$r:settings_version_log_desc"
+            },
+            {
+              "id": "help_feedback",
+              "type": "nav",
+              "route": "helpFeedback",
+              "icon": { "symbol": "envelope_badge_adiowaves_fill", "tint": "c14" },
+              "title": "$r:settings_help_feedback",
+              "subtitle": "$r:settings_help_feedback_desc"
+            },
+            {
+              "id": "share_app",
+              "type": "action",
+              "actionId": "shareApp",
+              "icon": { "symbol": "share", "tint": "c16" },
+              "title": "$r:settings_share",
+              "subtitle": "$r:settings_share_desc"
+            },
+            {
+              "id": "developer",
+              "type": "nav",
+              "route": "developer",
+              "icon": { "symbol": "person_2_fill", "tint": "c11" },
+              "title": "$r:settings_developer",
+              "subtitle": "$r:settings_developer_desc"
+            }
+          ]
+        },
+        {
+          "id": "about",
+          "type": "list",
+          "title": "$r:settings_group_about",
+          "rows": [
+            {
+              "id": "about_entry",
+              "type": "nav",
+              "route": "about",
+              "icon": { "symbol": "info_circle_fill", "tint": "c02" },
+              "title": "$r:settings_about",
+              "valueSource": "versionName"
+            },
+            {
+              "id": "privacy",
+              "type": "nav",
+              "route": "policy",
+              "param": "privacy",
+              "icon": { "symbol": "lock_fill", "tint": "c07" },
+              "title": "$r:settings_privacy"
+            },
+            {
+              "id": "terms",
+              "type": "nav",
+              "route": "policy",
+              "param": "terms",
+              "icon": { "symbol": "doc_text_fill", "tint": "c13" },
+              "title": "$r:settings_terms"
+            },
+            {
+              "id": "sdk_list",
+              "type": "nav",
+              "route": "policy",
+              "param": "sdk",
+              "icon": { "symbol": "checkmark_circle_fill", "tint": "c05" },
+              "title": "$r:settings_sdk_list",
+              "subtitle": "$r:settings_sdk_list_desc"
+            },
+            {
+              "id": "license",
+              "type": "nav",
+              "route": "license",
+              "icon": { "symbol": "flag_fill", "tint": "c03" },
+              "title": "$r:settings_license"
+            }
+          ]
+        }
+      ]
+    },
+    "general": {
+      "groups": [
+        {
+          "id": "general_prefs",
+          "type": "list",
+          "title": "$r:settings_group_prefs",
+          "rows": [
+            {
+              "id": "language",
+              "type": "builtin",
+              "builtin": "language",
+              "icon": { "symbol": "textformat", "tint": "c13" },
+              "title": "$r:settings_language",
+              "subtitle": "$r:settings_language_desc"
+            },
+            {
+              "id": "font_size",
+              "type": "builtin",
+              "builtin": "fontSize",
+              "icon": { "symbol": "textformat_size_square_fill", "tint": "c16" },
+              "title": "$r:settings_font_size",
+              "subtitle": "$r:settings_font_size_desc"
+            },
+            {
+              "id": "haptic",
+              "type": "builtin",
+              "builtin": "haptic",
+              "icon": { "symbol": "heart_fill", "tint": "c04" },
+              "title": "$r:settings_haptic",
+              "subtitle": "$r:settings_haptic_desc"
+            },
+            {
+              "id": "keep_screen_on",
+              "type": "builtin",
+              "builtin": "keepScreenOn",
+              "icon": { "symbol": "clock_fill", "tint": "c18" },
+              "title": "$r:settings_keep_screen_on",
+              "subtitle": "$r:settings_keep_screen_on_desc"
+            },
+            {
+              "id": "orientation",
+              "type": "builtin",
+              "builtin": "orientation",
+              "icon": { "symbol": "screen_rotation", "tint": "c20" },
+              "title": "$r:settings_orientation",
+              "subtitle": "$r:settings_orientation_desc",
+              "deviceTypes": ["phone", "tablet"]
+            }
+          ]
+        },
+        {
+          "id": "general_storage",
+          "type": "list",
+          "title": "$r:settings_group_storage",
+          "rows": [
+            {
+              "id": "clear_cache",
+              "type": "builtin",
+              "builtin": "clearCache",
+              "icon": { "symbol": "trash_fill", "tint": "c10" },
+              "title": "$r:settings_clear_cache",
+              "subtitle": "$r:settings_clear_cache_desc"
+            },
+            {
+              "id": "system_settings",
+              "type": "builtin",
+              "builtin": "systemJump",
+              "icon": { "symbol": "gearshape_fill", "tint": "c08" },
+              "title": "$r:settings_system_settings",
+              "subtitle": "$r:settings_system_settings_desc"
+            }
+          ]
+        }
+      ]
+    },
+    "appearance": {
+      "groups": [
+        {
+          "id": "appearance_main",
+          "type": "list",
+          "title": "",
+          "rows": [
+            {
+              "id": "display_mode",
+              "type": "builtin",
+              "builtin": "displayMode",
+              "icon": { "symbol": "sun_max_fill", "tint": "c01" },
+              "title": "$r:settings_display_mode",
+              "subtitle": "$r:settings_display_mode_desc"
+            },
+            {
+              "id": "accent_color",
+              "type": "builtin",
+              "builtin": "accentColor",
+              "title": "$r:settings_appearance",
+              "subtitleNote": "块型 builtin：渲染 AccentColorSetting（自带标题文案），title 仅作 schema 校验占位"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

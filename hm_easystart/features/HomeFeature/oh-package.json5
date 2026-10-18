@@ -1,0 +1,13 @@
+{
+  "name": "@easystart/home-feature",
+  "version": "1.0.0",
+  "description": "首页业务特性示范：MVVM 三分包结构样板（view/viewmodel/data），fork 后替换为真实 feature。",
+  "main": "Index.ets",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
+    "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
+    "@quizzyjoy/vitalui": "file:../../quizzyjoy/VitalUI"
+  }
+}

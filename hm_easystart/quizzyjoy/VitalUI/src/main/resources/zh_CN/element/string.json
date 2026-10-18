@@ -1,0 +1,20 @@
+{
+  "string": [
+    {
+      "name": "vitalui_module_desc",
+      "value": "通用组件库（含图表、取色器、Loading）"
+    },
+    {
+      "name": "vitalui_color_follow_theme",
+      "value": "跟随主题"
+    },
+    {
+      "name": "vitalui_color_tap_to_change",
+      "value": "点按更换颜色"
+    },
+    {
+      "name": "vitalui_color_change",
+      "value": "更换"
+    }
+  ]
+}

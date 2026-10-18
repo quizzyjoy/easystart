@@ -1,0 +1,11 @@
+{
+  "modelVersion": "26.0.0",
+  "description": "Please describe the basic information.",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@ohos/hypium": "@param:dependencies.hypium-version",
+    "@ohos/hamock": "@param:dependencies.hamock-version"
+  },
+  "parameterFile": "VersionFile.json5"
+}

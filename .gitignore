@@ -1,0 +1,81 @@
+# ===================================================================
+# EasyStart 仓 .gitignore（多模板线：hm_easystart / 预留 oh_easystart）
+# 约定：依赖 / 构建产物 / 缓存 / 密钥 / 个人环境一律不入库。
+#       规则尽量用 **/ 递归，使工程根与任一模块目录都自完备，
+#       不依赖上层目录的 .gitignore 兜底。
+# ===================================================================
+
+# ===== Agent / 自动化工作区（备份、演练、临时状态，不入库）=====
+**/.cluster/
+**/.openclaw/
+**/.zwork/
+**/.workbuddy/
+
+# ===== HarmonyOS / DevEco 依赖与构建产物（递归覆盖工程根与各模块）=====
+**/oh_modules/
+**/node_modules/
+**/build/
+**/.hvigor/
+**/.cache/
+**/.cxx/
+**/.test/
+**/.preview/
+**/.appanalyzer/
+**/coverage/
+**/.idea/
+**/.vscode/
+**/local.properties
+**/.clangd
+**/.clang-format
+**/.clang-tidy
+
+# ===== 构建导出包（模块内的已在 build/ 内忽略；此处兜住散落到模块外的）=====
+# 注：不忽略 *.har —— 本地 HAR 源码依赖可能需要随仓。
+*.hap
+*.hsp
+*.app
+
+# ===== 签名材料与密钥（开源仓零容忍，防止误提交）=====
+# 本仓面向公网开源（docs/TODO.md TODO-002）：入库=公开。签名实物绝不入库；
+# build-profile.json5 的签名配置块同样绝不入库——含 DevEco 加密口令的本机
+# debug 块也在此列（开源前须置 "signingConfigs": []）。
+*.p12
+*.cer
+*.p7b
+*.p7s
+*.csr
+*.keystore
+*.jks
+*.mobileprovision
+**/signing/
+
+# ===== 一多适配 / 自动化流程产物 =====
+.onemulti/
+.harmonybot/
+
+# ===== 真机调试临时截图 / 录屏（仅各模板线工程根；docs/ 与各模块 resources 不受影响，需要时 git add -f）=====
+/hm_easystart/*.png
+/hm_easystart/*.jpg
+/hm_easystart/*.jpeg
+/hm_easystart/*.gif
+/hm_easystart/*.mp4
+/hm_easystart/*.mov
+
+# ===== 日志、JVM 崩溃转储、临时与备份文件 =====
+*.log
+hs_err_pid*
+replay_pid*
+*.tmp
+*.bak
+*.orig
+~$*
+
+# ===== 操作系统杂项 =====
+**/.DS_Store
+**/Thumbs.db
+**/desktop.ini
+
+# ===== 内部规划 / 演进台账（不进开源版；仅本地保留）=====
+# TODO 台账、Git 提交约束、对账/审计报告、分包清单、设计草稿等均在此；
+# 开源版只保留 docs/ 下的技术文档。
+/plan/

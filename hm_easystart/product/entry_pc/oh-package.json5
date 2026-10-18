@@ -1,0 +1,20 @@
+{
+  "name": "entry_pc",
+  "version": "1.0.0",
+  "description": "2in1（PC）专用入口模块。只做装配，不含业务。",
+  "main": "",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
+    "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
+    "@easystart/app-common": "file:../../commons/AppCommon",
+    "@easystart/app-component": "file:../../commons/AppComponent",
+    "@quizzyjoy/vitalui": "file:../../quizzyjoy/VitalUI",
+    "@easystart/home-feature": "file:../../features/HomeFeature",
+    "@easystart/app-routes": "file:../../commons/AppRoutes",
+    "@easystart/app-settings": "file:../../commons/AppSettings",
+    "@easystart/demo-feature": "file:../../features/DemoFeature",
+    "@easystart/widget-common": "file:../../features/WidgetCommon"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "@quizzyjoy/foundation",
+  "version": "1.0.0",
+  "description": "基础层：无系统调用的工程原语（日志、异常、结果类型、断言、脱敏）与数值设计令牌（间距/圆角/字号/尺寸）。可被任意层依赖。",
+  "main": "Index.ets",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {}
+}

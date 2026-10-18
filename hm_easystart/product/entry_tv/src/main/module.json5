@@ -1,0 +1,45 @@
+{
+  "module": {
+    "name": "entry_tv",
+    "type": "entry",
+    "description": "$string:module_desc",
+    "mainElement": "EntryTvAbility",
+    "deviceTypes": [
+      "tv"
+    ],
+    "deliveryWithInstall": true,
+    "installationFree": false,
+    "pages": "$profile:main_pages",
+    "abilities": [
+      {
+        "name": "EntryTvAbility",
+        "srcEntry": "./ets/entryability/EntryTvAbility.ets",
+        "description": "$string:EntryTvAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:EntryTvAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "startWindow": "$profile:start_window",
+        "exported": true,
+        "skills": [
+          {
+            "entities": [
+              "entity.system.home"
+            ],
+            "actions": [
+              "ohos.want.action.home"
+            ]
+          }
+        ]
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO"
+      },
+      {
+        "name": "ohos.permission.VIBRATE"
+      }
+    ]
+  }
+}

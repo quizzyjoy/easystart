@@ -1,0 +1,14 @@
+{
+  "name": "entry_wearable",
+  "version": "1.0.0",
+  "description": "手表独立入口模块。只做装配，仅依赖 Foundation / Platform，页面用原生原语（瘦身：不含 VitalUI / HomeFeature）。",
+  "main": "",
+  "author": "quizzyjoy",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
+    "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
+    "@easystart/app-common": "file:../../commons/AppCommon",
+    "@easystart/widget-common": "file:../../features/WidgetCommon"
+  }
+}
