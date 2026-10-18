@@ -1,6 +1,6 @@
 {
   "modelVersion": "26.0.0",
-  "description": "Please describe the basic information.",
+  "description": "趣开发 EasyStart：面向 HarmonyOS 的多端开发参考工程（一多布局 / 设计令牌 / 组件范式 / 设备能力示例）",
   "dependencies": {
   },
   "devDependencies": {
