@@ -1,6 +1,6 @@
-import { AppFontSize, AppFontWeight, AppLineHeight, AppRadius, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
+import { AppFontSize, AppFontWeight, AppLineHeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { AppEnvManager, AppEnvSnapshot, BreakpointManager, MarketHelper, common } from '@quizzyjoy/platform';
-import { AppEmptyState, CommonToast } from '@easystart/app-component';
+import { AppDialog, AppEmptyState, CommonToast, DialogSemantic } from '@easystart/app-component';
 import { CompanyInfo, DevGroup, DevLink, DeveloperProfile, PersonInfo } from '../model/SettingsContentModels';
 import { ClipboardUtil } from '../util/ClipboardUtil';
 import { RawFileTextLoader } from '../util/RawFileTextLoader';
@@ -87,6 +87,54 @@ export struct DeveloperView {
     ClipboardUtil.copyText(text).then((ok: boolean): void => {
       CommonToast.info(ok ? $r('app.string.settings_developer_copied') : $r('app.string.about_open_repo_failed'));
     });
+  }
+
+  /**
+   * fork 提示对话框：说明替换真实开发者信息的位置。
+   *
+   * 原计划挂在 HdsNavDestination 的 titleBar menu，但当前 SDK 的
+   * HdsNavigationMenuContentOptions.value 元素类型 HdsNavigationMenuItemOptions 未声明
+   * （编译器解析为 HdsNavigationBadgeIconOptions，无 action 字段），故改为页内信息行入口。
+   */
+  private showForkTip(): void {
+    const uiCtx: UIContext = this.getUIContext();
+    const host = uiCtx.getHostContext();
+    let title: string = '开发者信息说明';
+    let body: string = '';
+    if (host !== undefined) {
+      try {
+        title = host.resourceManager.getStringSync($r('app.string.settings_developer_fork_tip_title'));
+        body = host.resourceManager.getStringSync($r('app.string.settings_developer_fork_tip_body'));
+      } catch (err) {
+        body = '';
+      }
+    }
+    AppDialog.open(uiCtx, DialogSemantic.CONFIRM, title, body, (): void => {
+    });
+  }
+
+  /** fork 提示行（页内入口，点击弹说明）。 */
+  @Builder
+  forkTipRow() {
+    Row({ space: AppSpacing.SM }) {
+      SymbolGlyph($r('sys.symbol.info_circle'))
+        .fontSize(AppSize.ICON_LG)
+        .fontColor([$r('app.color.app_link')])
+      Text($r('app.string.settings_developer_fork_tip_title'))
+        .fontSize(AppFontSize.BODY_SM)
+        .fontColor($r('app.color.app_link'))
+        .layoutWeight(1)
+      SymbolGlyph($r('sys.symbol.chevron_right'))
+        .fontSize(AppFontSize.TITLE_SM)
+        .fontColor([$r('app.color.app_text_tertiary')])
+    }
+    .width('100%')
+    .padding(AppSpacing.MD)
+    .borderRadius(AppRadius.LG)
+    .backgroundColor($r('app.color.app_bg_card'))
+    .onClick((): void => {
+      this.showForkTip();
+    })
   }
 
   @Builder
@@ -361,6 +409,8 @@ export struct DeveloperView {
             title: this.emptyText
           })
         } else {
+          // v3.34 fork 提示：页内信息行（titleBar menu 类型链在当前 SDK 缺失，改用页内入口）
+          this.forkTipRow()
           if (!this.profile.company.isEmpty()) {
             this.companySection()
           }

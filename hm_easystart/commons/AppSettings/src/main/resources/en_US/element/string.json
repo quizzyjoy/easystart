@@ -397,6 +397,14 @@
       "value": "Copied"
     },
     {
+      "name": "settings_developer_fork_tip_title",
+      "value": "About developer info"
+    },
+    {
+      "name": "settings_developer_fork_tip_body",
+      "value": "This page shows the built-in company and personal information (source: developer.json).\n\nIf you fork this template for your own product, replace them with your organization info:\n- Company name, unified social credit code, ICP filing number\n- Official email and open-source home page (GitHub / Gitee / AtomGit)\n- Developer name, title, intro and personal links\n\nFile: commons/AppSettings/src/main/resources/rawfile/developer.json"
+    },
+    {
       "name": "settings_sdk_list",
       "value": "Third-party SDK list"
     },

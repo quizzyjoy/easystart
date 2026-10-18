@@ -397,6 +397,14 @@
       "value": "已复制"
     },
     {
+      "name": "settings_developer_fork_tip_title",
+      "value": "开发者信息说明"
+    },
+    {
+      "name": "settings_developer_fork_tip_body",
+      "value": "本页展示应用内置的公司与个人信息（来源：developer.json）。\n\n如果你基于本模板 fork 自己的产品，请替换为贵单位真实信息：\n· 公司全称、统一社会信用代码、ICP 备案号\n· 官方邮箱与开源主页（GitHub / Gitee / AtomGit）\n· 开发者姓名、职务、简介与个人链接\n\n替换位置：commons/AppSettings/src/main/resources/rawfile/developer.json"
+    },
+    {
       "name": "settings_sdk_list",
       "value": "第三方 SDK 清单"
     },
