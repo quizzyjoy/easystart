@@ -3,6 +3,9 @@ import { AppEnvManager, AppEnvSnapshot, BreakpointManager, MarketHelper } from '
 import { ButtonVariant, CommonButton } from '@quizzyjoy/vitalui';
 import { CommonToast } from '@easystart/app-component';
 
+/** 开源仓库地址（v3.33 上架：关于页直达）。 */
+const REPO_URL: string = 'https://github.com/quizzyjoy/easystart';
+
 /**
  * 关于本应用子页（v3.13，TODO-003）：
  * 应用头（图标 / 名称 / 版本）+ 环境信息卡 + 检查更新 / 给我们评分（应用市场详情页）。
@@ -23,6 +26,15 @@ export struct AboutView {
     MarketHelper.getInstance().openAppDetail().then((ok: boolean): void => {
       if (!ok) {
         CommonToast.info($r('app.string.settings_market_unavailable'));
+      }
+    });
+  }
+
+  /** 打开开源仓库（系统浏览器）；无处理方时降级提示。 */
+  private openRepo(): void {
+    MarketHelper.getInstance().openUri(REPO_URL).then((ok: boolean): void => {
+      if (!ok) {
+        CommonToast.info($r('app.string.about_open_repo_failed'));
       }
     });
   }
@@ -96,6 +108,14 @@ export struct AboutView {
             fullWidth: true,
             onAction: (): void => {
               this.openMarket();
+            }
+          })
+          CommonButton({
+            text: $r('app.string.about_open_source_repo'),
+            variant: ButtonVariant.SECONDARY,
+            fullWidth: true,
+            onAction: (): void => {
+              this.openRepo();
             }
           })
         }

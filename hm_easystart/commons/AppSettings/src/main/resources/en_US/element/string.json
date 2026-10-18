@@ -241,6 +241,14 @@
       "value": "Rate us"
     },
     {
+      "name": "about_open_source_repo",
+      "value": "Open-source repository"
+    },
+    {
+      "name": "about_open_repo_failed",
+      "value": "Unable to open the link, please try again later"
+    },
+    {
       "name": "settings_market_unavailable",
       "value": "No app market detected. Please try again later."
     },

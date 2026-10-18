@@ -241,6 +241,14 @@
       "value": "给我们评分"
     },
     {
+      "name": "about_open_source_repo",
+      "value": "开源仓库"
+    },
+    {
+      "name": "about_open_repo_failed",
+      "value": "无法打开链接，请稍后重试"
+    },
+    {
       "name": "settings_market_unavailable",
       "value": "未检测到可用的应用市场，请稍后再试"
     },
