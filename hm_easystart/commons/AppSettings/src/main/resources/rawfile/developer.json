@@ -1,11 +1,104 @@
 {
-  "_readme": "开发者信息：intro 为简介，members 内每条含 name / role / bio；全部置空显示空态。",
-  "intro": "趣开发由独立开发者维护，聚焦 HarmonyOS 多端设计与工程实践。",
-  "members": [
-    {
-      "name": "闫东阳",
-      "role": "独立开发者",
-      "bio": "负责趣开发的设计、开发与维护。"
-    }
-  ]
+  "_readme": "开发者页数据：company（公司段，含开源主页）与 person（个人段，含开源社区/技术贴/社媒三组链接）；置空对应对象即显示空态。",
+  "company": {
+    "name": "河南趣知易解互联网科技有限公司",
+    "brand": "QuizzyJoy",
+    "creditCode": "91410100MAKKETXR81",
+    "icp": "豫ICP备2026038095号-1",
+    "email": "official@quizzyjoy.com",
+    "repos": [
+      {
+        "name": "GitHub",
+        "desc": "主仓库 · Issue · PR",
+        "url": "https://github.com/quizzyjoy"
+      },
+      {
+        "name": "Gitee",
+        "desc": "码云 · 国内访问快",
+        "url": "https://gitee.com/quizzyjoy"
+      },
+      {
+        "name": "AtomGit",
+        "desc": "开放原子 · 国内托管",
+        "url": "https://atomgit.com/quizzyjoy"
+      }
+    ]
+  },
+  "person": {
+    "name": "闫东阳",
+    "title": "CEO @ 趣知易解 · 独立开发者",
+    "intro": [
+      "做鸿蒙生态的原生应用：多款产品共用一套工程底座，一次开发、多端部署。",
+      "喜欢把重复的工程问题沉淀成可复用的骨架——趣开发（EasyStart）就是这么来的，也是我们全面开源的那一个。"
+    ],
+    "email": "dongyang@quizzyjoy.com",
+    "wechat": "shijieshuyvsanti",
+    "groups": [
+      {
+        "title": "开源社区",
+        "links": [
+          {
+            "name": "GitHub",
+            "desc": "个人账号 · 主要提交",
+            "url": "https://github.com/YDYm233"
+          },
+          {
+            "name": "Gitee",
+            "desc": "码云 · 个人主页",
+            "url": "https://gitee.com/Yan_m233"
+          },
+          {
+            "name": "AtomGit",
+            "desc": "开放原子 · 国内托管",
+            "url": "https://atomgit.com/YDYm233"
+          },
+          {
+            "name": "GitHub（组织）",
+            "desc": "趣知易解开源主站",
+            "url": "https://github.com/quizzyjoy"
+          }
+        ]
+      },
+      {
+        "title": "技术贴",
+        "links": [
+          {
+            "name": "稀土掘金",
+            "desc": "技术文章",
+            "url": "https://juejin.cn/user/1958646126504057"
+          },
+          {
+            "name": "CSDN",
+            "desc": "技术博客",
+            "url": "https://blog.csdn.net/bagayalucaonima"
+          },
+          {
+            "name": "华为开发者联盟",
+            "desc": "鸿蒙生态专栏",
+            "url": "https://developer.huawei.com/consumer/cn/blog/topic/03217467766364142"
+          }
+        ]
+      },
+      {
+        "title": "社媒",
+        "links": [
+          {
+            "name": "抖音",
+            "desc": "产品与开发日常",
+            "url": "https://www.douyin.com/user/MS4wLjABAAAAOFdMBlZ8iq46I4d3R7j53PBtx3wFISrYoZvnC3uo_Ds"
+          },
+          {
+            "name": "小红书",
+            "desc": "产品与生活记录",
+            "url": "https://www.xiaohongshu.com/user/profile/63b3def70000000026005ff0"
+          },
+          {
+            "name": "哔哩哔哩",
+            "desc": "视频与教程",
+            "url": "https://space.bilibili.com/582268894"
+          }
+        ]
+      }
+    ]
+  }
 }

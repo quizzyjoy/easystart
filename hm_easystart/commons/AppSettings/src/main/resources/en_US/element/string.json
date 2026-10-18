@@ -369,6 +369,34 @@
       "value": "No developer info yet"
     },
     {
+      "name": "settings_developer_credit_code",
+      "value": "Unified social credit code"
+    },
+    {
+      "name": "settings_developer_icp",
+      "value": "ICP filing"
+    },
+    {
+      "name": "settings_developer_email",
+      "value": "Support email"
+    },
+    {
+      "name": "settings_developer_open_source",
+      "value": "Open source"
+    },
+    {
+      "name": "settings_developer_contact",
+      "value": "Contact"
+    },
+    {
+      "name": "settings_developer_copy",
+      "value": "Copy"
+    },
+    {
+      "name": "settings_developer_copied",
+      "value": "Copied"
+    },
+    {
       "name": "settings_sdk_list",
       "value": "Third-party SDK list"
     },
