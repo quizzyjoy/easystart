@@ -23,6 +23,12 @@ export class AppRoute {
   /** 样例子页：悬停态分屏（v3.31 / FOLD-01，pageMap 注册名） */
   static readonly DEMO_FOLD_HOVER: string = 'demoFoldHover';
   /** 设置页（v3.12，独立子页；入口为首页 titleBar 齿轮，pageMap 注册名） */
+  /** 示例·组件示例分组页（v3.37，pageMap 注册名；param = basic/visual/platform/app） */
+  static readonly GALLERY_GROUP: string = 'GALLERY_GROUP';
+
+  /** 示例·模板能力目录页（v3.37，pageMap 注册名） */
+  static readonly HOME_CATALOG: string = 'HOME_CATALOG';
+
   /** 开发工具·设备能力检测（v3.37，pageMap 注册名） */
   static readonly DEVICE_CAPABILITY: string = 'DEVICE_CAPABILITY';
 

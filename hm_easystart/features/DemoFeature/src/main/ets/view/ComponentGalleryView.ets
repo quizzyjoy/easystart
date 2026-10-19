@@ -131,6 +131,8 @@ const GALLERY_GROUPS: GalleryGroupEntry[] = [
 export struct ComponentGalleryView {
   /** 样例子页 hub 开关（TV 无 Navigation 宿主，入口传 false 隐藏；v3.9）。 */
   @Param demoHubEnabled: boolean = true;
+  /** 初始选中的区块（basic / visual / platform / app）；空 = 全部。 */
+  @Param initialGroup: string = '';
   /** 样例子页入口点击（@Event 上抛，入口映射 DemoSample → AppRoute 后 push）。 */
   @Event onOpenDemoPage: (sample: DemoSample) => void = () => {
   };
@@ -198,6 +200,15 @@ export struct ComponentGalleryView {
   }
 
   aboutToAppear(): void {
+    if (this.initialGroup === 'basic') {
+      this.group = GalleryGroup.BASIC;
+    } else if (this.initialGroup === 'visual') {
+      this.group = GalleryGroup.VISUAL;
+    } else if (this.initialGroup === 'platform') {
+      this.group = GalleryGroup.PLATFORM;
+    } else if (this.initialGroup === 'app') {
+      this.group = GalleryGroup.APP;
+    }
     this.fold.attach();
   }
 

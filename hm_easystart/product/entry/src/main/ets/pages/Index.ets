@@ -12,7 +12,9 @@ import {
   HoverSplitView,
   ListStateView,
   SearchView,
-  ToolsView
+  ToolsView,
+  ExamplesView,
+  GalleryGroupView
 } from '@easystart/demo-feature';
 import {
   HomeDetailView,
@@ -22,6 +24,7 @@ import {
 } from '@easystart/home-feature';
 import { AppFontSize, AppRadius, AppSize, AppSpacing } from '@quizzyjoy/foundation';
 import { TabsBarModel } from '../model/TabsBarModel';
+import { HomeCatalogView } from '../view/HomeCatalogView';
 import { CardLaunchTarget } from '../model/CardLaunchTarget';
 import {
   HdsNavigation,
@@ -165,6 +168,25 @@ struct Index {
       default:
         break;
     }
+  }
+
+  /** 场景卡 id -> DemoSample -> openDemoPage（v3.37 示例 Tab 用）。 */
+  private openSceneById(sceneId: string): void {
+    let sample: DemoSample = DemoSample.TOKENS;
+    if (sceneId === 'feedback') {
+      sample = DemoSample.FEEDBACK;
+    } else if (sceneId === 'charts') {
+      sample = DemoSample.CHARTS;
+    } else if (sceneId === 'form') {
+      sample = DemoSample.FORM;
+    } else if (sceneId === 'list') {
+      sample = DemoSample.LIST;
+    } else if (sceneId === 'search') {
+      sample = DemoSample.SEARCH;
+    } else if (sceneId === 'hover') {
+      sample = DemoSample.FOLD_HOVER;
+    }
+    this.openDemoPage(sample);
   }
 
   /** 打开设置独立子页（首页 titleBar 齿轮回调）。 */
@@ -420,6 +442,46 @@ struct Index {
         enableComponentSafeArea: true // ② 内容区自动避让 titlebar
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.GALLERY_GROUP) {
+      HdsNavDestination() {
+        GalleryGroupView({ groupId: `${param}` })
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '组件示例'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.HOME_CATALOG) {
+      HdsNavDestination() {
+        HomeCatalogView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '能力目录'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (name === AppRoute.DEVICE_CAPABILITY) {
       // 开发工具·设备能力检测（v3.37）：从工具 Tab 卡片进入
       HdsNavDestination() {
@@ -496,9 +558,15 @@ struct Index {
   tabArea() {
     HdsTabs({ controller: this.tabController }) {
       TabContent() {
-        HomeListView({
-          onOpenDetail: (item: HomeItem): void => {
-            this.openHomeTarget(item);
+        ExamplesView({
+          onOpenGalleryGroup: (groupId: string): void => {
+            RouterManager.getInstance().push(AppRoute.GALLERY_GROUP, groupId);
+          },
+          onOpenScene: (sceneId: string): void => {
+            this.openSceneById(sceneId);
+          },
+          onOpenCatalog: (): void => {
+            RouterManager.getInstance().push(AppRoute.HOME_CATALOG);
           }
         })
       }
