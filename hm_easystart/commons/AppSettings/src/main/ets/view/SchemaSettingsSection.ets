@@ -10,6 +10,7 @@ import {
   SuffixTextAndArrow
 } from '@kit.UIDesignKit';
 import { SettingsRow } from './component/SettingsRow';
+import { SettingsSelectRow, SettingsSliderRow, SettingsSwitchRow } from './component/SettingsControlRows';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { AppEnvManager, AppEnvSnapshot, BreakpointManager, ShareHelper, common } from '@quizzyjoy/platform';
 import { CommonToast } from '@easystart/app-component';
@@ -430,38 +431,28 @@ export struct SchemaSettingsSection {
         showArrow: false
       })
     } else if (row.type === 'switch') {
-      HdsListItemCard({
-        prefixItem: this.prefixOf(row),
-        textItem: {
-          primaryText: { text: this.resolveText(row.title) },
-          secondaryText: row.subtitle.length > 0 ? { text: this.resolveText(row.subtitle) } : undefined
-        },
-        suffixItem: new SuffixSwitch({
-          isCheck: this.store.boolValues.get(row.prefKey) ?? row.defaultBool(),
-          onChange: (on: boolean): void => {
-            this.store.setBool(row.prefKey, on);
-          }
-        })
+      SettingsSwitchRow({
+        title: this.resolveText(row.title),
+        subtitle: row.subtitle.length > 0 ? this.resolveText(row.subtitle) : '',
+        icon: this.symbolOf(row),
+        iconTint: this.tintOf(row),
+        isOn: this.store.boolValues.get(row.prefKey) ?? row.defaultBool(),
+        onToggle: (on: boolean): void => {
+          this.store.setBool(row.prefKey, on);
+        }
       })
-        .width('100%')
     } else if (row.type === 'select') {
-      HdsListItemCard({
-        prefixItem: this.prefixOf(row),
-        textItem: {
-          primaryText: { text: this.resolveText(row.title) },
-          secondaryText: row.subtitle.length > 0 ? { text: this.resolveText(row.subtitle) } : undefined
-        },
-        suffixItem: new SuffixSelect({
-          value: this.selectValueLabel(row),
-          optionValues: this.optionLabelList(row),
-          optionSymbol: [],
-          selected: this.store.numberValues.get(row.prefKey) ?? row.defaultNumber(),
-          onSelect: (index: number): void => {
-            this.store.setNumber(row.prefKey, index);
-          }
-        })
+      SettingsSelectRow({
+        title: this.resolveText(row.title),
+        subtitle: row.subtitle.length > 0 ? this.resolveText(row.subtitle) : '',
+        icon: this.symbolOf(row),
+        iconTint: this.tintOf(row),
+        options: this.optionLabelList(row),
+        selected: this.store.numberValues.get(row.prefKey) ?? row.defaultNumber(),
+        onSelect: (index: number): void => {
+          this.store.setNumber(row.prefKey, index);
+        }
       })
-        .width('100%')
     } else if (row.type === 'slider') {
       HdsListItemCard({
         prefixItem: this.prefixOf(row),
