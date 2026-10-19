@@ -90,62 +90,65 @@ export struct DeveloperView {
   brandIcon(name: string) {
     if (name.startsWith('GitHub')) {
       Image($r('app.media.brand_github'))
-        .width(28).height(28)
-        .borderRadius(8)
+        .width(32).height(32)
+        .borderRadius(10)
         .border({ width: 1, color: '#33FFFFFF' })
         .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === 'Gitee') {
       Image($r('app.media.brand_gitee'))
-        .width(28).height(28)
-        .borderRadius(8)
+        .width(32).height(32)
+        .borderRadius(10)
         .border({ width: 1, color: '#33FFFFFF' })
         .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === '稀土掘金') {
       Image($r('app.media.brand_juejin'))
-        .width(28).height(28)
-        .borderRadius(8)
+        .width(32).height(32)
+        .borderRadius(10)
         .border({ width: 1, color: '#33FFFFFF' })
         .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === 'CSDN') {
       Image($r('app.media.brand_csdn'))
-        .width(28).height(28)
-        .borderRadius(8)
+        .width(32).height(32)
+        .borderRadius(10)
         .border({ width: 1, color: '#33FFFFFF' })
         .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === '华为开发者联盟') {
       Image($r('app.media.brand_huawei'))
-        .width(28).height(28)
-        .borderRadius(8)
+        .width(32).height(32)
+        .borderRadius(10)
         .border({ width: 1, color: '#33FFFFFF' })
         .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === '抖音') {
       Image($r('app.media.brand_douyin'))
-        .width(28).height(28)
-        .borderRadius(8)
+        .width(32).height(32)
+        .borderRadius(10)
         .border({ width: 1, color: '#33FFFFFF' })
         .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === '小红书') {
       Image($r('app.media.brand_xiaohongshu'))
-        .width(28).height(28)
-        .borderRadius(8)
+        .width(32).height(32)
+        .borderRadius(10)
         .border({ width: 1, color: '#33FFFFFF' })
         .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === '哔哩哔哩') {
       Image($r('app.media.brand_bilibili'))
-        .width(28).height(28)
-        .borderRadius(8)
+        .width(32).height(32)
+        .borderRadius(10)
         .border({ width: 1, color: '#33FFFFFF' })
         .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === 'AtomGit') {
+      // 官网 logo 是透明底白色 PNG：Image.fillColor 对位图不生效（只对 SVG 生效），
+      // 因此改为给图标铺一块固定品牌色底，保证浅色/深色模式下白 G 都可见
       Image($r('app.media.brand_atomgit'))
-        .width(28).height(28)
-        .borderRadius(8)
+        .width(32).height(32)
+        .borderRadius(10)
+        .backgroundColor('#D6222A')
         .border({ width: 1, color: '#33FFFFFF' })
         .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else {
       // 公司官网 / 个人主页：通用链接图标
       SymbolGlyph($r('sys.symbol.link'))
-        .fontSize(28)
+        .fontSize(32)
         .fontColor([$r('app.color.app_text_secondary')])
     }
   }
@@ -274,8 +277,8 @@ export struct DeveloperView {
         Text(link.name)
           .fontSize(AppFontSize.BODY)
           .fontWeight(AppFontWeight.MEDIUM)
-          .fontColor(this.hasBrandColor(link.name)
-            ? $r('app.color.app_text_on_brand') : $r('app.color.app_text_primary'))
+          // 卡片底色是品牌辅色（浅色近白 / 深色压暗），文字统一用主题主文字色即可
+          .fontColor($r('app.color.app_text_primary'))
           .width('100%')
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
