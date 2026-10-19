@@ -67,6 +67,10 @@
       },
       {
         "name": "ohos.permission.VIBRATE"
+      },
+      {
+        // v3.34：开发者页内嵌公司官网 / 个人主页（ArkWeb）
+        "name": "ohos.permission.INTERNET"
       }
     ]
   }

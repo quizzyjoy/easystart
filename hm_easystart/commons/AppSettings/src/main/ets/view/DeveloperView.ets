@@ -1,8 +1,10 @@
 import { AppFontSize, AppFontWeight, AppLineHeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { AppEnvManager, AppEnvSnapshot, BreakpointManager, MarketHelper, common } from '@quizzyjoy/platform';
 import { AppDialog, AppEmptyState, CommonToast, DialogSemantic } from '@easystart/app-component';
+import { image } from '@kit.ImageKit';
 import { CompanyInfo, DevGroup, DevLink, DeveloperProfile, PersonInfo } from '../model/SettingsContentModels';
 import { ClipboardUtil } from '../util/ClipboardUtil';
+import { QrCodeUtil } from '../util/QrCodeUtil';
 import { RawFileTextLoader } from '../util/RawFileTextLoader';
 
 const RAWFILE_NAME: string = 'developer.json';
@@ -23,12 +25,17 @@ const RAWFILE_NAME: string = 'developer.json';
 @ComponentV2
 export struct DeveloperView {
   @Local profile: DeveloperProfile = new DeveloperProfile(
-    new CompanyInfo('', '', '', '', '', []),
-    new PersonInfo('', '', [], [], '', '')
+    new CompanyInfo('', '', '', '', '', '', []),
+    new PersonInfo('', '', [], [], '', '', '')
   );
   @Local emptyText: string = '';
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
   @Local env: AppEnvSnapshot = AppEnvManager.get();
+  /** 手表二维码覆盖层（v3.34）：显示态 / 位图 / 标题 / 原链接（生成失败时展示）。 */
+  @Local qrVisible: boolean = false;
+  @Local qrImage: image.PixelMap | undefined = undefined;
+  @Local qrTitle: string = '';
+  @Local qrUrl: string = '';
 
   aboutToAppear(): void {
     const ctx: common.UIAbilityContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
@@ -47,8 +54,8 @@ export struct DeveloperView {
       this.profile = DeveloperProfile.parse(text);
     } catch (err) {
       this.profile = new DeveloperProfile(
-        new CompanyInfo('', '', '', '', '', []),
-        new PersonInfo('', '', [], [], '', '')
+        new CompanyInfo('', '', '', '', '', '', []),
+        new PersonInfo('', '', [], [], '', '', '')
       );
     }
   }
@@ -80,6 +87,23 @@ export struct DeveloperView {
         CommonToast.info($r('app.string.about_open_repo_failed'));
       }
     });
+  }
+
+  /** 链接点击分流：手表（无 Web 组件）→ 二维码覆盖层；其它 → 外部浏览器。 */
+  private handleLink(title: string, url: string): void {
+    if (this.isWearable()) {
+      this.showQr(title, url);
+    } else {
+      this.openLink(url);
+    }
+  }
+
+  /** 生成并展示二维码（手表端）；能力缺失时覆盖层仍展示链接文本兜底。 */
+  private async showQr(title: string, url: string): Promise<void> {
+    this.qrTitle = title;
+    this.qrUrl = url;
+    this.qrImage = await QrCodeUtil.create(url);
+    this.qrVisible = true;
   }
 
   /** 复制到剪贴板并提示（联系方式用）。 */
@@ -180,7 +204,7 @@ export struct DeveloperView {
     .borderRadius(AppRadius.LG)
     .backgroundColor($r('app.color.app_bg_card'))
     .onClick((): void => {
-      this.openLink(link.url);
+      this.handleLink(link.name, link.url);
     })
   }
 
@@ -257,6 +281,29 @@ export struct DeveloperView {
       }
       .width('100%')
       .alignItems(HorizontalAlign.Start)
+
+      // 公司官网（v3.34）：手机/平板/PC 打开官网，手表生成二维码
+      if (this.profile.company.website.length > 0) {
+        Row({ space: AppSpacing.SM }) {
+          SymbolGlyph($r('sys.symbol.link'))
+            .fontSize(AppSize.ICON_LG)
+            .fontColor([$r('app.color.app_link')])
+          Text($r('app.string.settings_developer_website'))
+            .fontSize(AppFontSize.BODY_SM)
+            .fontColor($r('app.color.app_link'))
+            .layoutWeight(1)
+          SymbolGlyph($r('sys.symbol.chevron_right'))
+            .fontSize(AppFontSize.TITLE_SM)
+            .fontColor([$r('app.color.app_text_tertiary')])
+        }
+        .width('100%')
+        .padding(AppSpacing.MD)
+        .borderRadius(AppRadius.LG)
+        .backgroundColor($r('app.color.app_bg_card'))
+        .onClick((): void => {
+          this.handleLink('公司官网', this.profile.company.website);
+        })
+      }
 
       if (this.profile.company.repos.length > 0) {
         Column({ space: AppSpacing.SM }) {
@@ -341,6 +388,29 @@ export struct DeveloperView {
         this.linkGroup(group)
       }, (group: DevGroup): string => group.title)
 
+      // 个人主页（v3.34）：手机/平板/PC 打开官网个人页，手表生成二维码
+      if (this.profile.person.homepage.length > 0) {
+        Row({ space: AppSpacing.SM }) {
+          SymbolGlyph($r('sys.symbol.link'))
+            .fontSize(AppSize.ICON_LG)
+            .fontColor([$r('app.color.app_link')])
+          Text($r('app.string.settings_developer_homepage'))
+            .fontSize(AppFontSize.BODY_SM)
+            .fontColor($r('app.color.app_link'))
+            .layoutWeight(1)
+          SymbolGlyph($r('sys.symbol.chevron_right'))
+            .fontSize(AppFontSize.TITLE_SM)
+            .fontColor([$r('app.color.app_text_tertiary')])
+        }
+        .width('100%')
+        .padding(AppSpacing.MD)
+        .borderRadius(AppRadius.LG)
+        .backgroundColor($r('app.color.app_bg_card'))
+        .onClick((): void => {
+          this.handleLink('个人主页', this.profile.person.homepage);
+        })
+      }
+
       if (this.profile.person.email.length > 0 || this.profile.person.wechat.length > 0) {
         Column({ space: AppSpacing.SM }) {
           Text($r('app.string.settings_developer_contact'))
@@ -400,9 +470,50 @@ export struct DeveloperView {
     .backgroundColor($r('app.color.app_bg_card'))
   }
 
+  /** 手表二维码覆盖层：半透明底 + 白卡片（二维码 / 生成失败时展示链接）。 */
+  @Builder
+  qrOverlay() {
+    Column() {
+      Column({ space: AppSpacing.MD }) {
+        Text(this.qrTitle)
+          .fontSize(AppFontSize.BODY)
+          .fontWeight(AppFontWeight.BOLD)
+          .fontColor($r('app.color.app_text_primary'))
+        if (this.qrImage !== undefined) {
+          Image(this.qrImage)
+            .width(200)
+            .height(200)
+            .borderRadius(AppRadius.LG)
+        } else {
+          Text(this.qrUrl)
+            .fontSize(AppFontSize.CAPTION)
+            .fontColor($r('app.color.app_text_secondary'))
+            .maxLines(3)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+        }
+        Text($r('app.string.settings_developer_qr_hint'))
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+      }
+      .padding(AppSpacing.LG)
+      .borderRadius(AppRadius.XL)
+      .backgroundColor($r('app.color.app_bg_card'))
+      .alignItems(HorizontalAlign.Center)
+    }
+    .width('100%')
+    .height('100%')
+    .backgroundColor('#80000000')
+    .justifyContent(FlexAlign.Center)
+    .alignItems(HorizontalAlign.Center)
+    .onClick((): void => {
+      this.qrVisible = false;
+    })
+  }
+
   build() {
-    Scroll() {
-      Column({ space: DesignToken.sectionSpacing() }) {
+    Stack({ alignContent: Alignment.Center }) {
+      Scroll() {
+        Column({ space: DesignToken.sectionSpacing() }) {
         if (this.profile.isEmpty()) {
           AppEmptyState({
             icon: $r('sys.symbol.person_2'),
@@ -431,11 +542,19 @@ export struct DeveloperView {
         top: AppSpacing.LG,
         bottom: AppSpacing.XXXL
       })
+      }
+      .width('100%')
+      .height('100%')
+      .backgroundColor($r('app.color.app_bg_page'))
+      .scrollBar(BarState.Off)
+      .edgeEffect(EdgeEffect.Spring)
+
+      // 手表二维码覆盖层（全屏点击关闭）
+      if (this.qrVisible) {
+        this.qrOverlay()
+      }
     }
     .width('100%')
     .height('100%')
-    .backgroundColor($r('app.color.app_bg_page'))
-    .scrollBar(BarState.Off)
-    .edgeEffect(EdgeEffect.Spring)
   }
 }

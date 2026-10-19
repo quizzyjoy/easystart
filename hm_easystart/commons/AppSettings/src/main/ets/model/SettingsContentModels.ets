@@ -149,15 +149,18 @@ export class CompanyInfo {
   readonly creditCode: string;
   readonly icp: string;
   readonly email: string;
+  /** 公司官网（ArkWeb 内嵌或二维码）。 */
+  readonly website: string;
   readonly repos: DevLink[];
 
   constructor(name: string, brand: string, creditCode: string, icp: string, email: string,
-    repos: DevLink[]) {
+    website: string, repos: DevLink[]) {
     this.name = name;
     this.brand = brand;
     this.creditCode = creditCode;
     this.icp = icp;
     this.email = email;
+    this.website = website;
     this.repos = repos;
   }
 
@@ -174,15 +177,18 @@ export class PersonInfo {
   readonly groups: DevGroup[];
   readonly email: string;
   readonly wechat: string;
+  /** 个人主页（ArkWeb 内嵌或二维码）。 */
+  readonly homepage: string;
 
   constructor(name: string, title: string, intro: string[], groups: DevGroup[],
-    email: string, wechat: string) {
+    email: string, wechat: string, homepage: string) {
     this.name = name;
     this.title = title;
     this.intro = intro;
     this.groups = groups;
     this.email = email;
     this.wechat = wechat;
+    this.homepage = homepage;
   }
 
   isEmpty(): boolean {
@@ -220,7 +226,7 @@ export class DeveloperProfile {
 
   private static parseCompany(raw: Object | undefined): CompanyInfo {
     if (raw === undefined || raw === null) {
-      return new CompanyInfo('', '', '', '', '', []);
+      return new CompanyInfo('', '', '', '', '', '', []);
     }
     const record: Record<string, Object> = raw as Record<string, Object>;
     return new CompanyInfo(
@@ -229,13 +235,14 @@ export class DeveloperProfile {
       DeveloperProfile.str(record['creditCode']),
       DeveloperProfile.str(record['icp']),
       DeveloperProfile.str(record['email']),
+      DeveloperProfile.str(record['website']),
       DeveloperProfile.parseLinks(record['repos'])
     );
   }
 
   private static parsePerson(raw: Object | undefined): PersonInfo {
     if (raw === undefined || raw === null) {
-      return new PersonInfo('', '', [], [], '', '');
+      return new PersonInfo('', '', [], [], '', '', '');
     }
     const record: Record<string, Object> = raw as Record<string, Object>;
     const intro: string[] = [];
@@ -265,7 +272,8 @@ export class DeveloperProfile {
       intro,
       groups,
       DeveloperProfile.str(record['email']),
-      DeveloperProfile.str(record['wechat'])
+      DeveloperProfile.str(record['wechat']),
+      DeveloperProfile.str(record['homepage'])
     );
   }
 
