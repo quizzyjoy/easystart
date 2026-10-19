@@ -9,6 +9,7 @@ import {
   SuffixSwitch,
   SuffixTextAndArrow
 } from '@kit.UIDesignKit';
+import { SettingsRow } from './component/SettingsRow';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { AppEnvManager, AppEnvSnapshot, BreakpointManager, ShareHelper, common } from '@quizzyjoy/platform';
 import { CommonToast } from '@easystart/app-component';
@@ -226,6 +227,26 @@ export struct SchemaSettingsSection {
     });
   }
 
+  /** 行图标 symbol（无图标配置时为 undefined）。 */
+  private symbolOf(row: SchemaRowDef): Resource | undefined {
+    const icon: SchemaIconDef | undefined = row.icon;
+    if (icon === undefined || icon.symbol.length === 0) {
+      return undefined;
+    }
+    return SettingsSchema.symbolResource(icon.symbol);
+  }
+
+  /** 行图标 chip 底色（无 tint 配置时透明）。 */
+  private tintOf(row: SchemaRowDef): ResourceColor {
+    const icon: SchemaIconDef | undefined = row.icon;
+    if (icon === undefined) {
+      return Color.Transparent;
+    }
+    const tint: Resource | undefined = SettingsSchema.tintResource(icon.tint);
+    return tint !== undefined ? tint : Color.Transparent;
+  }
+
+
   @Builder
   iconChip(symbolRes: Resource, tintRes: Resource) {
     // 图标 fill 恒白（v3.30 polish：app_text_on_brand 恒 #FFFFFF，深浅色统一，用户裁定）
@@ -379,43 +400,35 @@ export struct SchemaSettingsSection {
     if (row.type === 'builtin') {
       this.builtinRow(row)
     } else if (row.type === 'nav') {
-      HdsListItemCard({
-        prefixItem: this.prefixOf(row),
-        textItem: {
-          primaryText: { text: this.resolveText(row.title) },
-          secondaryText: row.subtitle.length > 0 ? { text: this.resolveText(row.subtitle) } : undefined
-        },
-        suffixItem: row.valueSource.length > 0
-          ? new SuffixTextAndArrow({ text: this.valueText(row) })
-          : new SuffixArrow(),
-        onClick: (): void => {
+      SettingsRow({
+        title: this.resolveText(row.title),
+        subtitle: row.subtitle.length > 0 ? this.resolveText(row.subtitle) : '',
+        icon: this.symbolOf(row),
+        iconTint: this.tintOf(row),
+        valueText: row.valueSource.length > 0 ? this.valueText(row) : '',
+        onRowClick: (): void => {
           this.pushRoute(row.route, row.param);
         }
       })
-        .width('100%')
     } else if (row.type === 'action') {
-      HdsListItemCard({
-        prefixItem: this.prefixOf(row),
-        textItem: {
-          primaryText: { text: this.resolveText(row.title) },
-          secondaryText: row.subtitle.length > 0 ? { text: this.resolveText(row.subtitle) } : undefined
-        },
-        suffixItem: new SuffixArrow(),
-        onClick: (): void => {
+      SettingsRow({
+        title: this.resolveText(row.title),
+        subtitle: row.subtitle.length > 0 ? this.resolveText(row.subtitle) : '',
+        icon: this.symbolOf(row),
+        iconTint: this.tintOf(row),
+        onRowClick: (): void => {
           this.runAction(row.actionId);
         }
       })
-        .width('100%')
     } else if (row.type === 'info') {
-      HdsListItemCard({
-        prefixItem: this.prefixOf(row),
-        textItem: {
-          primaryText: { text: this.resolveText(row.title) },
-          secondaryText: row.subtitle.length > 0 ? { text: this.resolveText(row.subtitle) } : undefined
-        },
-        suffixItem: new SuffixTextAndArrow({ text: this.valueText(row) })
+      SettingsRow({
+        title: this.resolveText(row.title),
+        subtitle: row.subtitle.length > 0 ? this.resolveText(row.subtitle) : '',
+        icon: this.symbolOf(row),
+        iconTint: this.tintOf(row),
+        valueText: this.valueText(row),
+        showArrow: false
       })
-        .width('100%')
     } else if (row.type === 'switch') {
       HdsListItemCard({
         prefixItem: this.prefixOf(row),

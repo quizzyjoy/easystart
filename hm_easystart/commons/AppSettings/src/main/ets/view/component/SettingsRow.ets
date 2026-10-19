@@ -12,8 +12,8 @@ import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing } from '@qui
 @ComponentV2
 export struct SettingsRow {
   @Param title: ResourceStr = '';
-  @Param subtitle: string = '';
-  @Param valueText: string = '';
+  @Param subtitle: ResourceStr = '';
+  @Param valueText: ResourceStr = '';
   /** 图标 symbol（不传则不显示图标区）。 */
   @Param icon: Resource | undefined = undefined;
   /** 图标底色（chip 背景），不传则不铺色块。 */
@@ -52,7 +52,7 @@ export struct SettingsRow {
           .width('100%')
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
-        if (this.subtitle.length > 0) {
+        if (this.subtitle !== '') {
           Text(this.subtitle)
             .fontSize(AppFontSize.CAPTION)
             .fontColor($r('app.color.app_text_tertiary'))
@@ -64,7 +64,7 @@ export struct SettingsRow {
       .layoutWeight(1)
       .alignItems(HorizontalAlign.Start)
 
-      if (this.valueText.length > 0) {
+      if (this.valueText !== '') {
         Text(this.valueText)
           .fontSize(AppFontSize.BODY_SM)
           .fontColor($r('app.color.app_text_secondary'))
