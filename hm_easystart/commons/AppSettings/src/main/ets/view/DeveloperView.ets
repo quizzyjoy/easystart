@@ -3,6 +3,7 @@ import { AppEnvManager, AppEnvSnapshot, BreakpointManager, MarketHelper, common 
 import { AppDialog, AppEmptyState, CommonToast, DialogSemantic } from '@easystart/app-component';
 import { image } from '@kit.ImageKit';
 import { CompanyInfo, DevGroup, DevLink, DeveloperProfile, PersonInfo } from '../model/SettingsContentModels';
+import { BrandIconPaths } from '../util/BrandIconPaths';
 import { ClipboardUtil } from '../util/ClipboardUtil';
 import { QrCodeUtil } from '../util/QrCodeUtil';
 import { RawFileTextLoader } from '../util/RawFileTextLoader';
@@ -78,6 +79,35 @@ export struct DeveloperView {
       return '1fr 1fr';
     }
     return '1fr 1fr 1fr';
+  }
+
+  /** 链接名 → 官方品牌 path（未匹配返回空串，由通用 link 图标兜底）。 */
+  private brandPath(name: string): string {
+    if (name.startsWith('GitHub')) {
+      return BrandIconPaths.GITHUB;
+    }
+    if (name === 'Gitee') {
+      return BrandIconPaths.GITEE;
+    }
+    if (name === '稀土掘金') {
+      return BrandIconPaths.JUEJIN;
+    }
+    if (name === 'CSDN') {
+      return BrandIconPaths.CSDN;
+    }
+    if (name === '华为开发者联盟') {
+      return BrandIconPaths.HUAWEI;
+    }
+    if (name === '抖音') {
+      return BrandIconPaths.DOUYIN;
+    }
+    if (name === '小红书') {
+      return BrandIconPaths.XIAOHONGSHU;
+    }
+    if (name === '哔哩哔哩') {
+      return BrandIconPaths.BILIBILI;
+    }
+    return '';
   }
 
   /** 打开外部链接；无处理方时 Toast 降级。 */
@@ -180,26 +210,45 @@ export struct DeveloperView {
     .alignItems(VerticalAlign.Top)
   }
 
-  /** 链接卡片（网格单元）。 */
+  /** 链接卡片（网格单元）：官方品牌矢量图标 + 名称 + 描述。 */
   @Builder
   linkCard(link: DevLink) {
-    Column({ space: AppSpacing.XXS }) {
-      Text(link.name)
-        .fontSize(AppFontSize.BODY)
-        .fontWeight(AppFontWeight.MEDIUM)
-        .fontColor($r('app.color.app_text_primary'))
-        .width('100%')
-        .maxLines(1)
-        .textOverflow({ overflow: TextOverflow.Ellipsis })
-      Text(link.desc)
-        .fontSize(AppFontSize.CAPTION)
-        .fontColor($r('app.color.app_text_tertiary'))
-        .width('100%')
-        .maxLines(1)
-        .textOverflow({ overflow: TextOverflow.Ellipsis })
+    Row({ space: AppSpacing.SM }) {
+      // 官方品牌图标（Simple Icons 路径，v3.34）；无匹配品牌（如 AtomGit/官网）用通用 link 图标
+      if (this.brandPath(link.name).length > 0) {
+        Shape() {
+          Path()
+            .commands(this.brandPath(link.name))
+            .fill($r('app.color.app_text_secondary'))
+        }
+        .viewPort({ x: 0, y: 0, width: 24, height: 24 })
+        .width(20)
+        .height(20)
+      } else {
+        SymbolGlyph($r('sys.symbol.link'))
+          .fontSize(20)
+          .fontColor([$r('app.color.app_text_secondary')])
+      }
+      Column({ space: AppSpacing.XXS }) {
+        Text(link.name)
+          .fontSize(AppFontSize.BODY)
+          .fontWeight(AppFontWeight.MEDIUM)
+          .fontColor($r('app.color.app_text_primary'))
+          .width('100%')
+          .maxLines(1)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+        Text(link.desc)
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
+          .maxLines(1)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+      }
+      .layoutWeight(1)
+      .alignItems(HorizontalAlign.Start)
     }
     .width('100%')
-    .alignItems(HorizontalAlign.Start)
+    .alignItems(VerticalAlign.Center)
     .padding(AppSpacing.MD)
     .borderRadius(AppRadius.LG)
     .backgroundColor($r('app.color.app_bg_card'))
