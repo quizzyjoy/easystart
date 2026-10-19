@@ -1,6 +1,7 @@
 import { ComponentContent } from '@kit.ArkUI';
 import { hdsMaterial, HdsNavDestination, HdsNavigation, HdsNavigationTitleMode } from '@kit.UIDesignKit';
 import { AppEnvManager, AppEnvSnapshot, BreakpointManager, BreakpointType } from '@quizzyjoy/platform';
+import { AppDialog, DialogSemantic } from '@easystart/app-component';
 import { SettingsRoute } from '../model/SettingsRoute';
 import { SettingsView } from './SettingsView';
 import { AppearanceView } from './AppearanceView';
@@ -134,6 +135,30 @@ export struct SettingsDestination {
     }
   }
 
+  /**
+   * 开发者页 titleBar 信息按钮回调：说明 fork 时替换真实开发者信息的位置。
+   *
+   * HdsNavDestination.titleBar 的 menu 项类型是 HdsNavigationMenuItemOptions
+   * （= HdsNavigationBadgeIconOptions），点击回调要放在 content 里
+   * （HdsNavigationIconOptions.action），而不是放在 menu 项外层。
+   */
+  private showForkTip(): void {
+    const uiCtx: UIContext = this.getUIContext();
+    const host = uiCtx.getHostContext();
+    let title: string = '开发者信息说明';
+    let body: string = '';
+    if (host !== undefined) {
+      try {
+        title = host.resourceManager.getStringSync($r('app.string.settings_developer_fork_tip_title'));
+        body = host.resourceManager.getStringSync($r('app.string.settings_developer_fork_tip_body'));
+      } catch (err) {
+        body = '';
+      }
+    }
+    AppDialog.open(uiCtx, DialogSemantic.CONFIRM, title, body, (): void => {
+    });
+  }
+
   /** 按路由名给出子页标题（策略文本子页按 param 区分三态）。 */
   private titleOf(name: string, param: string): ResourceStr {
     if (name === SettingsRoute.APPEARANCE) {
@@ -219,7 +244,21 @@ export struct SettingsDestination {
       content: {
         title: {
           mainTitle: this.titleOf(name, `${param}`)
-        }
+        },
+        // 开发者页专用：titleBar 右侧「信息」按钮（点击弹出 fork 替换说明）。
+        // 点击回调必须放在 content.action（HdsNavigationIconOptions.action）。
+        menu: name === SettingsRoute.DEVELOPER ? {
+          value: [{
+            content: {
+              icon: $r('sys.symbol.info_circle'),
+              label: 'forkTip',
+              action: (): void => {
+                this.showForkTip();
+              }
+            }
+          }],
+          maxCount: 1
+        } : undefined
       },
       style: {
         systemMaterialEffect: {

@@ -90,32 +90,32 @@ export struct DeveloperView {
   brandIcon(name: string) {
     if (name.startsWith('GitHub')) {
       Image($r('app.media.brand_github'))
-        .width(20).height(20)
+        .width(24).height(24)
     } else if (name === 'Gitee') {
       Image($r('app.media.brand_gitee'))
-        .width(20).height(20)
+        .width(24).height(24)
     } else if (name === '稀土掘金') {
       Image($r('app.media.brand_juejin'))
-        .width(20).height(20)
+        .width(24).height(24)
     } else if (name === 'CSDN') {
       Image($r('app.media.brand_csdn'))
-        .width(20).height(20)
+        .width(24).height(24)
     } else if (name === '华为开发者联盟') {
       Image($r('app.media.brand_huawei'))
-        .width(20).height(20)
+        .width(24).height(24)
     } else if (name === '抖音') {
       Image($r('app.media.brand_douyin'))
-        .width(20).height(20)
+        .width(24).height(24)
     } else if (name === '小红书') {
       Image($r('app.media.brand_xiaohongshu'))
-        .width(20).height(20)
+        .width(24).height(24)
     } else if (name === '哔哩哔哩') {
       Image($r('app.media.brand_bilibili'))
-        .width(20).height(20)
+        .width(24).height(24)
     } else {
       // AtomGit / 公司官网 / 个人主页：通用链接图标
       SymbolGlyph($r('sys.symbol.link'))
-        .fontSize(20)
+        .fontSize(24)
         .fontColor([$r('app.color.app_text_secondary')])
     }
   }
@@ -175,30 +175,6 @@ export struct DeveloperView {
     }
     AppDialog.open(uiCtx, DialogSemantic.CONFIRM, title, body, (): void => {
     });
-  }
-
-  /** fork 提示行（页内入口，点击弹说明）。 */
-  @Builder
-  forkTipRow() {
-    Row({ space: AppSpacing.SM }) {
-      SymbolGlyph($r('sys.symbol.info_circle'))
-        .fontSize(AppSize.ICON_LG)
-        .fontColor([$r('app.color.app_link')])
-      Text($r('app.string.settings_developer_fork_tip_title'))
-        .fontSize(AppFontSize.BODY_SM)
-        .fontColor($r('app.color.app_link'))
-        .layoutWeight(1)
-      SymbolGlyph($r('sys.symbol.chevron_right'))
-        .fontSize(AppFontSize.TITLE_SM)
-        .fontColor([$r('app.color.app_text_tertiary')])
-    }
-    .width('100%')
-    .padding(AppSpacing.MD)
-    .borderRadius(AppRadius.LG)
-    .backgroundColor($r('app.color.app_bg_card'))
-    .onClick((): void => {
-      this.showForkTip();
-    })
   }
 
   @Builder
@@ -566,8 +542,6 @@ export struct DeveloperView {
             title: this.emptyText
           })
         } else {
-          // v3.34 fork 提示：页内信息行（titleBar menu 类型链在当前 SDK 缺失，改用页内入口）
-          this.forkTipRow()
           if (!this.profile.company.isEmpty()) {
             this.companySection()
           }
