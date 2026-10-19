@@ -1,4 +1,4 @@
-import { HdsListItemCard, IconSize, PrefixIcon, SuffixArrow, SuffixTextAndArrow } from '@kit.UIDesignKit';
+import { SettingsRow } from './component/SettingsRow';
 import { AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, common } from '@quizzyjoy/platform';
 import { AppEmptyState, CommonToast } from '@easystart/app-component';
@@ -67,57 +67,36 @@ export struct HelpFeedbackView {
           })
         } else {
           if (this.channels.email.length > 0) {
-            HdsListItemCard({
-              prefixItem: new PrefixIcon({
-                iconSize: IconSize.SYSTEM_ICON,
-                iconValue: { symbol: $r('sys.symbol.envelope') }
-              }),
-              textItem: {
-                primaryText: { text: $r('app.string.settings_help_feedback_email') },
-                secondaryText: { text: this.channels.email }
-              },
-              suffixItem: new SuffixArrow(),
-              onClick: (): void => {
+            SettingsRow({
+              title: $r('app.string.settings_help_feedback_email'),
+              subtitle: this.channels.email,
+              icon: $r('sys.symbol.envelope'),
+              onRowClick: (): void => {
                 this.copyWithToast(this.channels.email, false);
               }
             })
-              .width('100%')
           }
 
           if (this.channels.personalEmail.length > 0) {
-            HdsListItemCard({
-              prefixItem: new PrefixIcon({
-                iconSize: IconSize.SYSTEM_ICON,
-                iconValue: { symbol: $r('sys.symbol.envelope') }
-              }),
-              textItem: {
-                primaryText: { text: $r('app.string.settings_help_feedback_personal_email') },
-                secondaryText: { text: this.channels.personalEmail }
-              },
-              suffixItem: new SuffixArrow(),
-              onClick: (): void => {
+            SettingsRow({
+              title: $r('app.string.settings_help_feedback_personal_email'),
+              subtitle: this.channels.personalEmail,
+              icon: $r('sys.symbol.envelope'),
+              onRowClick: (): void => {
                 this.copyWithToast(this.channels.personalEmail, false);
               }
             })
-              .width('100%')
           }
 
           if (this.channels.qqGroup.length > 0) {
-            HdsListItemCard({
-              prefixItem: new PrefixIcon({
-                iconSize: IconSize.SYSTEM_ICON,
-                iconValue: { symbol: $r('sys.symbol.message') }
-              }),
-              textItem: {
-                primaryText: { text: $r('app.string.settings_help_feedback_qq_group') },
-                secondaryText: { text: this.channels.qqGroup }
-              },
-              suffixItem: new SuffixTextAndArrow({ text: this.channels.qqGroup }),
-              onClick: (): void => {
+            SettingsRow({
+              title: $r('app.string.settings_help_feedback_qq_group'),
+              subtitle: this.channels.qqGroup,
+              icon: $r('sys.symbol.message'),
+              onRowClick: (): void => {
                 this.copyWithToast(this.channels.qqGroup, true);
               }
             })
-              .width('100%')
           }
         }
       }
