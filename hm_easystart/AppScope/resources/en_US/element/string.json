@@ -6,15 +6,15 @@
     },
     {
       "name": "tab_home",
-      "value": "Home"
+      "value": "Examples"
     },
     {
       "name": "tab_gallery",
-      "value": "Gallery"
+      "value": "Learn"
     },
     {
       "name": "tab_device",
-      "value": "Device"
+      "value": "Dev Tools"
     }
   ]
 }

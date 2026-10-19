@@ -23,6 +23,9 @@ export class AppRoute {
   /** 样例子页：悬停态分屏（v3.31 / FOLD-01，pageMap 注册名） */
   static readonly DEMO_FOLD_HOVER: string = 'demoFoldHover';
   /** 设置页（v3.12，独立子页；入口为首页 titleBar 齿轮，pageMap 注册名） */
+  /** 开发工具·设备能力检测（v3.37，pageMap 注册名） */
+  static readonly DEVICE_CAPABILITY: string = 'DEVICE_CAPABILITY';
+
   static readonly SETTINGS: string = 'settings';
   /** 设置·主题外观子页（v3.14：显示模式 + 强调色，pageMap 注册名） */
   static readonly APPEARANCE: string = 'appearance';

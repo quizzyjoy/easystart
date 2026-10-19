@@ -6,15 +6,15 @@
     },
     {
       "name": "tab_home",
-      "value": "首页"
+      "value": "示例"
     },
     {
       "name": "tab_gallery",
-      "value": "画廊"
+      "value": "学习"
     },
     {
       "name": "tab_device",
-      "value": "设备"
+      "value": "开发工具"
     }
   ]
 }

@@ -11,7 +11,8 @@ import {
   FormSampleView,
   HoverSplitView,
   ListStateView,
-  SearchView
+  SearchView,
+  ToolsView
 } from '@easystart/demo-feature';
 import {
   HomeDetailView,
@@ -419,6 +420,27 @@ struct Index {
         enableComponentSafeArea: true // ② 内容区自动避让 titlebar
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.DEVICE_CAPABILITY) {
+      // 开发工具·设备能力检测（v3.37）：从工具 Tab 卡片进入
+      HdsNavDestination() {
+        DeviceCapabilityView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '设备能力检测'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (isSettingsRoute(name)) {
       // 设置域目的地统一装配（v3.28 收口，TODO-019）：视图 + titleBar + 沉浸避让
       // 全部域内自理（SettingsDestination），入口只做一次收口判断
@@ -492,7 +514,11 @@ struct Index {
       .tabBar(this.tabsBar[1])
 
       TabContent() {
-        DeviceCapabilityView()
+        ToolsView({
+          onOpenDeviceCapability: (): void => {
+            RouterManager.getInstance().push(AppRoute.DEVICE_CAPABILITY);
+          }
+        })
       }
       .tabBar(this.tabsBar[2])
     }
