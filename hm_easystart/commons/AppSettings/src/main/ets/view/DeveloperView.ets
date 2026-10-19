@@ -3,7 +3,6 @@ import { AppEnvManager, AppEnvSnapshot, BreakpointManager, MarketHelper, common 
 import { AppDialog, AppEmptyState, CommonToast, DialogSemantic } from '@easystart/app-component';
 import { image } from '@kit.ImageKit';
 import { CompanyInfo, DevGroup, DevLink, DeveloperProfile, PersonInfo } from '../model/SettingsContentModels';
-import { BrandIconPaths } from '../util/BrandIconPaths';
 import { ClipboardUtil } from '../util/ClipboardUtil';
 import { QrCodeUtil } from '../util/QrCodeUtil';
 import { RawFileTextLoader } from '../util/RawFileTextLoader';
@@ -81,33 +80,44 @@ export struct DeveloperView {
     return '1fr 1fr 1fr';
   }
 
-  /** 链接名 → 官方品牌 path（未匹配返回空串，由通用 link 图标兜底）。 */
-  private brandPath(name: string): string {
+  /**
+   * 品牌图标（v3.34，SVG 资源版）。
+   *
+   * 早前用 Shape + viewPort 缩放 24 单位 path，真机实测只显示一个小点
+   * （viewPort 未按预期缩放），故改为 SVG 资源 + Image.fillColor 着色。
+   */
+  @Builder
+  brandIcon(name: string) {
     if (name.startsWith('GitHub')) {
-      return BrandIconPaths.GITHUB;
+      Image($r('app.media.brand_github'))
+        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+    } else if (name === 'Gitee') {
+      Image($r('app.media.brand_gitee'))
+        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+    } else if (name === '稀土掘金') {
+      Image($r('app.media.brand_juejin'))
+        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+    } else if (name === 'CSDN') {
+      Image($r('app.media.brand_csdn'))
+        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+    } else if (name === '华为开发者联盟') {
+      Image($r('app.media.brand_huawei'))
+        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+    } else if (name === '抖音') {
+      Image($r('app.media.brand_douyin'))
+        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+    } else if (name === '小红书') {
+      Image($r('app.media.brand_xiaohongshu'))
+        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+    } else if (name === '哔哩哔哩') {
+      Image($r('app.media.brand_bilibili'))
+        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+    } else {
+      // AtomGit / 公司官网 / 个人主页：通用链接图标
+      SymbolGlyph($r('sys.symbol.link'))
+        .fontSize(20)
+        .fontColor([$r('app.color.app_text_secondary')])
     }
-    if (name === 'Gitee') {
-      return BrandIconPaths.GITEE;
-    }
-    if (name === '稀土掘金') {
-      return BrandIconPaths.JUEJIN;
-    }
-    if (name === 'CSDN') {
-      return BrandIconPaths.CSDN;
-    }
-    if (name === '华为开发者联盟') {
-      return BrandIconPaths.HUAWEI;
-    }
-    if (name === '抖音') {
-      return BrandIconPaths.DOUYIN;
-    }
-    if (name === '小红书') {
-      return BrandIconPaths.XIAOHONGSHU;
-    }
-    if (name === '哔哩哔哩') {
-      return BrandIconPaths.BILIBILI;
-    }
-    return '';
   }
 
   /** 打开外部链接；无处理方时 Toast 降级。 */
@@ -214,21 +224,8 @@ export struct DeveloperView {
   @Builder
   linkCard(link: DevLink) {
     Row({ space: AppSpacing.SM }) {
-      // 官方品牌图标（Simple Icons 路径，v3.34）；无匹配品牌（如 AtomGit/官网）用通用 link 图标
-      if (this.brandPath(link.name).length > 0) {
-        Shape() {
-          Path()
-            .commands(this.brandPath(link.name))
-            .fill($r('app.color.app_text_secondary'))
-        }
-        .viewPort({ x: 0, y: 0, width: 24, height: 24 })
-        .width(20)
-        .height(20)
-      } else {
-        SymbolGlyph($r('sys.symbol.link'))
-          .fontSize(20)
-          .fontColor([$r('app.color.app_text_secondary')])
-      }
+      // 官方品牌图标（SVG 资源，v3.34）
+      this.brandIcon(link.name)
       Column({ space: AppSpacing.XXS }) {
         Text(link.name)
           .fontSize(AppFontSize.BODY)
