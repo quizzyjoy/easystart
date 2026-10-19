@@ -63,8 +63,8 @@ function appDialogBuilder(content: AppDialogContent) {
         actions: content.actions
       })
     }
-    .width(DIALOG_MAX_WIDTH_VP)
-    .constraintSize({ maxHeight: '90%' })
+    .width('90%')
+    .constraintSize({ maxWidth: DIALOG_MAX_WIDTH_VP, maxHeight: '90%' })
     .align(Alignment.Center)
     .edgeEffect(EdgeEffect.None)
     .scrollBar(BarState.Off)
