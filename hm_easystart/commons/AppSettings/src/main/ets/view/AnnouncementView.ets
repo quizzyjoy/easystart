@@ -79,8 +79,8 @@ export struct AnnouncementView {
       .padding({
         // v3.32 宽度统一：左右额外内缩，对齐 HdsListItemCard 自带的约 17vp 横向内缩，
         // 使自绘卡片与设置行的背景宽度一致（否则子页卡片会比主页行宽一圈）。
-        left: DesignToken.pagePadding(this.bp()) + AppSpacing.LG + AppSpacing.XXS,
-        right: DesignToken.pagePadding(this.bp()) + AppSpacing.LG + AppSpacing.XXS,
+        left: DesignToken.pagePadding(this.bp()),
+        right: DesignToken.pagePadding(this.bp()),
         top: AppSpacing.LG,
         bottom: AppSpacing.XXXL
       })

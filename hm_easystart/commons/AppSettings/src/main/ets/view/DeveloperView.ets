@@ -90,28 +90,28 @@ export struct DeveloperView {
   brandIcon(name: string) {
     if (name.startsWith('GitHub')) {
       Image($r('app.media.brand_github'))
-        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+        .width(20).height(20)
     } else if (name === 'Gitee') {
       Image($r('app.media.brand_gitee'))
-        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+        .width(20).height(20)
     } else if (name === '稀土掘金') {
       Image($r('app.media.brand_juejin'))
-        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+        .width(20).height(20)
     } else if (name === 'CSDN') {
       Image($r('app.media.brand_csdn'))
-        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+        .width(20).height(20)
     } else if (name === '华为开发者联盟') {
       Image($r('app.media.brand_huawei'))
-        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+        .width(20).height(20)
     } else if (name === '抖音') {
       Image($r('app.media.brand_douyin'))
-        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+        .width(20).height(20)
     } else if (name === '小红书') {
       Image($r('app.media.brand_xiaohongshu'))
-        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+        .width(20).height(20)
     } else if (name === '哔哩哔哩') {
       Image($r('app.media.brand_bilibili'))
-        .width(20).height(20).fillColor($r('app.color.app_text_secondary'))
+        .width(20).height(20)
     } else {
       // AtomGit / 公司官网 / 个人主页：通用链接图标
       SymbolGlyph($r('sys.symbol.link'))
@@ -583,8 +583,8 @@ export struct DeveloperView {
       .padding({
         // v3.32 宽度统一：左右额外内缩，对齐 HdsListItemCard 自带的约 17vp 横向内缩，
         // 使自绘卡片与设置行的背景宽度一致（否则子页卡片会比主页行宽一圈）。
-        left: DesignToken.pagePadding(this.bp()) + AppSpacing.LG + AppSpacing.XXS,
-        right: DesignToken.pagePadding(this.bp()) + AppSpacing.LG + AppSpacing.XXS,
+        left: DesignToken.pagePadding(this.bp()),
+        right: DesignToken.pagePadding(this.bp()),
         top: AppSpacing.LG,
         bottom: AppSpacing.XXXL
       })
