@@ -90,36 +90,77 @@ export struct DeveloperView {
   brandIcon(name: string) {
     if (name.startsWith('GitHub')) {
       Image($r('app.media.brand_github'))
-        .width(24).height(24)
+        .width(28).height(28)
     } else if (name === 'Gitee') {
       Image($r('app.media.brand_gitee'))
-        .width(24).height(24)
+        .width(28).height(28)
     } else if (name === '稀土掘金') {
       Image($r('app.media.brand_juejin'))
-        .width(24).height(24)
+        .width(28).height(28)
     } else if (name === 'CSDN') {
       Image($r('app.media.brand_csdn'))
-        .width(24).height(24)
+        .width(28).height(28)
     } else if (name === '华为开发者联盟') {
       Image($r('app.media.brand_huawei'))
-        .width(24).height(24)
+        .width(28).height(28)
     } else if (name === '抖音') {
       Image($r('app.media.brand_douyin'))
-        .width(24).height(24)
+        .width(28).height(28)
     } else if (name === '小红书') {
       Image($r('app.media.brand_xiaohongshu'))
-        .width(24).height(24)
+        .width(28).height(28)
     } else if (name === '哔哩哔哩') {
       Image($r('app.media.brand_bilibili'))
-        .width(24).height(24)
+        .width(28).height(28)
+    } else if (name === 'AtomGit') {
+      Image($r('app.media.brand_atomgit'))
+        .width(28).height(28)
     } else {
-      // AtomGit / 公司官网 / 个人主页：通用链接图标
+      // 公司官网 / 个人主页：通用链接图标
       SymbolGlyph($r('sys.symbol.link'))
-        .fontSize(24)
+        .fontSize(28)
         .fontColor([$r('app.color.app_text_secondary')])
     }
   }
 
+  /** 该链接是否有官方品牌色（决定卡片底色与文字反色）。 */
+  private hasBrandColor(name: string): boolean {
+    return name.startsWith('GitHub') || name === 'Gitee' || name === 'AtomGit' || name === '稀土掘金' ||
+      name === 'CSDN' || name === '华为开发者联盟' || name === '抖音' || name === '小红书' ||
+      name === '哔哩哔哩';
+  }
+
+  /** 链接卡片的品牌底色（与品牌 SVG 背景保持一致）。 */
+  private brandColor(name: string): ResourceColor {
+    if (name.startsWith('GitHub')) {
+      return '#181717';
+    }
+    if (name === 'Gitee') {
+      return '#C71D23';
+    }
+    if (name === 'AtomGit') {
+      return '#D6222A';
+    }
+    if (name === '稀土掘金') {
+      return '#1E80FF';
+    }
+    if (name === 'CSDN') {
+      return '#FC5531';
+    }
+    if (name === '华为开发者联盟') {
+      return '#CF0A2C';
+    }
+    if (name === '抖音') {
+      return '#000000';
+    }
+    if (name === '小红书') {
+      return '#FF2442';
+    }
+    if (name === '哔哩哔哩') {
+      return '#00A1D6';
+    }
+    return $r('app.color.app_bg_card');
+  }
   /** 打开外部链接；无处理方时 Toast 降级。 */
   private openLink(url: string): void {
     MarketHelper.getInstance().openUri(url).then((ok: boolean): void => {
@@ -206,13 +247,15 @@ export struct DeveloperView {
         Text(link.name)
           .fontSize(AppFontSize.BODY)
           .fontWeight(AppFontWeight.MEDIUM)
-          .fontColor($r('app.color.app_text_primary'))
+          .fontColor(this.hasBrandColor(link.name)
+            ? $r('app.color.app_text_on_brand') : $r('app.color.app_text_primary'))
           .width('100%')
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
         Text(link.desc)
           .fontSize(AppFontSize.CAPTION)
-          .fontColor($r('app.color.app_text_tertiary'))
+          // 品牌底色卡片上用半透明白，普通卡片沿用三级文字色
+          .fontColor(this.hasBrandColor(link.name) ? '#CCFFFFFF' : $r('app.color.app_text_tertiary'))
           .width('100%')
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
@@ -224,7 +267,8 @@ export struct DeveloperView {
     .alignItems(VerticalAlign.Center)
     .padding(AppSpacing.MD)
     .borderRadius(AppRadius.LG)
-    .backgroundColor($r('app.color.app_bg_card'))
+    // 卡片底色 = 品牌色（与品牌 SVG 背景一致），无品牌色的回退普通卡片色
+    .backgroundColor(this.brandColor(link.name))
     .onClick((): void => {
       this.handleLink(link.name, link.url);
     })

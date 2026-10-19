@@ -38,9 +38,15 @@ export struct CommonDialog {
           .fontWeight(AppFontWeight.BOLD)
           .fontColor($r('app.color.app_text_primary'))
         Text(this.message)
+          .width('100%')
           .fontSize(AppFontSize.BODY_SM)
           .fontColor($r('app.color.app_text_secondary'))
-          .textAlign(TextAlign.Center)
+          .textAlign(TextAlign.Start)
+          // 长路径 / URL 等无空格串需要强制断行，否则会撑出弹窗右边界被裁切
+          .wordBreak(WordBreak.BREAK_ALL)
+          // 弹窗容器在 Scroll 紧约束下不传导 Column 的横向内边距，正文需自行留白，
+          // 否则首尾字符会贴边被裁（v3.35 真机走查：路径末尾字符缺失）
+          .padding({ left: AppSpacing.LG, right: AppSpacing.LG })
       }
       .width('100%')
 
