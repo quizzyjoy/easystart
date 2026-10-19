@@ -91,30 +91,57 @@ export struct DeveloperView {
     if (name.startsWith('GitHub')) {
       Image($r('app.media.brand_github'))
         .width(28).height(28)
+        .borderRadius(8)
+        .border({ width: 1, color: '#33FFFFFF' })
+        .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === 'Gitee') {
       Image($r('app.media.brand_gitee'))
         .width(28).height(28)
+        .borderRadius(8)
+        .border({ width: 1, color: '#33FFFFFF' })
+        .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === '稀土掘金') {
       Image($r('app.media.brand_juejin'))
         .width(28).height(28)
+        .borderRadius(8)
+        .border({ width: 1, color: '#33FFFFFF' })
+        .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === 'CSDN') {
       Image($r('app.media.brand_csdn'))
         .width(28).height(28)
+        .borderRadius(8)
+        .border({ width: 1, color: '#33FFFFFF' })
+        .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === '华为开发者联盟') {
       Image($r('app.media.brand_huawei'))
         .width(28).height(28)
+        .borderRadius(8)
+        .border({ width: 1, color: '#33FFFFFF' })
+        .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === '抖音') {
       Image($r('app.media.brand_douyin'))
         .width(28).height(28)
+        .borderRadius(8)
+        .border({ width: 1, color: '#33FFFFFF' })
+        .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === '小红书') {
       Image($r('app.media.brand_xiaohongshu'))
         .width(28).height(28)
+        .borderRadius(8)
+        .border({ width: 1, color: '#33FFFFFF' })
+        .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === '哔哩哔哩') {
       Image($r('app.media.brand_bilibili'))
         .width(28).height(28)
+        .borderRadius(8)
+        .border({ width: 1, color: '#33FFFFFF' })
+        .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else if (name === 'AtomGit') {
       Image($r('app.media.brand_atomgit'))
         .width(28).height(28)
+        .borderRadius(8)
+        .border({ width: 1, color: '#33FFFFFF' })
+        .shadow({ radius: 6, color: '#33000000', offsetX: 0, offsetY: 2 })
     } else {
       // 公司官网 / 个人主页：通用链接图标
       SymbolGlyph($r('sys.symbol.link'))
@@ -133,31 +160,31 @@ export struct DeveloperView {
   /** 链接卡片的品牌底色（与品牌 SVG 背景保持一致）。 */
   private brandColor(name: string): ResourceColor {
     if (name.startsWith('GitHub')) {
-      return '#181717';
+      return $r('app.color.brand_card_github');
     }
     if (name === 'Gitee') {
-      return '#C71D23';
+      return $r('app.color.brand_card_gitee');
     }
     if (name === 'AtomGit') {
-      return '#D6222A';
+      return $r('app.color.brand_card_atomgit');
     }
     if (name === '稀土掘金') {
-      return '#1E80FF';
+      return $r('app.color.brand_card_juejin');
     }
     if (name === 'CSDN') {
-      return '#FC5531';
+      return $r('app.color.brand_card_csdn');
     }
     if (name === '华为开发者联盟') {
-      return '#CF0A2C';
+      return $r('app.color.brand_card_huawei');
     }
     if (name === '抖音') {
-      return '#000000';
+      return $r('app.color.brand_card_douyin');
     }
     if (name === '小红书') {
-      return '#FF2442';
+      return $r('app.color.brand_card_xiaohongshu');
     }
     if (name === '哔哩哔哩') {
-      return '#00A1D6';
+      return $r('app.color.brand_card_bilibili');
     }
     return $r('app.color.app_bg_card');
   }
@@ -255,7 +282,7 @@ export struct DeveloperView {
         Text(link.desc)
           .fontSize(AppFontSize.CAPTION)
           // 品牌底色卡片上用半透明白，普通卡片沿用三级文字色
-          .fontColor(this.hasBrandColor(link.name) ? '#CCFFFFFF' : $r('app.color.app_text_tertiary'))
+          .fontColor($r('app.color.app_text_tertiary'))
           .width('100%')
           .maxLines(1)
           .textOverflow({ overflow: TextOverflow.Ellipsis })

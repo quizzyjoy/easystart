@@ -1,5 +1,14 @@
 {
   "color": [
+    { "name": "brand_card_github", "value": "#2A2A2C" },
+    { "name": "brand_card_gitee", "value": "#3B1517" },
+    { "name": "brand_card_atomgit", "value": "#3D1517" },
+    { "name": "brand_card_juejin", "value": "#12284A" },
+    { "name": "brand_card_csdn", "value": "#471C11" },
+    { "name": "brand_card_huawei", "value": "#3C0D14" },
+    { "name": "brand_card_douyin", "value": "#242424" },
+    { "name": "brand_card_xiaohongshu", "value": "#471016" },
+    { "name": "brand_card_bilibili", "value": "#0B2C3A" },
     { "name": "app_bg_page", "value": "#121212" },
     { "name": "app_bg_page_deep", "value": "#0E0E0F" },
     { "name": "app_bg_card", "value": "#1E1E1E" },
