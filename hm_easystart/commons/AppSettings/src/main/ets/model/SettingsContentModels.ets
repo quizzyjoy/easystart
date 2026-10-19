@@ -94,25 +94,29 @@ export class VersionLogEntry {
 /** 帮助反馈渠道（help_feedback.json）；字段空串 = 渠道未配置（对应行隐藏）。 */
 export class FeedbackChannels {
   readonly email: string;
+  readonly personalEmail: string;
   readonly qqGroup: string;
 
-  constructor(email: string, qqGroup: string) {
+  constructor(email: string, personalEmail: string, qqGroup: string) {
     this.email = email;
+    this.personalEmail = personalEmail;
     this.qqGroup = qqGroup;
   }
 
   /** 两渠道均未配置（空态判定）。 */
   isEmpty(): boolean {
-    return this.email.length === 0 && this.qqGroup.length === 0;
+    return this.email.length === 0 && this.personalEmail.length === 0 && this.qqGroup.length === 0;
   }
 
   /** 解析 help_feedback.json；结构不符返回空渠道（子页渲染空态）。 */
   static parse(text: string): FeedbackChannels {
     const root: Record<string, Object> = JSON.parse(text) as Record<string, Object>;
     const email: Object = root['email'];
+    const personalEmail: Object = root['personalEmail'];
     const qqGroup: Object = root['qqGroup'];
     return new FeedbackChannels(
       typeof email === 'string' ? email : '',
+      typeof personalEmail === 'string' ? personalEmail : '',
       typeof qqGroup === 'string' ? qqGroup : ''
     );
   }

@@ -337,6 +337,10 @@
       "value": "Feedback email"
     },
     {
+      "name": "settings_help_feedback_personal_email",
+      "value": "Personal email"
+    },
+    {
       "name": "settings_help_feedback_qq_group",
       "value": "QQ group"
     },

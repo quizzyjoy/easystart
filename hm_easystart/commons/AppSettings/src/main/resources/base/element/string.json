@@ -337,6 +337,10 @@
       "value": "反馈邮箱"
     },
     {
+      "name": "settings_help_feedback_personal_email",
+      "value": "个人邮箱"
+    },
+    {
       "name": "settings_help_feedback_qq_group",
       "value": "QQ 交流群"
     },

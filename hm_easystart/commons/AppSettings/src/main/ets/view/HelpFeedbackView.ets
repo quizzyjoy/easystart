@@ -1,4 +1,4 @@
-import { HdsListItemCard, IconSize, PrefixIcon, SuffixTextAndArrow } from '@kit.UIDesignKit';
+import { HdsListItemCard, IconSize, PrefixIcon, SuffixArrow, SuffixTextAndArrow } from '@kit.UIDesignKit';
 import { AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, common } from '@quizzyjoy/platform';
 import { AppEmptyState, CommonToast } from '@easystart/app-component';
@@ -17,7 +17,7 @@ const RAWFILE_NAME: string = 'help_feedback.json';
  */
 @ComponentV2
 export struct HelpFeedbackView {
-  @Local channels: FeedbackChannels = new FeedbackChannels('', '');
+  @Local channels: FeedbackChannels = new FeedbackChannels('', '', '');
   @Local emptyText: string = '';
 
   aboutToAppear(): void {
@@ -36,7 +36,7 @@ export struct HelpFeedbackView {
       const text: string = await RawFileTextLoader.load(ctx, RAWFILE_NAME);
       this.channels = FeedbackChannels.parse(text);
     } catch (err) {
-      this.channels = new FeedbackChannels('', '');
+      this.channels = new FeedbackChannels('', '', '');
     }
   }
 
@@ -76,9 +76,27 @@ export struct HelpFeedbackView {
                 primaryText: { text: $r('app.string.settings_help_feedback_email') },
                 secondaryText: { text: this.channels.email }
               },
-              suffixItem: new SuffixTextAndArrow({ text: this.channels.email }),
+              suffixItem: new SuffixArrow(),
               onClick: (): void => {
                 this.copyWithToast(this.channels.email, false);
+              }
+            })
+              .width('100%')
+          }
+
+          if (this.channels.personalEmail.length > 0) {
+            HdsListItemCard({
+              prefixItem: new PrefixIcon({
+                iconSize: IconSize.SYSTEM_ICON,
+                iconValue: { symbol: $r('sys.symbol.envelope') }
+              }),
+              textItem: {
+                primaryText: { text: $r('app.string.settings_help_feedback_personal_email') },
+                secondaryText: { text: this.channels.personalEmail }
+              },
+              suffixItem: new SuffixArrow(),
+              onClick: (): void => {
+                this.copyWithToast(this.channels.personalEmail, false);
               }
             })
               .width('100%')
@@ -118,5 +136,6 @@ export struct HelpFeedbackView {
     .backgroundColor($r('app.color.app_bg_page'))
     .scrollBar(BarState.Off)
     .edgeEffect(EdgeEffect.Spring)
+    .align(Alignment.Top)
   }
 }

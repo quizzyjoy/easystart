@@ -1,5 +1,6 @@
 {
-  "_readme": "帮助反馈占位数据（fork 替换点）：email / qqGroup 为空字符串时对应行隐藏，两者皆空显示空态。",
-  "email": "feedback@example.com",
-  "qqGroup": "123456789"
+  "_readme": "帮助反馈数据（fork 替换点）：email=官方邮箱、personalEmail=个人邮箱、qqGroup=群号；任一项为空字符串时对应行隐藏，全空显示空态。",
+  "email": "official@quizzyjoy.com",
+  "personalEmail": "dongyang@quizzyjoy.com",
+  "qqGroup": ""
 }
