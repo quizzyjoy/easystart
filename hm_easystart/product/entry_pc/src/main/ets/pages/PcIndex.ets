@@ -3,15 +3,22 @@ import { AppRoute } from '@easystart/app-routes';
 import { isSettingsRoute, SettingsDestination } from '@easystart/app-settings';
 import {
   ChartsDashboardView,
-  ComponentGalleryView,
+  ComponentGroupView,
   DemoSample,
   DesignTokensView,
   DeviceCapabilityView,
+  ExamplesView,
   FeedbackFlowView,
   FormSampleView,
   HoverSplitView,
+  LearnChapterView,
+  LearnView,
   ListStateView,
-  SearchView
+  SearchView,
+  TemplateAboutView,
+  ToolsView,
+  galleryGroupTitle,
+  learnChapterOrDefault
 } from '@easystart/demo-feature';
 import {
   HomeDetailView,
@@ -131,7 +138,8 @@ struct PcIndex {
       AppStorage.setOrCreate('settings_target', target);
       RouterManager.getInstance().push(AppRoute.SETTINGS);
     } else if (target === 'gallery') {
-      this.tabController.changeIndex(1);
+      // v3.38：示例首页即画廊入口（L1），深链落到 Tab0
+      this.tabController.changeIndex(0);
     }
   }
 
@@ -178,32 +186,31 @@ struct PcIndex {
     RouterManager.getInstance().push(AppRoute.SETTINGS);
   }
 
+  /** 场景卡 id -> DemoSample -> openDemoPage（v3.38 示例首页场景行用）。 */
+  private openSceneById(sceneId: string): void {
+    let sample: DemoSample = DemoSample.TOKENS;
+    if (sceneId === 'feedback') {
+      sample = DemoSample.FEEDBACK;
+    } else if (sceneId === 'charts') {
+      sample = DemoSample.CHARTS;
+    } else if (sceneId === 'form') {
+      sample = DemoSample.FORM;
+    } else if (sceneId === 'list') {
+      sample = DemoSample.LIST;
+    } else if (sceneId === 'search') {
+      sample = DemoSample.SEARCH;
+    } else if (sceneId === 'hover') {
+      sample = DemoSample.FOLD_HOVER;
+    }
+    this.openDemoPage(sample);
+  }
+
   /**
-   * 首页能力目录分发（v3.26）：feature 只上抛 HomeTarget 语义，路由名映射唯一出处在入口。
-   * - 6 个 demo 子页复用 openDemoPage（DemoSample 映射，避免两处维护路由名）；
-   * - 设置 / 详情走 push（详情传 HomeItem **对象**，pageMap 侧 instanceof 收窄）；
-   * - 设备能力切换到底部 Tab（不 push 子页）。
+   * 模板能力目录分发（v3.26；v3.38 收口为三项）：feature 只上抛 HomeTarget 语义，
+   * 路由名映射唯一出处在入口。设置 / 详情走 push；设备能力切换到底部「开发工具」Tab。
    */
   private openHomeTarget(item: HomeItem): void {
     switch (item.target) {
-      case HomeTarget.TOKENS:
-        this.openDemoPage(DemoSample.TOKENS);
-        break;
-      case HomeTarget.FEEDBACK:
-        this.openDemoPage(DemoSample.FEEDBACK);
-        break;
-      case HomeTarget.CHARTS:
-        this.openDemoPage(DemoSample.CHARTS);
-        break;
-      case HomeTarget.FORM:
-        this.openDemoPage(DemoSample.FORM);
-        break;
-      case HomeTarget.LIST:
-        this.openDemoPage(DemoSample.LIST);
-        break;
-      case HomeTarget.SEARCH:
-        this.openDemoPage(DemoSample.SEARCH);
-        break;
       case HomeTarget.SETTINGS:
         RouterManager.getInstance().push(AppRoute.SETTINGS);
         break;
@@ -426,6 +433,111 @@ struct PcIndex {
         enableComponentSafeArea: true // ② 内容区自动避让 titlebar
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.GALLERY_GROUP) {
+      HdsNavDestination() {
+        ComponentGroupView({ groupId: `${param}` })
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: galleryGroupTitle(`${param}`)
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.LEARN_CHAPTER) {
+      HdsNavDestination() {
+        LearnChapterView({ chapterId: `${param}` })
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '学习',
+            subTitle: learnChapterOrDefault(`${param}`).title
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.TEMPLATE_ABOUT) {
+      HdsNavDestination() {
+        TemplateAboutView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '关于模板'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.HOME_CATALOG) {
+      HdsNavDestination() {
+        HomeListView({
+          onOpenDetail: (item: HomeItem): void => {
+            this.openHomeTarget(item);
+          }
+        })
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '模板能力'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.DEVICE_CAPABILITY) {
+      HdsNavDestination() {
+        DeviceCapabilityView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '设备能力检测'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (isSettingsRoute(name)) {
       // 设置域目的地统一装配（v3.28 收口，TODO-019）：视图 + titleBar + 沉浸避让
       // 全部域内自理（SettingsDestination），入口只做一次收口判断
@@ -491,25 +603,41 @@ struct PcIndex {
   tabArea() {
     HdsTabs({ controller: this.tabController }) {
       TabContent() {
-        HomeListView({
-          onOpenDetail: (item: HomeItem): void => {
-            this.openHomeTarget(item);
+        ExamplesView({
+          onOpenGalleryGroup: (groupId: string): void => {
+            RouterManager.getInstance().push(AppRoute.GALLERY_GROUP, groupId);
+          },
+          onOpenScene: (sceneId: string): void => {
+            this.openSceneById(sceneId);
+          },
+          onOpenCatalog: (): void => {
+            RouterManager.getInstance().push(AppRoute.HOME_CATALOG);
+          },
+          onOpenTokens: (): void => {
+            RouterManager.getInstance().push(AppRoute.DEMO_TOKENS);
+          },
+          onOpenTemplate: (): void => {
+            RouterManager.getInstance().push(AppRoute.TEMPLATE_ABOUT);
           }
         })
       }
       .tabBar(this.tabsBar[0])
 
       TabContent() {
-        ComponentGalleryView({
-          onOpenDemoPage: (sample: DemoSample): void => {
-            this.openDemoPage(sample);
+        LearnView({
+          onOpenChapter: (chapterId: string): void => {
+            RouterManager.getInstance().push(AppRoute.LEARN_CHAPTER, chapterId);
           }
         })
       }
       .tabBar(this.tabsBar[1])
 
       TabContent() {
-        DeviceCapabilityView()
+        ToolsView({
+          onOpenDeviceCapability: (): void => {
+            RouterManager.getInstance().push(AppRoute.DEVICE_CAPABILITY);
+          }
+        })
       }
       .tabBar(this.tabsBar[2])
     }

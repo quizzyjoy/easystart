@@ -3,23 +3,26 @@ import { AppRoute } from '@easystart/app-routes';
 import { isSettingsRoute, SettingsDestination } from '@easystart/app-settings';
 import {
   ChartsDashboardView,
-  ComponentGalleryView,
+  ComponentGroupView,
   DemoSample,
   DesignTokensView,
   DeviceCapabilityView,
+  ExamplesView,
   FeedbackFlowView,
   FormSampleView,
   HoverSplitView,
+  LearnChapterView,
+  LearnView,
   ListStateView,
   SearchView,
+  TemplateAboutView,
   ToolsView,
-  ExamplesView,
-  GalleryGroupView
+  galleryGroupTitle,
+  learnChapterOrDefault
 } from '@easystart/demo-feature';
 import {
   HomeDetailView,
   HomeItem,
-  HomeListView,
   HomeTarget
 } from '@easystart/home-feature';
 import { AppFontSize, AppRadius, AppSize, AppSpacing } from '@quizzyjoy/foundation';
@@ -128,7 +131,8 @@ struct Index {
       AppStorage.setOrCreate('settings_target', target);
       RouterManager.getInstance().push(AppRoute.SETTINGS);
     } else if (target === 'gallery') {
-      this.tabController.changeIndex(1);
+      // 卡片深链「打开组件示例」：v3.38 起画廊收口到示例 Tab（L1 首页），落到 Tab0
+      this.tabController.changeIndex(0);
     }
   }
 
@@ -195,31 +199,12 @@ struct Index {
   }
 
   /**
-   * 首页能力目录分发（v3.26）：feature 只上抛 HomeTarget 语义，路由名映射唯一出处在入口。
-   * - 6 个 demo 子页复用 openDemoPage（DemoSample 映射，避免两处维护路由名）；
-   * - 设置 / 详情走 push（详情传 HomeItem **对象**，pageMap 侧 instanceof 收窄）；
-   * - 设备能力切换到底部 Tab（不 push 子页）。
+   * 模板能力目录分发（v3.26；v3.38 收口为三项）：feature 只上抛 HomeTarget 语义，
+   * 路由名映射唯一出处在入口。设置 / 详情走 push（详情传 HomeItem **对象**，
+   * pageMap 侧 instanceof 收窄）；设备能力切换到底部「开发工具」Tab（不 push 子页）。
    */
   private openHomeTarget(item: HomeItem): void {
     switch (item.target) {
-      case HomeTarget.TOKENS:
-        this.openDemoPage(DemoSample.TOKENS);
-        break;
-      case HomeTarget.FEEDBACK:
-        this.openDemoPage(DemoSample.FEEDBACK);
-        break;
-      case HomeTarget.CHARTS:
-        this.openDemoPage(DemoSample.CHARTS);
-        break;
-      case HomeTarget.FORM:
-        this.openDemoPage(DemoSample.FORM);
-        break;
-      case HomeTarget.LIST:
-        this.openDemoPage(DemoSample.LIST);
-        break;
-      case HomeTarget.SEARCH:
-        this.openDemoPage(DemoSample.SEARCH);
-        break;
       case HomeTarget.SETTINGS:
         RouterManager.getInstance().push(AppRoute.SETTINGS);
         break;
@@ -443,13 +428,57 @@ struct Index {
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (name === AppRoute.GALLERY_GROUP) {
+      // L2 组件分组页（v3.38）：param = basic/visual/platform/app，标题由分组元数据决定
       HdsNavDestination() {
-        GalleryGroupView({ groupId: `${param}` })
+        ComponentGroupView({ groupId: `${param}` })
       }
       .titleBar({
         content: {
           title: {
-            mainTitle: '组件示例'
+            mainTitle: galleryGroupTitle(`${param}`)
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.LEARN_CHAPTER) {
+      // 学习 Tab 章节详情（v3.38）：param = 章节 id，标题取章节标题
+      HdsNavDestination() {
+        LearnChapterView({ chapterId: `${param}` })
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '学习',
+            subTitle: learnChapterOrDefault(`${param}`).title
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.TEMPLATE_ABOUT) {
+      // L3 关于模板（v3.38）：这是什么 / 怎么用 / 如何 fork
+      HdsNavDestination() {
+        TemplateAboutView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '关于模板'
           }
         },
         style: {
@@ -469,7 +498,7 @@ struct Index {
       .titleBar({
         content: {
           title: {
-            mainTitle: '能力目录'
+            mainTitle: '模板能力'
           }
         },
         style: {
@@ -567,15 +596,21 @@ struct Index {
           },
           onOpenCatalog: (): void => {
             RouterManager.getInstance().push(AppRoute.HOME_CATALOG);
+          },
+          onOpenTokens: (): void => {
+            RouterManager.getInstance().push(AppRoute.DEMO_TOKENS);
+          },
+          onOpenTemplate: (): void => {
+            RouterManager.getInstance().push(AppRoute.TEMPLATE_ABOUT);
           }
         })
       }
       .tabBar(this.tabsBar[0])
 
       TabContent() {
-        ComponentGalleryView({
-          onOpenDemoPage: (sample: DemoSample): void => {
-            this.openDemoPage(sample);
+        LearnView({
+          onOpenChapter: (chapterId: string): void => {
+            RouterManager.getInstance().push(AppRoute.LEARN_CHAPTER, chapterId);
           }
         })
       }

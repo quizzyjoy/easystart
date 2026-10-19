@@ -29,6 +29,12 @@ export class AppRoute {
   /** 示例·模板能力目录页（v3.37，pageMap 注册名） */
   static readonly HOME_CATALOG: string = 'HOME_CATALOG';
 
+  /** 示例·关于模板（v3.38 三级架构 L3：这是什么 / 怎么用 / 如何 fork） */
+  static readonly TEMPLATE_ABOUT: string = 'templateAbout';
+
+  /** 学习·教学章节详情（v3.38，pageMap 注册名；param = 章节 id） */
+  static readonly LEARN_CHAPTER: string = 'learnChapter';
+
   /** 开发工具·设备能力检测（v3.37，pageMap 注册名） */
   static readonly DEVICE_CAPABILITY: string = 'DEVICE_CAPABILITY';
 

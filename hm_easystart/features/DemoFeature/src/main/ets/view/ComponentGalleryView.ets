@@ -61,7 +61,6 @@ import {
 } from '@easystart/app-component';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, AppStroke, DesignToken, ResponsiveCase, ResponsiveOperator, ResponsiveRule, ResponsiveValueResolver } from '@quizzyjoy/foundation';
 import { AppFoldStatus, BreakpointManager, ColorModeManager, DeviceManager, DeviceType, HoverStore, ShareHelper, UiMetrics, WindowAdapter } from '@quizzyjoy/platform';
-import { DemoSample } from './DemoSample';
 import { ClipboardUtil } from '../util/ClipboardUtil';
 import { FileDemoUtil } from '../util/FileDemoUtil';
 import { PhotoPickUtil } from '../util/PhotoPickUtil';
@@ -85,57 +84,20 @@ const GALLERY_DSL_CASES: ResponsiveCase<string>[] = [
 /** 文本轮播选择器示例数据（TextPickerDialog range，v3.29）。 */
 const WHEEL_PICKER_RANGE: string[] = ['轻量', '标准', '专业', '旗舰', '定制'];
 
-/** 画廊分组（区块索引卡切换；ALL = 完整长页，保持与历史一致的浏览方式）。 */
-enum GalleryGroup {
-  ALL,
-  BASIC,
-  VISUAL,
-  PLATFORM,
-  APP,
-  MOTION
-}
-
-/** 区块索引元数据行（索引卡渲染源：标题 + 覆盖范围说明）。 */
-class GalleryGroupEntry {
-  group: GalleryGroup = GalleryGroup.ALL;
-  title: string = '';
-  desc: string = '';
-
-  constructor(group: GalleryGroup, title: string, desc: string) {
-    this.group = group;
-    this.title = title;
-    this.desc = desc;
-  }
-}
-
-const GALLERY_GROUPS: GalleryGroupEntry[] = [
-  new GalleryGroupEntry(GalleryGroup.ALL, '全部区块', '完整长页浏览（与历史一致）'),
-  new GalleryGroupEntry(GalleryGroup.BASIC, '入口与基础',
-    '样例子页入口 + 按钮 / 标签 / 搜索 / 轻提示·对话框 / 骨架屏 / 卡片 / 选择器弹窗'),
-  new GalleryGroupEntry(GalleryGroup.VISUAL, '数据可视化', '四图表（玫瑰/饼/季度玫瑰/雷达）+ 取色器 + Loading 三形态'),
-  new GalleryGroupEntry(GalleryGroup.PLATFORM, '平台能力与令牌',
-    '响应式 DSL / 折叠态·折痕 / 色彩令牌 / 沉浸式避让 / 系统分享 / 照片选择 / 剪贴板与安全组件'),
-  new GalleryGroupEntry(GalleryGroup.APP, '应用组件',
-    'AppComponent：反馈族 / modifier 族 / 主题化控件工厂 / 容器 / 表单 / 扩展换肤'),
-  new GalleryGroupEntry(GalleryGroup.MOTION, '动效与工具',
-    'MotionSpec·MotionEffects 动效规范 + ColorMath 色彩数学')
-];
-
 /**
- * 组件画廊视图：VitalUI 组件的一页式示例。
+ * 组件画廊视图：VitalUI / AppComponent 组件的一页式示例。
  *
- * 由入口装配；运行时主题通过 UiThemeManager 单例注入 accentColor。
+ * v3.38 三级架构：本组件只渲染**一个分组**（groupId = basic/visual/platform/app，
+ * 由 L2 分组页传入），或 groupId 为空时按分组顺序渲染四段的完整长页（TV / PC 入口用）。
+ * 原「区块索引卡切换」已移除——分组选择上移到 L1 首页，组件内不再有分组态。
+ *
+ * 运行时主题通过 UiThemeManager 单例注入 accentColor；
  * 对话框使用 getPromptAction().openCustomDialog + 成员 @Builder（全局 @Builder 会闪退）。
  */
 @ComponentV2
 export struct ComponentGalleryView {
-  /** 样例子页 hub 开关（TV 无 Navigation 宿主，入口传 false 隐藏；v3.9）。 */
-  @Param demoHubEnabled: boolean = true;
-  /** 初始选中的区块（basic / visual / platform / app）；空 = 全部。 */
-  @Param initialGroup: string = '';
-  /** 样例子页入口点击（@Event 上抛，入口映射 DemoSample → AppRoute 后 push）。 */
-  @Event onOpenDemoPage: (sample: DemoSample) => void = () => {
-  };
+  /** 分组 id（basic / visual / platform / app）；空 = 四组按序全渲染（TV / PC 入口）。 */
+  @Param groupId: string = '';
   @Local theme: UiThemeManager = UiThemeManager.getInstance();
   @Local keyword: string = '';
   @Local dialogId: number = -1;
@@ -164,8 +126,6 @@ export struct ComponentGalleryView {
   @Local ctlSearchValue: string = '';
   @Local ctlRefreshing: boolean = false;
 
-  /** 区块索引分组（v3.26：结构完善——分组切换替代无索引长页；默认「全部」与历史一致）。 */
-  @Local group: GalleryGroup = GalleryGroup.ALL;
   /** 动效示例态：方块尺寸切换（animateTo + MotionEffects.appearParam）。 */
   @Local motionExpanded: boolean = false;
   /** 动效示例态：列表项增删（ForEach + MotionEffects.listItem 过渡）。 */
@@ -200,15 +160,6 @@ export struct ComponentGalleryView {
   }
 
   aboutToAppear(): void {
-    if (this.initialGroup === 'basic') {
-      this.group = GalleryGroup.BASIC;
-    } else if (this.initialGroup === 'visual') {
-      this.group = GalleryGroup.VISUAL;
-    } else if (this.initialGroup === 'platform') {
-      this.group = GalleryGroup.PLATFORM;
-    } else if (this.initialGroup === 'app') {
-      this.group = GalleryGroup.APP;
-    }
     this.fold.attach();
   }
 
@@ -453,69 +404,6 @@ export struct ComponentGalleryView {
   /** 画廊分组区块：groupBasic（v3.26 自 build() 抽出，内容等价） */
   @Builder
   groupBasic() {
-        if (this.demoHubEnabled) {
-          this.sectionTitle('样例子页（场景范式 · 可整体复制的页面范式）')
-          Column({ space: DesignToken.cardGap() }) {
-            ActionCard({
-              title: '令牌总览',
-              subtitle: '字阶/圆角/间距/描边/阴影/触摸目标/色板全量对照，页面即令牌真相',
-              accentColor: this.theme.accentColor,
-              onAction: () => {
-                this.onOpenDemoPage(DemoSample.TOKENS);
-              }
-            })
-            ActionCard({
-              title: '反馈流',
-              subtitle: '提交失败重试链路 / 危险确认 / 筛选 Sheet 多选回写 / 轻提示降级对照',
-              accentColor: this.theme.accentColor,
-              onAction: () => {
-                this.onOpenDemoPage(DemoSample.FEEDBACK);
-              }
-            })
-            ActionCard({
-              title: '数据看板',
-              subtitle: '四图表断点栅格 + 深浅色联动重绘 + 选中详情联动',
-              accentColor: this.theme.accentColor,
-              onAction: () => {
-                this.onOpenDemoPage(DemoSample.CHARTS);
-              }
-            })
-            ActionCard({
-              title: '表单范式',
-              subtitle: 'AppFormField 受控域 + 逐域校验红线 + 取色实时联动 + 提交闭环',
-              accentColor: this.theme.accentColor,
-              onAction: () => {
-                this.onOpenDemoPage(DemoSample.FORM);
-              }
-            })
-            ActionCard({
-              title: '列表四态',
-              subtitle: 'StateContainer 四态切换 + RefreshList 刷新/分页状态机',
-              accentColor: this.theme.accentColor,
-              onAction: () => {
-                this.onOpenDemoPage(DemoSample.LIST);
-              }
-            })
-            ActionCard({
-              title: '搜索场景',
-              subtitle: 'CommonSearchBar 防抖受控 + 热词提示 / 结果列表 / 无匹配空态三态流转',
-              accentColor: this.theme.accentColor,
-              onAction: () => {
-                this.onOpenDemoPage(DemoSample.SEARCH);
-              }
-            })
-            ActionCard({
-              title: '悬停态分屏',
-              subtitle: '折叠屏半折叠时上展示下操作（AppHoverSplit / FolderStack，折痕由系统自动避让）',
-              accentColor: this.theme.accentColor,
-              onAction: () => {
-                this.onOpenDemoPage(DemoSample.FOLD_HOVER);
-              }
-            })
-          }
-          .width('100%')
-        }
-
         this.sectionTitle('按钮 ButtonVariant')
         Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
           CommonButton({ text: '主操作', variant: ButtonVariant.PRIMARY, accentColor: this.theme.accentColor })
@@ -1327,52 +1215,6 @@ export struct ComponentGalleryView {
           }
         }))
   }
-  /** 区块索引卡：标题 + 覆盖范围 + 当前态高亮（点击切换分组）。 */
-  @Builder
-  blockIndexCard(entry: GalleryGroupEntry) {
-    Row({ space: AppSpacing.MD }) {
-      Column({ space: AppSpacing.XXS }) {
-        Text(entry.title)
-          .fontSize(AppFontSize.BODY)
-          .fontWeight(this.group === entry.group ? AppFontWeight.MEDIUM : AppFontWeight.REGULAR)
-          .fontColor(this.group === entry.group ? $r('app.color.qj_brand') : $r('app.color.app_text_primary'))
-          .width('100%')
-        Text(entry.desc)
-          .fontSize(AppFontSize.CAPTION)
-          .fontColor($r('app.color.app_text_secondary'))
-          .width('100%')
-      }
-      .layoutWeight(1)
-      .alignItems(HorizontalAlign.Start)
-
-      if (this.group === entry.group) {
-        CommonTag({ text: '当前', tone: TagTone.BRAND, accentColor: this.theme.accentColor })
-      }
-    }
-    .width('100%')
-    .padding(DesignToken.cardPadding())
-    .borderRadius(AppRadius.XL)
-    .backgroundColor($r('app.color.app_bg_card'))
-    .border({
-      width: AppStroke.THIN,
-      color: this.group === entry.group ? $r('app.color.qj_brand') : $r('app.color.app_divider')
-    })
-    .onClick(() => {
-      this.group = entry.group;
-    })
-  }
-
-  /** 区块索引（v3.26 结构完善）：分组卡片切换；「全部区块」= 与历史一致的长页浏览。 */
-  @Builder
-  blockIndex() {
-    this.sectionTitle('区块索引（点击切换分组；「全部区块」= 完整长页）')
-    Column({ space: DesignToken.cardGap() }) {
-      ForEach(GALLERY_GROUPS, (entry: GalleryGroupEntry) => {
-        this.blockIndexCard(entry)
-      }, (entry: GalleryGroupEntry) => `${entry.group}`)
-    }
-    .width('100%')
-  }
 
   /**
    * 动效常量标注行（名称 + 值 + 用途）。
@@ -1575,11 +1417,59 @@ export struct ComponentGalleryView {
     .width('100%')
   }
 
-  /** 动效与工具分组（索引卡「动效与工具」）：动效规范 + 色彩数学。 */
+  /** 全量长页的分组小标题（TV / PC 入口在 groupId 为空时使用；L2 单组页不渲染）。 */
   @Builder
-  groupMotion() {
+  groupSectionHeader(title: string, desc: string) {
+    Column({ space: AppSpacing.XXS }) {
+      Text(title)
+        .fontSize(AppFontSize.TITLE_SM)
+        .fontWeight(AppFontWeight.MEDIUM)
+        .fontColor($r('app.color.app_text_primary'))
+        .width('100%')
+      Text(desc)
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor($r('app.color.app_text_tertiary'))
+        .width('100%')
+    }
+    .width('100%')
+    .alignItems(HorizontalAlign.Start)
+    .margin({ top: AppSpacing.XXXL, bottom: AppSpacing.SM })
+  }
+
+  /** 四组按序全渲染（TV / PC 入口；手机端走 L2 单组页，不经此处）。 */
+  @Builder
+  allGroups() {
+    this.groupSectionHeader('入口与基础', '按钮 / 标签 / 搜索 / 轻提示与对话框 / 骨架屏 / 卡片 / 选择器弹窗')
+    this.groupBasic()
+    this.groupSectionHeader('数据可视化', '四图表（玫瑰 / 饼 / 季度玫瑰 / 雷达）+ 取色器 + Loading 三形态')
+    this.groupVisual()
+    this.groupSectionHeader('平台能力与令牌', '响应式 DSL / 折叠态折痕 / 色彩令牌 / 沉浸避让 / 分享 / 选图 / 剪贴板')
+    this.groupPlatformToken()
+    this.groupSectionHeader('应用组件与动效', 'AppComponent 反馈族 / modifier 族 / 控件工厂 / 容器 / 动效规范 / 色彩数学')
+    this.groupApp()
     this.motionBlock()
     this.colorMathBlock()
+  }
+
+  /**
+   * 单组渲染（L2 分组页）：groupId 决定区块。
+   * 动效规范与色彩数学并入「应用组件与动效」组（原独立「动效与工具」区块只由索引卡进入）。
+   */
+  @Builder
+  groupBody() {
+    if (this.groupId === 'visual') {
+      this.groupVisual()
+    } else if (this.groupId === 'platform') {
+      this.groupPlatformToken()
+    } else if (this.groupId === 'app') {
+      this.groupApp()
+      this.motionBlock()
+      this.colorMathBlock()
+    } else if (this.groupId === '') {
+      this.allGroups()
+    } else {
+      this.groupBasic()
+    }
   }
 
   /**
@@ -1655,22 +1545,7 @@ export struct ComponentGalleryView {
       // 响应式令牌范式（ListStateView 同构）：外层居中，内层限宽 + 断点内边距
       Column() {
       Column() {
-        this.blockIndex()
-        if (this.group === GalleryGroup.ALL || this.group === GalleryGroup.BASIC) {
-          this.groupBasic()
-        }
-        if (this.group === GalleryGroup.ALL || this.group === GalleryGroup.VISUAL) {
-          this.groupVisual()
-        }
-        if (this.group === GalleryGroup.ALL || this.group === GalleryGroup.PLATFORM) {
-          this.groupPlatformToken()
-        }
-        if (this.group === GalleryGroup.ALL || this.group === GalleryGroup.APP) {
-          this.groupApp()
-        }
-        if (this.group === GalleryGroup.ALL || this.group === GalleryGroup.MOTION) {
-          this.groupMotion()
-        }
+        this.groupBody()
       }
       .alignItems(HorizontalAlign.Start)
       .width('100%')

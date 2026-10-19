@@ -1,7 +1,7 @@
 import { BreakpointManager, CapabilityManager, RouterManager, WindowAdapter } from '@quizzyjoy/platform';
 import { AppRoute } from '@easystart/app-routes';
 import { isSettingsRoute, SettingsDestination } from '@easystart/app-settings';
-import { ComponentGalleryView, DemoSample, DeviceCapabilityView } from '@easystart/demo-feature';
+import { ComponentGalleryView, DeviceCapabilityView } from '@easystart/demo-feature';
 import { AppFontSize, AppFontWeight, AppSize, AppSpacing } from '@quizzyjoy/foundation';
 import { HdsNavigation } from '@kit.UIDesignKit';
 
@@ -113,13 +113,9 @@ struct TvIndex {
   tabArea() {
     Tabs({ barPosition: BarPosition.Start, index: this.currentIndex }) {
       TabContent() {
-        // 样例子页 hub 隐藏（v3.9）：TV 仅开放设置子页（v3.12），demo 子页不向 TV 开放；
-        // @Event 按约定必须初始化，传 no-op（hub 已隐藏，事件不可达，安全）。
-        ComponentGalleryView({
-          demoHubEnabled: false,
-          onOpenDemoPage: (sample: DemoSample): void => {
-          }
-        })
+        // TV 无 Navigation 宿主，直接把四组按序全渲染（groupId 省略 = 全量长页）；
+        // 样例子页（场景范式）不向 TV 开放，入口事件已随 v3.38 移除。
+        ComponentGalleryView()
       }
       .tabBar($r('app.string.tab_gallery'))
 

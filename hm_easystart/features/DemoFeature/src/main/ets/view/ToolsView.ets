@@ -1,5 +1,5 @@
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { BreakpointManager } from '@quizzyjoy/platform';
+import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
 
 /**
  * 开发工具 Tab（v3.37）。
@@ -12,6 +12,7 @@ export struct ToolsView {
   @Param onOpenDeviceCapability: () => void = (): void => {
   };
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
 
   private bp(): string {
     return `${this.breakpoint.breakpoint}`;
@@ -79,7 +80,8 @@ export struct ToolsView {
         left: DesignToken.pagePadding(this.bp()),
         right: DesignToken.pagePadding(this.bp()),
         top: AppSpacing.LG,
-        bottom: AppSpacing.XXXL
+        // Tab 页统一避让：悬浮页签栏 + 手势条（barOverlap 下内容会延伸到底部 bar 之后）
+        bottom: DesignToken.tabPageBottomPadding(this.bp(), this.windowAdapter.bottomAvoidVp)
       })
     }
     .width('100%')
