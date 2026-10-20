@@ -49,8 +49,8 @@ export class AppRoute {
   static readonly POLICY: string = 'policy';
   /** 设置·开源许可子页（v3.13，pageMap 注册名） */
   static readonly LICENSE: string = 'license';
-  /** 设置·账号子页（v3.28 UI 占位，pageMap 注册名；值与 SettingsRoute.ACCOUNT 逐字同值） */
-  static readonly ACCOUNT: string = 'account';
+  /** 示例·账号登录页范式（v3.40 从设置域迁出，pageMap 注册名） */
+  static readonly ACCOUNT_SAMPLE: string = 'accountSample';
   /** 设置·公告子页（v3.28 数据驱动，pageMap 注册名；值与 SettingsRoute.ANNOUNCEMENT 逐字同值） */
   static readonly ANNOUNCEMENT: string = 'announcement';
   /** 设置·帮助与反馈子页（v3.28 数据驱动，pageMap 注册名；值与 SettingsRoute.HELP_FEEDBACK 逐字同值） */

@@ -22,8 +22,6 @@ export class SettingsRoute {
   static readonly POLICY: string = 'policy';
   /** 开源许可子页（值同 AppRoute.LICENSE） */
   static readonly LICENSE: string = 'license';
-  /** 账号子页（v3.28 UI 占位；值同 AppRoute.ACCOUNT） */
-  static readonly ACCOUNT: string = 'account';
   /** 公告子页（v3.28 数据驱动；值同 AppRoute.ANNOUNCEMENT） */
   static readonly ANNOUNCEMENT: string = 'announcement';
   /** 帮助与反馈子页（v3.28 数据驱动；值同 AppRoute.HELP_FEEDBACK） */
@@ -49,7 +47,6 @@ export function isSettingsRoute(name: string): boolean {
     || name === SettingsRoute.ABOUT
     || name === SettingsRoute.POLICY
     || name === SettingsRoute.LICENSE
-    || name === SettingsRoute.ACCOUNT
     || name === SettingsRoute.ANNOUNCEMENT
     || name === SettingsRoute.HELP_FEEDBACK
     || name === SettingsRoute.VERSION_LOG

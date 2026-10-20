@@ -15,7 +15,6 @@ export { isSettingsRoute, SettingsRoute } from './src/main/ets/model/SettingsRou
 export { SettingsView } from './src/main/ets/view/SettingsView';
 export { AppearanceView } from './src/main/ets/view/AppearanceView';
 export { GeneralView } from './src/main/ets/view/GeneralView';
-export { AccountView } from './src/main/ets/view/AccountView';
 export { AnnouncementView } from './src/main/ets/view/AnnouncementView';
 export { VersionLogView } from './src/main/ets/view/VersionLogView';
 export { HelpFeedbackView } from './src/main/ets/view/HelpFeedbackView';

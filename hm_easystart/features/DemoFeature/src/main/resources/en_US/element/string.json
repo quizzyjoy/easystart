@@ -1,0 +1,44 @@
+{
+  "string": [
+    {
+      "name": "demo_account_title",
+      "value": "Sign in"
+    },
+    {
+      "name": "demo_account_preview_note",
+      "value": "Template preview: no account backend yet. The controls below are interaction demos only."
+    },
+    {
+      "name": "demo_account_preview_toast",
+      "value": "Template preview: not wired yet"
+    },
+    {
+      "name": "demo_account_phone_hint",
+      "value": "Phone number"
+    },
+    {
+      "name": "demo_account_code_hint",
+      "value": "Verification code"
+    },
+    {
+      "name": "demo_account_get_code",
+      "value": "Send code"
+    },
+    {
+      "name": "demo_account_login",
+      "value": "Sign in"
+    },
+    {
+      "name": "demo_account_third_party",
+      "value": "Sign in with"
+    },
+    {
+      "name": "demo_account_delete",
+      "value": "Delete account"
+    },
+    {
+      "name": "demo_account_delete_desc",
+      "value": "Account data will be removed permanently"
+    }
+  ]
+}

@@ -19,6 +19,8 @@ export enum HomeTarget {
   SETTINGS,
   /** 详情页范式（push 本项**对象**，示例「列表 → 详情」链路） */
   DETAIL,
+  /** 账号登录页范式（v3.40 从设置域迁出，push 独立页） */
+  ACCOUNT_SAMPLE,
   /** 设备能力（入口切换到底部「开发工具」Tab，不 push） */
   DEVICE
 }
@@ -87,7 +89,10 @@ export class HomeRepository {
             '结构自上而下：品牌徽标 + 标题副标题 → 元信息标签行 → 正文段落 → 底部操作条（分享 / 收藏）。',
             '导航纪律：detail 视图不感知路由（不 import RouterManager），点击经 @Event 上抛给入口装配层；分享机制由 Platform 的 ShareHelper 承担，页面只决定「分享什么」。'
           ]),
-        new HomeItem('3', '设备能力',
+        new HomeItem('3', '账号登录页范式',
+          '手机号 + 验证码 / 第三方登录 / 注销入口的完整登录页骨架（预览态，未接账号体系）',
+          HomeTarget.ACCOUNT_SAMPLE),
+        new HomeItem('4', '设备能力',
           '断点 / 能力探测 / 设备形态 / 窗口适配等平台能力面板（切换到底部「开发工具」Tab）',
           HomeTarget.DEVICE)
       ];

@@ -35,15 +35,6 @@ import { AppShare } from '../util/AppShare';
 import { StoreFeedback } from '../util/StoreFeedback';
 import { RawFileTextLoader } from '../util/RawFileTextLoader';
 
-/** 更新状态机（行后缀文案由它驱动；-1 未检查）。 */
-enum UpdateCheckState {
-  IDLE = -1,
-  CHECKING = 0,
-  UP_TO_DATE = 1,
-  HAS_UPDATE = 2,
-  UNAVAILABLE = 3
-}
-
 /**
  * schema 渲染器（v3.30，TODO-021）：设置页组区 / 行 / 控件的统一数据驱动渲染。
  *
@@ -68,8 +59,6 @@ export struct SchemaSettingsSection {
   @Local store: SchemaRowStore = SchemaRowStore.getInstance();
   @Local env: AppEnvSnapshot = AppEnvManager.get();
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
-  /** 检查更新状态（默认 IDLE；进页静默检查一次，30 分钟内服务侧节流）。 */
-  @Local updateState: UpdateCheckState = UpdateCheckState.IDLE;
   /** 动态图标：选项标签（首项恒为「默认图标」，纯字符串——Select 不接受 Resource）、图标 id 列表、当前选中索引。 */
   @Local iconLabels: string[] = [];
   @Local iconIds: string[] = [];
@@ -97,9 +86,6 @@ export struct SchemaSettingsSection {
         if (this.hasCacheRow(this.groups)) {
           this.vm.loadCacheSize(ctx);
         }
-        if (this.hasUpdateRow(this.groups)) {
-          this.checkUpdateSilently();
-        }
         if (this.hasIconRow(this.groups)) {
           this.loadDynamicIcons();
         }
@@ -109,17 +95,6 @@ export struct SchemaSettingsSection {
       });
   }
 
-  /** 本页是否有「检查更新」行（决定是否静默预检查）。 */
-  private hasUpdateRow(groups: SchemaGroupDef[]): boolean {
-    for (const group of groups) {
-      for (const row of group.rows) {
-        if (row.valueSource === 'updateState') {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
 
   /** 本页是否有动态图标行（决定是否预取图标列表）。 */
   private hasIconRow(groups: SchemaGroupDef[]): boolean {
@@ -201,28 +176,9 @@ export struct SchemaSettingsSection {
     if (row.valueSource === 'versionName') {
       return this.env.versionName.length > 0 ? this.env.versionName : '—';
     }
-    if (row.valueSource === 'updateState') {
-      return this.updateStateText();
-    }
     return '';
   }
 
-  /** 检查更新行后缀：检查中 / 已是最新 / 发现新版本 / 暂不可用。 */
-  private updateStateText(): ResourceStr {
-    if (this.updateState === UpdateCheckState.CHECKING) {
-      return $r('app.string.settings_update_checking');
-    }
-    if (this.updateState === UpdateCheckState.UP_TO_DATE) {
-      return $r('app.string.settings_update_latest');
-    }
-    if (this.updateState === UpdateCheckState.HAS_UPDATE) {
-      return $r('app.string.settings_update_available');
-    }
-    if (this.updateState === UpdateCheckState.UNAVAILABLE) {
-      return $r('app.string.settings_update_unavailable');
-    }
-    return '';
-  }
 
   private cacheText(): ResourceStr {
     if (this.vm.cacheSizeBytes < 0) {
@@ -273,39 +229,13 @@ export struct SchemaSettingsSection {
 
   // ———————— 上架后能力（v3.39：更新 / 评分 / 隐私 / 动态图标，全部带降级） ————————
 
-  private updateStateOf(result: StoreCapabilityResult): UpdateCheckState {
-    if (result === StoreCapabilityResult.OK) {
-      return UpdateCheckState.HAS_UPDATE;
-    }
-    if (result === StoreCapabilityResult.UP_TO_DATE) {
-      return UpdateCheckState.UP_TO_DATE;
-    }
-    if (result === StoreCapabilityResult.THROTTLED) {
-      // 节流不算「不可用」：保持上一次状态，进页静默检查时也不打扰
-      return this.updateState === UpdateCheckState.CHECKING ? UpdateCheckState.IDLE : this.updateState;
-    }
-    return UpdateCheckState.UNAVAILABLE;
-  }
-
-  /** 进页静默检查（受 30 分钟节流；失败不弹提示，只把行后缀置为「暂不可用」）。 */
-  private checkUpdateSilently(): void {
-    const helper: AppGalleryHelper = AppGalleryHelper.getInstance();
-    if (!helper.usable(StoreSkill.UPDATE)) {
-      this.updateState = UpdateCheckState.UNAVAILABLE;
-      return;
-    }
-    this.updateState = UpdateCheckState.CHECKING;
-    helper.checkUpdate(false).then((result: StoreCapabilityResult): void => {
-      this.updateState = this.updateStateOf(result);
-    });
-  }
-
-  /** 用户主动点击：强制检查 → 有新版本则直接拉起系统升级弹框。 */
+  /**
+   * 检查更新（保持 action 可用，供 fork 在 schema 里自行加回入口行）。
+   * 默认入口是「关于本应用」子页的按钮（v3.40 起根页不再放这两行）。
+   */
   private runCheckUpdate(): void {
     const helper: AppGalleryHelper = AppGalleryHelper.getInstance();
-    this.updateState = UpdateCheckState.CHECKING;
     helper.checkUpdate(true).then((result: StoreCapabilityResult): void => {
-      this.updateState = this.updateStateOf(result);
       if (result === StoreCapabilityResult.OK) {
         helper.showUpdateDialog().then((shown: StoreCapabilityResult): void => {
           if (shown !== StoreCapabilityResult.OK) {
@@ -321,7 +251,6 @@ export struct SchemaSettingsSection {
       this.fallbackForUpdate(result);
     });
   }
-
   /** 更新失败分档降级：能解释的直接提示，其余统一跳市场详情页兜底。 */
   private fallbackForUpdate(result: StoreCapabilityResult): void {
     const message: ResourceStr = StoreFeedback.updateMessage(result);

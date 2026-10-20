@@ -2,6 +2,7 @@ import { BreakpointManager, CapabilityManager, RouterManager, WindowAdapter } fr
 import { AppRoute } from '@easystart/app-routes';
 import { isSettingsRoute, SettingsDestination } from '@easystart/app-settings';
 import {
+  AccountSampleView,
   ChartsDashboardView,
   ComponentGroupView,
   DemoSample,
@@ -199,14 +200,17 @@ struct Index {
   }
 
   /**
-   * 模板能力目录分发（v3.26；v3.38 收口为三项）：feature 只上抛 HomeTarget 语义，
-   * 路由名映射唯一出处在入口。设置 / 详情走 push（详情传 HomeItem **对象**，
+   * 模板能力目录分发（v3.26；v3.40 收口为四项）：feature 只上抛 HomeTarget 语义，
+   * 路由名映射唯一出处在入口。设置 / 详情 / 账号范式走 push（详情传 HomeItem **对象**，
    * pageMap 侧 instanceof 收窄）；设备能力切换到底部「开发工具」Tab（不 push 子页）。
    */
   private openHomeTarget(item: HomeItem): void {
     switch (item.target) {
       case HomeTarget.SETTINGS:
         RouterManager.getInstance().push(AppRoute.SETTINGS);
+        break;
+      case HomeTarget.ACCOUNT_SAMPLE:
+        RouterManager.getInstance().push(AppRoute.ACCOUNT_SAMPLE);
         break;
       case HomeTarget.DEVICE:
         this.tabController.changeIndex(2);
@@ -470,6 +474,27 @@ struct Index {
         enableComponentSafeArea: true
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.ACCOUNT_SAMPLE) {
+      // 账号登录页范式（v3.40 从设置域迁出）：作为模板页面范式展示，不再属于设置
+      HdsNavDestination() {
+        AccountSampleView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '账号登录页范式'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (name === AppRoute.TEMPLATE_ABOUT) {
       // L3 关于模板（v3.38）：这是什么 / 怎么用 / 如何 fork
       HdsNavDestination() {
@@ -493,7 +518,11 @@ struct Index {
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (name === AppRoute.HOME_CATALOG) {
       HdsNavDestination() {
-        HomeCatalogView()
+        HomeCatalogView({
+          onOpenItem: (item: HomeItem): void => {
+            this.openHomeTarget(item);
+          }
+        })
       }
       .titleBar({
         content: {

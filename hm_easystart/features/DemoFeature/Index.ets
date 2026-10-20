@@ -18,6 +18,7 @@ export { ListStateView } from './src/main/ets/view/ListStateView';
 export { SearchView } from './src/main/ets/view/SearchView';
 export { HoverSplitView } from './src/main/ets/view/HoverSplitView';
 export { ToolsView } from './src/main/ets/view/ToolsView';
+export { AccountSampleView } from './src/main/ets/view/AccountSampleView';
 export { ExamplesView } from './src/main/ets/view/ExamplesView';
 export { TemplateAboutView } from './src/main/ets/view/TemplateAboutView';
 export { LearnView } from './src/main/ets/view/LearnView';

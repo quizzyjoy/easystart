@@ -78,24 +78,6 @@
               "icon": { "symbol": "info_circle_fill", "tint": "c02" },
               "title": "$r:settings_about",
               "valueSource": "versionName"
-            },
-            {
-              "id": "check_update",
-              "type": "action",
-              "actionId": "checkUpdate",
-              "icon": { "symbol": "arrow_clockwise_circle_fill", "tint": "c05" },
-              "title": "$r:settings_check_update",
-              "subtitle": "$r:settings_check_update_desc",
-              "valueSource": "updateState"
-            },
-            {
-              "id": "rate_app",
-              "type": "action",
-              "actionId": "rateApp",
-              "icon": { "symbol": "hand_thumbsup_fill", "tint": "c03" },
-              "title": "$r:settings_rate",
-              "subtitle": "$r:settings_rate_desc",
-              "deviceTypes": ["phone", "tablet", "2in1"]
             }
           ]
         },

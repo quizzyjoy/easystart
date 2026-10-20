@@ -2,6 +2,7 @@ import { BreakpointManager, BreakpointType, CapabilityManager, HoverStore, Route
 import { AppRoute } from '@easystart/app-routes';
 import { isSettingsRoute, SettingsDestination } from '@easystart/app-settings';
 import {
+  AccountSampleView,
   ChartsDashboardView,
   ComponentGroupView,
   DemoSample,
@@ -213,6 +214,9 @@ struct PcIndex {
     switch (item.target) {
       case HomeTarget.SETTINGS:
         RouterManager.getInstance().push(AppRoute.SETTINGS);
+        break;
+      case HomeTarget.ACCOUNT_SAMPLE:
+        RouterManager.getInstance().push(AppRoute.ACCOUNT_SAMPLE);
         break;
       case HomeTarget.DEVICE:
         this.tabController.changeIndex(2);
@@ -462,6 +466,27 @@ struct PcIndex {
           title: {
             mainTitle: '学习',
             subTitle: learnChapterOrDefault(`${param}`).title
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.ACCOUNT_SAMPLE) {
+      // 账号登录页范式（v3.40 从设置域迁出）
+      HdsNavDestination() {
+        AccountSampleView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '账号登录页范式'
           }
         },
         style: {

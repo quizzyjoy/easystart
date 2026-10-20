@@ -1,18 +1,17 @@
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { AppEnvManager, AppEnvSnapshot, BreakpointManager } from '@quizzyjoy/platform';
-import { AccountSection } from './section/AccountSection';
 import { SettingsFooter } from './section/SettingsFooter';
 import { SchemaSettingsSection } from './SchemaSettingsSection';
 
 /**
  * 设置主页（v3.28 完备 IA；v3.30 schema 化，TODO-021）：
- * 应用头（图标 / 名称 / 版本）→ 账号卡占位 → 组区（schema 驱动：外观与通用 /
+ * 应用头（图标 / 名称 / 版本）→ 组区（schema 驱动：外观与通用 /
  * 互动与反馈 / 关于）→ 页脚（版权 + 备案留空隐藏）。
  *
  * v3.30 起组区由 rawfile/settings_schema.json 定义（页键 home），fork 改 JSON
  * 即得定制设置页；行型七类 / 组型两类由 SchemaSettingsSection 统一渲染
  * （builtin 行为行逐字复刻 v3.28 接线，行为零改；chip 彩底贴片复用 chart_c01~c20）。
- * 应用头 / 账号卡 / 页脚为固定区块（schema 外）；滚动 / 限宽 / pagePadding
+ * 应用头 / 页脚为固定区块（schema 外）；账号页已迁出设置域（v3.40，见示例 Tab 的模板能力目录）﹔滚动 / 限宽 / pagePadding
  * 与各子页同构，避让由 HdsNavDestination 协调。
  */
 @ComponentV2
@@ -54,9 +53,6 @@ export struct SettingsView {
         Column({ space: DesignToken.sectionSpacing() }) {
           // —— 应用头 ——
           this.appHeader()
-
-          // —— 账号卡占位（固定区块） ——
-          AccountSection({ settingsStack: this.settingsStack })
 
           // —— 组区（schema 驱动：外观与通用 / 互动与反馈 / 关于） ——
           SchemaSettingsSection({ page: 'home', settingsStack: this.settingsStack })

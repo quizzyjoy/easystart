@@ -257,50 +257,6 @@
       "value": "Text is not available yet. Please add it to the app resources."
     },
     {
-      "name": "settings_account_title",
-      "value": "Account"
-    },
-    {
-      "name": "settings_account_tap_login",
-      "value": "Tap to sign in"
-    },
-    {
-      "name": "settings_account_login",
-      "value": "Sign in"
-    },
-    {
-      "name": "settings_account_phone_hint",
-      "value": "Enter phone number"
-    },
-    {
-      "name": "settings_account_code_hint",
-      "value": "Enter verification code"
-    },
-    {
-      "name": "settings_account_get_code",
-      "value": "Get code"
-    },
-    {
-      "name": "settings_account_third_party",
-      "value": "Third-party sign-in"
-    },
-    {
-      "name": "settings_account_delete",
-      "value": "Delete account"
-    },
-    {
-      "name": "settings_account_delete_desc",
-      "value": "Account data will be erased after deletion"
-    },
-    {
-      "name": "settings_account_preview_note",
-      "value": "Preview template: the account system is not connected yet; the actions below are for interaction preview only."
-    },
-    {
-      "name": "settings_account_preview_toast",
-      "value": "Preview template: this feature is not available yet"
-    },
-    {
       "name": "settings_announcement",
       "value": "Announcements"
     },

@@ -71,7 +71,7 @@ const EXAMPLE_SECTIONS: ExampleSection[] = [
     $r('sys.symbol.square_grid_2x2'), $r('app.color.qj_brand'), 'gallery', GALLERY_ROWS),
   new ExampleSection('scene', '场景示例', '可整体复制的页面范式：反馈 / 看板 / 表单 / 列表 / 搜索 / 分屏',
     $r('sys.symbol.doc_text_badge_clock'), $r('app.color.app_accent_purple'), 'scene', SCENE_ROWS),
-  new ExampleSection('capability', '模板能力', '设置中心 / 详情页范式 / 设备能力：模板已装好的三块基础设施',
+  new ExampleSection('capability', '模板能力', '设置中心 / 详情页范式 / 账号登录页 / 设备能力：模板已装好的四块基础设施',
     $r('sys.symbol.gearshape_fill'), $r('app.color.app_accent_teal'), 'catalog', []),
   new ExampleSection('tokens', '设计令牌', '字阶 / 圆角 / 间距 / 描边 / 阴影 / 触摸目标 / 色彩全量对照',
     $r('sys.symbol.paintpalette'), $r('app.color.app_accent_pink'), 'tokens', []),

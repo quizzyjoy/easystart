@@ -257,50 +257,6 @@
       "value": "文本暂未提供，请在应用资源中补充。"
     },
     {
-      "name": "settings_account_title",
-      "value": "账号"
-    },
-    {
-      "name": "settings_account_tap_login",
-      "value": "点击登录"
-    },
-    {
-      "name": "settings_account_login",
-      "value": "登录"
-    },
-    {
-      "name": "settings_account_phone_hint",
-      "value": "请输入手机号"
-    },
-    {
-      "name": "settings_account_code_hint",
-      "value": "请输入验证码"
-    },
-    {
-      "name": "settings_account_get_code",
-      "value": "获取验证码"
-    },
-    {
-      "name": "settings_account_third_party",
-      "value": "第三方登录"
-    },
-    {
-      "name": "settings_account_delete",
-      "value": "注销账号"
-    },
-    {
-      "name": "settings_account_delete_desc",
-      "value": "注销后账号数据将被删除"
-    },
-    {
-      "name": "settings_account_preview_note",
-      "value": "预览模板：账号体系尚未接入，以下操作仅作交互演示。"
-    },
-    {
-      "name": "settings_account_preview_toast",
-      "value": "预览模板：该功能暂未接入"
-    },
-    {
       "name": "settings_announcement",
       "value": "公告"
     },

@@ -7,7 +7,6 @@ import { AppShare } from '../util/AppShare';
 import { SettingsView } from './SettingsView';
 import { AppearanceView } from './AppearanceView';
 import { GeneralView } from './GeneralView';
-import { AccountView } from './AccountView';
 import { AnnouncementView } from './AnnouncementView';
 import { VersionLogView } from './VersionLogView';
 import { HelpFeedbackView } from './HelpFeedbackView';
@@ -183,9 +182,6 @@ export struct SettingsDestination {
     if (name === SettingsRoute.LICENSE) {
       return $r('app.string.settings_license');
     }
-    if (name === SettingsRoute.ACCOUNT) {
-      return $r('app.string.settings_account_title');
-    }
     if (name === SettingsRoute.ANNOUNCEMENT) {
       return $r('app.string.settings_announcement');
     }
@@ -219,8 +215,6 @@ export struct SettingsDestination {
       PolicyView({ kind: param })
     } else if (name === SettingsRoute.LICENSE) {
       LicenseView()
-    } else if (name === SettingsRoute.ACCOUNT) {
-      AccountView()
     } else if (name === SettingsRoute.ANNOUNCEMENT) {
       AnnouncementView()
     } else if (name === SettingsRoute.VERSION_LOG) {

@@ -1,0 +1,44 @@
+{
+  "string": [
+    {
+      "name": "demo_account_title",
+      "value": "账号登录"
+    },
+    {
+      "name": "demo_account_preview_note",
+      "value": "预览模板：账号体系尚未接入，以下操作仅作交互演示。"
+    },
+    {
+      "name": "demo_account_preview_toast",
+      "value": "预览模板：该功能暂未接入"
+    },
+    {
+      "name": "demo_account_phone_hint",
+      "value": "请输入手机号"
+    },
+    {
+      "name": "demo_account_code_hint",
+      "value": "请输入验证码"
+    },
+    {
+      "name": "demo_account_get_code",
+      "value": "获取验证码"
+    },
+    {
+      "name": "demo_account_login",
+      "value": "登录"
+    },
+    {
+      "name": "demo_account_third_party",
+      "value": "第三方登录"
+    },
+    {
+      "name": "demo_account_delete",
+      "value": "注销账号"
+    },
+    {
+      "name": "demo_account_delete_desc",
+      "value": "注销后账号数据将被删除"
+    }
+  ]
+}
