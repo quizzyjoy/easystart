@@ -234,23 +234,6 @@ export struct DeveloperView {
    * HdsNavigationMenuContentOptions.value 元素类型 HdsNavigationMenuItemOptions 未声明
    * （编译器解析为 HdsNavigationBadgeIconOptions，无 action 字段），故改为页内信息行入口。
    */
-  private showForkTip(): void {
-    const uiCtx: UIContext = this.getUIContext();
-    const host = uiCtx.getHostContext();
-    let title: string = '开发者信息说明';
-    let body: string = '';
-    if (host !== undefined) {
-      try {
-        title = host.resourceManager.getStringSync($r('app.string.settings_developer_fork_tip_title'));
-        body = host.resourceManager.getStringSync($r('app.string.settings_developer_fork_tip_body'));
-      } catch (err) {
-        body = '';
-      }
-    }
-    AppDialog.open(uiCtx, DialogSemantic.CONFIRM, title, body, (): void => {
-    });
-  }
-
   @Builder
   infoRow(label: ResourceStr, value: string) {
     Row({ space: AppSpacing.SM }) {

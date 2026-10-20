@@ -1,5 +1,6 @@
 import { AppSize, AppShadow } from '@quizzyjoy/foundation';
 import { UIContext, ComponentContent } from '@quizzyjoy/platform';
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 
 /**
  * 悬浮球内容参数（经 ComponentContent 注入全局 @Builder）。
@@ -9,6 +10,10 @@ class AppFloatingBallContent {
   onTap: () => void = () => {
   };
   offset: Position = { x: 0, y: 0 };
+  /** 圆钮底色：@Builder 是顶层函数、不能读单例也不能用 this，故由 show() 侧读主题注入 */
+  tint: ResourceColor = $r('app.color.qj_brand');
+  /** 图标前景色（压在 tint 上，按主题亮度自动选深浅） */
+  onTint: ResourceColor = $r('app.color.qj_on_brand');
 }
 
 /**
@@ -21,11 +26,11 @@ function appFloatingBallBuilder(content: AppFloatingBallContent) {
     Button({ type: ButtonType.Circle }) {
       SymbolGlyph(content.icon)
         .fontSize(AppSize.ICON_LG)
-        .fontColor([$r('app.color.qj_on_brand')])
+        .fontColor([content.onTint])
     }
     .width(AppSize.TOUCH_STANDARD)
     .height(AppSize.TOUCH_STANDARD)
-    .backgroundColor($r('app.color.qj_brand'))
+    .backgroundColor(content.tint)
     .shadow(AppShadow.MD)
     .onClick((): void => {
       content.onTap();
@@ -63,6 +68,10 @@ export class AppOverlay {
     content.icon = icon;
     content.onTap = onTap;
     content.offset = offset ?? { x: 16, y: 120 };
+    // 徽标色跟随运行时主题（v3.44）：顶层 @Builder 读不到单例，故在调用侧取值注入
+    const theme: UiThemeManager = UiThemeManager.getInstance();
+    content.tint = theme.brandColor();
+    content.onTint = theme.onBrandColor();
     AppOverlay.contentNode = new ComponentContent(uiContext, wrapBuilder(appFloatingBallBuilder), content);
     uiContext.getOverlayManager().addComponentContent(AppOverlay.contentNode, 0);
   }

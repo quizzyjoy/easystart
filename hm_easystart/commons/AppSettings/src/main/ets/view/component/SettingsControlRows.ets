@@ -1,3 +1,4 @@
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing } from '@quizzyjoy/foundation';
 
 /**
@@ -64,6 +65,9 @@ const ROW_PADDING: Padding = {
 /** 开关行。 */
 @ComponentV2
 export struct SettingsSwitchRow {
+  /** 运行时主题（v3.44：开关选中色跟随主题包） */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param title: ResourceStr = '';
   @Param subtitle: ResourceStr = '';
   @Param icon: Resource | undefined = undefined;
@@ -77,7 +81,7 @@ export struct SettingsSwitchRow {
       leadingIcon(this.icon, this.iconTint)
       titleBlock(this.title, this.subtitle)
       Toggle({ type: ToggleType.Switch, isOn: this.isOn })
-        .selectedColor($r('app.color.qj_brand'))
+        .selectedColor(this.theme.brandColor())
         .onChange((isOn: boolean): void => {
           this.onToggle(isOn);
         })
@@ -132,6 +136,9 @@ export struct SettingsSelectRow {
 /** 滑杆行。 */
 @ComponentV2
 export struct SettingsSliderRow {
+  /** 运行时主题（v3.44：滑条已选色跟随主题包） */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param title: ResourceStr = '';
   @Param subtitle: ResourceStr = '';
   @Param icon: Resource | undefined = undefined;
@@ -154,7 +161,7 @@ export struct SettingsSliderRow {
         step: this.step
       })
         .width('50%')
-        .selectedColor($r('app.color.qj_brand'))
+        .selectedColor(this.theme.brandColor())
         .onChange((value: number, mode: SliderChangeMode): void => {
           if (mode === SliderChangeMode.End) {
             this.onChangeEnd(value);
