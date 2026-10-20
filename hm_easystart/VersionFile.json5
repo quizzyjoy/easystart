@@ -2,6 +2,7 @@
   "version": "1.0.0",
   "dependencies": {
     "hypium-version": "1.0.25",
-    "hamock-version": "1.0.0"
+    "hamock-version": "1.0.0",
+    "lv-markdown-in-version": "3.4.7"
   }
 }

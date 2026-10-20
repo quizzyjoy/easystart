@@ -1,0 +1,59 @@
+{
+  "generatedAt": "2026-10-20T23:35:36.510Z",
+  "docs": [
+    {
+      "id": "arkts/arkts",
+      "title": "ArkTS 状态管理：V1 → V2",
+      "summary": "本工程全量使用状态管理 V2。V1 的 @State / @Prop / @Link 加 @Observed / @Ob",
+      "minutes": 3,
+      "sections": [
+        "装饰器对照",
+        "V1 写法（本工程已无此形态，仅作对照）",
+        "V2 写法（本工程 commons/AppSettings/view/DeveloperView.ets 的真实片段）",
+        "父子通信：单向数据流",
+        "嵌套对象：属性级观测",
+        "五个高频坑",
+        "迁移顺序"
+      ],
+      "path": "docs/arkts/arkts.md"
+    },
+    {
+      "id": "主题/主题",
+      "title": "HarmonyOS 主题换肤开发指南",
+      "summary": "本文以开源模板工程 EasyStart（ hm easystart/ ，示例版本 v3.48 / versionCode",
+      "minutes": 12,
+      "sections": [
+        "目录",
+        "一、能力范围与效果",
+        "二、四层颜色模型",
+        "三、工程文件导览",
+        "四、四层的实现",
+        "五、编排与启动接入",
+        "六、外观页交互",
+        "七、扩展方式",
+        "八、官方 API 速览",
+        "九、易错点与正确写法",
+        "十、参考资料"
+      ],
+      "path": "docs/主题/主题.md"
+    },
+    {
+      "id": "依赖/依赖",
+      "title": "在 HarmonyOS 工程中接入第三方库",
+      "summary": "本工程是「可直接 fork 的模板骨架」，因此对第三方依赖的态度是： 能用，但要审过、锁住、可退 。本文以引入 Mark",
+      "minutes": 5,
+      "sections": [
+        "适用范围",
+        "本工程的依赖形态（先看这里，否则第一步就会失败）",
+        "选型审查清单",
+        "接入步骤（以 Markdown 渲染器为例）",
+        "分层约束",
+        "版本治理",
+        "卸载与回退",
+        "许可清单",
+        "常见问题"
+      ],
+      "path": "docs/依赖/依赖.md"
+    }
+  ]
+}

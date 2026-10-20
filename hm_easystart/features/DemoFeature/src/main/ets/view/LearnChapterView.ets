@@ -1,186 +1,78 @@
+import { Markdown, MarkdownController } from '@luvi/lv-markdown-in';
+import { common } from '@kit.AbilityKit';
 import { UiThemeManager } from '@quizzyjoy/vitalui';
-import { AppFontSize, AppFontWeight, AppRadius, AppSpacing, AppStroke, DesignToken } from '@quizzyjoy/foundation';
+import { AppFontSize, AppFontWeight, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager } from '@quizzyjoy/platform';
-import { learnChapterOrDefault, LearnBlock, LearnChapter, LEARN_MISSING_CHAPTER } from '../learn/LearnContent';
+import { DocMeta } from '../doc/DocTypes';
+import { DocRepository } from '../doc/DocRepository';
+import { DocTheme } from '../doc/DocTheme';
 
 /**
- * 学习 Tab · 章节详情（v3.38）。
+ * 学习 Tab · 文档详情（v3.49）。
  *
- * 渲染 learn/LearnContent 的类型化块：段落 / 代码 / 要点 / 提示。
- * 代码块走横向 Scroll（代码不折行），提示块走信息容器底色。
- * 章节不存在（旧链接或已删章节）时给空态，不白屏。
+ * 正文不再由代码内联，而是直接渲染 `resources/rawfile/docs/<专题>/<专题>.md`：
+ * 内容来自仓根 `教程/` 的同一份 Markdown（构建前由 `scripts/sync-docs.mjs` 同步），
+ * 解析与排版交给三方库 `@luvi/lv-markdown-in`（`mode: 'rawfile'`），
+ * 颜色/圆角/字号则由 `DocTheme` 映射到运行时主题，切主题时正文一起变。
  */
 @ComponentV2
 export struct LearnChapterView {
-  /** 章节 id（入口 pageMap 传入；对应 LearnContent 的 id）。 */
+  /** 运行时主题：正文配色跟随换肤。 */
   @Local theme: UiThemeManager = UiThemeManager.getInstance();
-
-  @Param chapterId: string = '';
-  @Local chapter: LearnChapter = LEARN_MISSING_CHAPTER;
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
-
-  aboutToAppear(): void {
-    this.chapter = learnChapterOrDefault(this.chapterId);
-  }
+  /** 章节 id（路由参数，对应 `教程/<专题>/<专题>.md`）。 */
+  @Param chapterId: string = '';
+  /** 解析后的文档元数据；未命中时为空态。 */
+  @Local doc: DocMeta | undefined = undefined;
+  /** 三方渲染器控制器（样式由 DocTheme 生成）。 */
+  @Local controller: MarkdownController = DocTheme.style(UiThemeManager.getInstance());
 
   private bp(): string {
     return `${this.breakpoint.breakpoint}`;
   }
 
-  @Builder
-  paragraphBlock(block: LearnBlock) {
-    Text(block.text)
-      .fontSize(AppFontSize.BODY)
-      .fontColor($r('app.color.app_text_primary'))
-      .lineHeight(24)
-      .width('100%')
+  private hostContext(): common.UIAbilityContext {
+    return this.getUIContext().getHostContext() as common.UIAbilityContext;
   }
 
-  /** 代码块行高（与 Text.lineHeight 一致；代码块高度 = 行数 × 行高）。 */
-  private static readonly CODE_LINE_HEIGHT: number = 20;
-
-  /**
-   * 代码块行数 → 显式高度。
-   *
-   * 必须显式给高度：横向 Scroll 包在纵向 Scroll 里时，不给高度会参与父级内容测量，
-   * 真机上表现为进入页面时纵向位置被顶到中段（v3.38 真机走查）。
-   */
-  private codeHeight(text: string): number {
-    const lines: number = text.split('\n').length;
-    return lines * LearnChapterView.CODE_LINE_HEIGHT;
+  aboutToAppear(): void {
+    this.resolveDoc();
   }
 
-  @Builder
-  codeBlock(block: LearnBlock) {
-    Column() {
-      Scroll() {
-        Text(block.text)
-          .fontSize(AppFontSize.CAPTION)
-          .fontColor($r('app.color.app_text_primary'))
-          .lineHeight(LearnChapterView.CODE_LINE_HEIGHT)
-      }
-      .scrollable(ScrollDirection.Horizontal)
-      .scrollBar(BarState.Off)
-      .align(Alignment.TopStart)
-      .width('100%')
-      .height(this.codeHeight(block.text))
-      .nestedScroll({
-        scrollForward: NestedScrollMode.SELF_FIRST,
-        scrollBackward: NestedScrollMode.SELF_FIRST
-      })
-    }
-    .width('100%')
-    .alignItems(HorizontalAlign.Start)
-    .padding(AppSpacing.MD)
-    .borderRadius(AppRadius.MD)
-    .backgroundColor($r('app.color.app_fill_subtle'))
-  }
-
-  @Builder
-  bulletsBlock(block: LearnBlock) {
-    Column({ space: AppSpacing.SM }) {
-      ForEach(block.items, (item: string, index: number) => {
-        Row({ space: AppSpacing.SM }) {
-          Text('·')
-            .fontSize(AppFontSize.BODY)
-            .fontColor(this.theme.brandColor())
-          Text(item)
-            .fontSize(AppFontSize.BODY_SM)
-            .fontColor($r('app.color.app_text_primary'))
-            .lineHeight(22)
-            .layoutWeight(1)
-        }
-        .width('100%')
-        .alignItems(VerticalAlign.Top)
-      }, (item: string, index: number): string => `${index}_${item}`)
-    }
-    .width('100%')
-    .alignItems(HorizontalAlign.Start)
-  }
-
-  @Builder
-  noteBlock(block: LearnBlock) {
-    Column() {
-      Text(block.text)
-        .fontSize(AppFontSize.BODY_SM)
-        .fontColor($r('app.color.app_text_primary'))
-        .lineHeight(22)
-        .width('100%')
-    }
-    .width('100%')
-    .alignItems(HorizontalAlign.Start)
-    .padding(AppSpacing.MD)
-    .borderRadius(AppRadius.MD)
-    .backgroundColor($r('app.color.app_info_container'))
-    .border({ width: { left: AppStroke.THICK }, color: this.theme.brandColor() })
-  }
-
-  @Builder
-  blockItem(block: LearnBlock) {
-    if (block.kind === 'code') {
-      this.codeBlock(block)
-    } else if (block.kind === 'list') {
-      this.bulletsBlock(block)
-    } else if (block.kind === 'note') {
-      this.noteBlock(block)
-    } else {
-      this.paragraphBlock(block)
-    }
-  }
-
-  @Builder
-  chapterBody(chapter: LearnChapter) {
-    Column({ space: AppSpacing.LG }) {
-      Column({ space: AppSpacing.XS }) {
-        Text(chapter.title)
-          .fontSize(AppFontSize.TITLE_LG)
-          .fontWeight(AppFontWeight.MEDIUM)
-          .fontColor($r('app.color.app_text_primary'))
-          .width('100%')
-        Text(`${chapter.summary} · 约 ${chapter.minutes} 分钟`)
-          .fontSize(AppFontSize.CAPTION)
-          .fontColor($r('app.color.app_text_tertiary'))
-          .width('100%')
-      }
-      .width('100%')
-      .alignItems(HorizontalAlign.Start)
-
-      ForEach(chapter.blocks, (block: LearnBlock, index: number) => {
-        this.blockItem(block)
-      }, (block: LearnBlock, index: number): string => `${chapter.id}_${index}`)
-    }
-    .width('100%')
-    .alignItems(HorizontalAlign.Start)
-    .constraintSize({ maxWidth: DesignToken.contentMaxWidth(this.bp()) })
-    .padding({
-      left: DesignToken.pagePadding(this.bp()),
-      right: DesignToken.pagePadding(this.bp()),
-      top: AppSpacing.LG,
-      bottom: AppSpacing.XXXL
-    })
+  private async resolveDoc(): Promise<void> {
+    const docs: DocMeta[] = await DocRepository.loadIndex(this.hostContext());
+    this.doc = DocRepository.find(docs, this.chapterId);
   }
 
   build() {
     Scroll() {
-      Column() {
-        if (this.chapter.blocks.length > 0) {
-          this.chapterBody(this.chapter)
+      Column({ space: DesignToken.sectionSpacing() }) {
+        // 标题与目录已由 Markdown 自身渲染，这里不再重复绘制
+        if (this.doc === undefined) {
+          Text('未找到该文档，请返回学习 Tab 重新选择。')
+            .fontSize(AppFontSize.BODY)
+            .fontColor($r('app.color.app_text_secondary'))
+            .width('100%')
         } else {
-          Column({ space: AppSpacing.SM }) {
-            Text(this.chapter.title)
-              .fontSize(AppFontSize.BODY)
-              .fontColor($r('app.color.app_text_secondary'))
-            Text(this.chapter.summary)
-              .fontSize(AppFontSize.CAPTION)
-              .fontColor($r('app.color.app_text_tertiary'))
-          }
-          .width('100%')
-          .alignItems(HorizontalAlign.Start)
-          .padding(DesignToken.pagePadding(this.bp()))
+          Markdown({
+            controller: this.controller,
+            mode: 'rawfile',
+            rawfilePath: this.doc.path,
+            context: this.hostContext()
+          })
+            .width('100%')
+            .padding(DocTheme.padding())
         }
       }
       .width('100%')
-      .alignItems(HorizontalAlign.Center)
+      .alignItems(HorizontalAlign.Start)
+      .constraintSize({ maxWidth: DesignToken.contentMaxWidth(this.bp()) })
+      .padding({
+        left: DesignToken.pagePadding(this.bp()),
+        right: DesignToken.pagePadding(this.bp()),
+        top: AppSpacing.LG,
+        bottom: DesignToken.tabPageBottomPadding(this.bp(), 0)
+      })
     }
     .width('100%')
     .height('100%')

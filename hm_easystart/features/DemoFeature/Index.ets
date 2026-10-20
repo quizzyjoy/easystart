@@ -27,9 +27,3 @@ export { TemplateAboutView } from './src/main/ets/view/TemplateAboutView';
 export { LearnView } from './src/main/ets/view/LearnView';
 export { LearnChapterView } from './src/main/ets/view/LearnChapterView';
 export { GALLERY_GROUPS, GalleryGroupEntry, galleryGroupTitle } from './src/main/ets/model/GalleryGroup';
-export {
-  LEARN_CHAPTERS,
-  LearnBlock,
-  LearnChapter,
-  learnChapterOrDefault
-} from './src/main/ets/learn/LearnContent';

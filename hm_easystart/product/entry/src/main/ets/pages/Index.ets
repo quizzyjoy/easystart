@@ -21,8 +21,7 @@ import {
   SearchView,
   TemplateAboutView,
   ToolsView,
-  galleryGroupTitle,
-  learnChapterOrDefault
+  galleryGroupTitle
 } from '@easystart/demo-feature';
 import {
   HomeDetailView,
@@ -496,7 +495,7 @@ struct Index {
         content: {
           title: {
             mainTitle: '学习',
-            subTitle: learnChapterOrDefault(`${param}`).title
+            subTitle: '学习文档'
           }
         },
         style: {

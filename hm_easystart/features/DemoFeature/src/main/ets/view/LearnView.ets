@@ -1,23 +1,35 @@
+import { common } from '@kit.AbilityKit';
 import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
-import { LEARN_CHAPTERS, LearnChapter } from '../learn/LearnContent';
+import { DocRepository } from '../doc/DocRepository';
+import { DocMeta } from '../doc/DocTypes';
 
 /**
- * 学习 Tab（v3.38）：教学文档章节目录。
+ * 学习 Tab（v3.49）：文档目录。
  *
- * 每章对应本工程里真实存在的代码（内容在 learn/LearnContent.ets，类型化数据、零运行时 IO）。
- * 章节详情走 AppRoute.LEARN_CHAPTER 子页；fork 后整目录替换为自己的教程即可。
+ * 目录来自构建期生成的 `resources/rawfile/docs/index.json`——内容源头是仓根 `教程/<专题>/<专题>.md`，
+ * 由 `scripts/sync-docs.mjs` 同步，应用内不再手工维护章节。详情走 AppRoute.LEARN_CHAPTER 子页。
  */
 @ComponentV2
 export struct LearnView {
-  /** 打开章节详情（@Event 上抛，入口映射到路由）。 */
   @Local theme: UiThemeManager = UiThemeManager.getInstance();
-
-  @Param onOpenChapter: (chapterId: string) => void = (_chapterId: string): void => {
-  };
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
   @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
+  @Local docs: DocMeta[] = [];
+
+  /** 打开章节详情（@Event 上抛，入口映射到路由）。 */
+  @Param onOpenChapter: (chapterId: string) => void = (_chapterId: string): void => {
+  };
+
+  aboutToAppear(): void {
+    this.loadDocs();
+  }
+
+  private async loadDocs(): Promise<void> {
+    const context: common.UIAbilityContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
+    this.docs = await DocRepository.loadIndex(context);
+  }
 
   private bp(): string {
     return `${this.breakpoint.breakpoint}`;
@@ -28,7 +40,7 @@ export struct LearnView {
   }
 
   @Builder
-  chapterCard(chapter: LearnChapter, index: number) {
+  chapterCard(doc: DocMeta, index: number) {
     Row({ space: AppSpacing.MD }) {
       Text(this.indexLabel(index))
         .fontSize(AppFontSize.CAPTION)
@@ -38,18 +50,18 @@ export struct LearnView {
         .textAlign(TextAlign.Center)
 
       Column({ space: AppSpacing.XXS }) {
-        Text(chapter.title)
+        Text(doc.title)
           .fontSize(AppFontSize.BODY)
           .fontWeight(AppFontWeight.MEDIUM)
           .fontColor($r('app.color.app_text_primary'))
           .width('100%')
-        Text(chapter.summary)
+        Text(doc.summary)
           .fontSize(AppFontSize.CAPTION)
           .fontColor($r('app.color.app_text_tertiary'))
           .width('100%')
           .maxLines(2)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
-        Text(`约 ${chapter.minutes} 分钟`)
+        Text(`约 ${doc.minutes} 分钟 · ${doc.sections.length} 节`)
           .fontSize(AppFontSize.CAPTION_XS)
           .fontColor($r('app.color.app_text_quaternary'))
           .width('100%')
@@ -67,7 +79,7 @@ export struct LearnView {
     .borderRadius(AppRadius.XL)
     .backgroundColor($r('app.color.app_bg_card'))
     .onClick((): void => {
-      this.onOpenChapter(chapter.id);
+      this.onOpenChapter(doc.id);
     })
   }
 
@@ -80,7 +92,7 @@ export struct LearnView {
             .fontWeight(AppFontWeight.MEDIUM)
             .fontColor($r('app.color.app_text_primary'))
             .width('100%')
-          Text('每章都对应本工程里真实存在的代码：读完可直接打开源码对照，不是抽象教程。')
+          Text('正文直接渲染仓库里的 Markdown（教程/ 目录），改文档即改应用内内容。')
             .fontSize(AppFontSize.CAPTION)
             .fontColor($r('app.color.app_text_tertiary'))
             .width('100%')
@@ -89,12 +101,19 @@ export struct LearnView {
         .alignItems(HorizontalAlign.Start)
 
         Column({ space: AppSpacing.SM }) {
-          ForEach(LEARN_CHAPTERS, (chapter: LearnChapter, index: number) => {
-            this.chapterCard(chapter, index)
-          }, (chapter: LearnChapter): string => chapter.id)
+          ForEach(this.docs, (doc: DocMeta, index: number) => {
+            this.chapterCard(doc, index)
+          }, (doc: DocMeta): string => doc.id)
         }
         .width('100%')
         .alignItems(HorizontalAlign.Start)
+
+        if (this.docs.length === 0) {
+          Text('未找到文档：请先在仓根执行 node scripts/sync-docs.mjs 同步教程。')
+            .fontSize(AppFontSize.CAPTION)
+            .fontColor($r('app.color.app_text_tertiary'))
+            .width('100%')
+        }
       }
       .width('100%')
       .alignItems(HorizontalAlign.Start)

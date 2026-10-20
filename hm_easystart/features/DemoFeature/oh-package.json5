@@ -9,6 +9,7 @@
     "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
     "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
     "@quizzyjoy/vitalui": "file:../../quizzyjoy/VitalUI",
-    "@easystart/app-component": "file:../../commons/AppComponent"
+    "@easystart/app-component": "file:../../commons/AppComponent",
+    "@luvi/lv-markdown-in": "@param:dependencies.lv-markdown-in-version"
   }
 }

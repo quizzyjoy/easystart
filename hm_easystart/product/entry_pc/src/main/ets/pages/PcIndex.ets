@@ -19,7 +19,6 @@ import {
   TemplateAboutView,
   ToolsView,
   galleryGroupTitle,
-  learnChapterOrDefault
 } from '@easystart/demo-feature';
 import {
   HomeDetailView,
@@ -465,7 +464,7 @@ struct PcIndex {
         content: {
           title: {
             mainTitle: '学习',
-            subTitle: learnChapterOrDefault(`${param}`).title
+            subTitle: '学习文档'
           }
         },
         style: {
