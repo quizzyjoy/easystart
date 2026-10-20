@@ -103,6 +103,104 @@ export const LEARN_CHAPTERS: LearnChapter[] = [
       LearnBlock.note(
         '迁移顺序建议：先把装饰器整体换到 V2 → 再把双向绑定拆成 @Param + @Event → 最后处理嵌套对象的观测。' +
           '编译器报错带精确的 文件:行:列，按报错逐个改比通读代码快得多。')
+    ]),
+  new LearnChapter(
+    'theme-skinning',
+    '主题换肤：四层颜色模型',
+    '静态令牌 / AttributeModifier / 运行时单例 / 系统默认色 · 以本工程现行实现为例',
+    10,
+    [
+      LearnBlock.paragraph(
+        '换肤看起来是"改一个颜色变量"，实际要动四处。屏幕上一处颜色的来源有四类，它们并列存在、不是优先级关系：' +
+          '哪一层没接入，对应位置的像素就不会变。这也是"改了主题却只变一半"的唯一成因。'),
+      LearnBlock.bullets([
+        'L1 资源令牌 $r(app.color.qj_*)：编译期固化，只随深浅色变',
+        'L2 AttributeModifier：普通类，不参与观察，切主题后要等页面重建',
+        'L3 运行时主题单例：@ObservedV2 + @Trace，读它的组件当帧重渲染',
+        'L4 ThemeControl.setDefaultTheme：接管系统组件与未显式着色位置的默认色'
+      ]),
+      LearnBlock.paragraph('本工程四层的落点如下（路径都真实存在，可直接打开对照）：'),
+      LearnBlock.code(
+        'L1  AppScope/resources/base/element/color.json                 // qj_brand 等令牌\n' +
+        'L2  commons/AppComponent/src/main/ets/modifier/                 // AppButtonModifier 族\n' +
+        'L3  quizzyjoy/VitalUI/src/main/ets/theme/UiThemeManager.ets     // 运行时单例\n' +
+        'L4  quizzyjoy/Platform/src/main/ets/theme/AppThemeController.ets// hex → CustomTheme\n' +
+        '编排 commons/AppComponent/src/main/ets/theme/AppThemeApplier.ets\n' +
+        '启动 commons/AppCommon/src/main/ets/bootstrap/AppBootstrap.ets'
+      ),
+      LearnBlock.paragraph('L3 是整套方案的核心：一个 @ObservedV2 单例存两个字段，组件 @Local 引一下就能当帧响应。'),
+      LearnBlock.code(
+        '@ObservedV2\n' +
+        'export class UiThemeManager {\n' +
+        '  private static instance: UiThemeManager | undefined = undefined;\n' +
+        '  @Trace presetId: string = DEFAULT_THEME_PRESET;   // 当前主题包\n' +
+        '  @Trace accentColor: string = \'\';                 // 强调色覆盖\n' +
+        '  private constructor() {}\n' +
+        '  static getInstance(): UiThemeManager { /* 懒建单例 */ }\n' +
+        '}'
+      ),
+      LearnBlock.paragraph(
+        '强调色与主题包是叠加关系，不是二选一：强调色优先 → 主题包基准色 → 静态令牌。' +
+          '注意默认主题包这一支回退到 $r(qj_brand 而不是硬编码同值 hex，深浅色才能继续由 resources/dark 负责。'),
+      LearnBlock.code(
+        'brandColor(): ResourceColor {\n' +
+        '  if (this.accentColor.length > 0) { return this.accentColor; }\n' +
+        '  if (this.presetId === DEFAULT_THEME_PRESET) { return $r(\'app.color.qj_brand\'); }\n' +
+        '  return resolveThemePreset(this.presetId).baseHex;\n' +
+        '}'
+      ),
+      LearnBlock.paragraph(
+        'L2 的特殊之处：AttributeModifier 是普通类，不在组件的观察依赖图里，读 @Trace 字段不会触发重渲染。' +
+          '工程用静态中转解决——铺层时把当前色写进静态字段，modifier 每次重建时再读一次。'),
+      LearnBlock.code(
+        'static brandColor(): ResourceColor {                 // AppThemeApplier\n' +
+        '  return AppThemeApplier.currentAccent.length > 0\n' +
+        '    ? AppThemeApplier.currentAccent : $r(\'app.color.qj_brand\');\n' +
+        '}'
+      ),
+      LearnBlock.paragraph(
+        'L4 把"一个色"翻译成一套令牌。工程覆盖七个：brand、fontEmphasize、iconEmphasize、' +
+          'backgroundEmphasize、compEmphasizeSecondary、compEmphasizeTertiary、interactiveSelect。' +
+          'colors 与 darkColors 必须成对，否则深色模式下会出现亮底亮字。'),
+      LearnBlock.code(
+        'ThemeControl.setDefaultTheme({\n' +
+        '  colors: AppThemeController.lightColors(hex),      // 7 个令牌\n' +
+        '  darkColors: AppThemeController.darkColors(hex)    // 深色派生，API 20 起\n' +
+        '} as CustomTheme);'
+      ),
+      LearnBlock.paragraph(
+        '铺层顺序有契约：先写单例，再算 effectiveAccent()，最后铺 L4。顺序反过来会取到上一次的颜色，' +
+          'L4 就被铺成旧主题。'),
+      LearnBlock.code(
+        'static apply(presetId: string, accentHex: string): void {\n' +
+        '  const theme: UiThemeManager = UiThemeManager.getInstance();\n' +
+        '  theme.setPresetId(presetId);                              // 1. 先 L3\n' +
+        '  theme.setAccentColor(accentHex);\n' +
+        '  AppThemeApplier.currentAccent = theme.effectiveAccent();  // 2. 静态中转\n' +
+        '  AppThemeController.applyPreset(theme.presetId, theme.accentColor);  // 3. 再 L4\n' +
+        '}'
+      ),
+      LearnBlock.paragraph(
+        '冷启动把读取与注入拆开：AppBootstrap.restoreTheme() 只读偏好、返回纯数据，' +
+          '由各入口 Ability 自己调 apply 注入。这样启动封装不依赖表现层，手表端可以直接不接主题。'),
+      LearnBlock.code(
+        'AppBootstrap.restoreTheme().then((state: AppThemeState): void => {\n' +
+        '  AppThemeApplier.apply(state.presetId, state.accentHex);\n' +
+        '});'
+      ),
+      LearnBlock.paragraph(
+        '外观页（commons/AppSettings/src/main/ets/component/AccentColorSetting.ets）由三部分组成：' +
+          '主题包 chips、取色器、实时预览。取色器采用 draft 确认制——拖动只改内部草稿，点确认才回调，' +
+          '避免连续拖动产生大量重算与落库。'),
+      LearnBlock.bullets([
+        '切主题包时必须清掉强调色覆盖（传空串），否则优先级更高的旧强调色会盖住新主题包',
+        '组件要自己持有单例，同时开一个 @Param accentColor 口子：只靠传参必漏，只靠单例不能特调',
+        '@Param 默认值与顶层 @Builder 都不在渲染路径上，读单例不响应——改为调用侧读取后传进去',
+        '只给 colors 不给 darkColors，深色模式会沿用浅色值，表现为亮底亮字'
+      ]),
+      LearnBlock.note(
+        '排查换色问题只用两句判断：页面重建后才对 → 求值时机问题；重建后仍不对 → 依赖没接上。' +
+          '完整版文档见仓库 教程/主题/主题.md。')
     ])
 ];
 
