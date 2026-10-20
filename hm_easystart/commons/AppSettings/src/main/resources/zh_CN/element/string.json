@@ -455,6 +455,130 @@
     {
       "name": "settings_footer_icp",
       "value": ""
+    },
+    {
+      "name": "settings_group_privacy",
+      "value": "隐私与合规"
+    },
+    {
+      "name": "settings_check_update_desc",
+      "value": "与已上架版本比对；不可用时跳转应用市场"
+    },
+    {
+      "name": "settings_rate_desc",
+      "value": "应用内评分，不离开当前应用"
+    },
+    {
+      "name": "settings_privacy_desc",
+      "value": "优先打开官方隐私声明，未托管时显示本地文本"
+    },
+    {
+      "name": "settings_terms_desc",
+      "value": "优先打开官方用户协议，未托管时显示本地文本"
+    },
+    {
+      "name": "settings_privacy_revoke",
+      "value": "撤回隐私授权"
+    },
+    {
+      "name": "settings_privacy_revoke_desc",
+      "value": "撤回后检查更新、评分等服务将不可用"
+    },
+    {
+      "name": "settings_privacy_revoke_msg",
+      "value": "撤回后可重新同意；撤回期间检查更新、应用评分等上架后能力将不可用。"
+    },
+    {
+      "name": "settings_privacy_revoked",
+      "value": "已撤回隐私授权"
+    },
+    {
+      "name": "settings_privacy_unavailable",
+      "value": "当前环境不支持或未接入隐私托管服务"
+    },
+    {
+      "name": "settings_privacy_local",
+      "value": "未获取到官方链接，已打开本地文本"
+    },
+    {
+      "name": "settings_update_checking",
+      "value": "检查中…"
+    },
+    {
+      "name": "settings_update_latest",
+      "value": "已是最新"
+    },
+    {
+      "name": "settings_update_available",
+      "value": "发现新版本"
+    },
+    {
+      "name": "settings_update_unavailable",
+      "value": "暂不可用"
+    },
+    {
+      "name": "settings_update_none",
+      "value": "已是最新版本"
+    },
+    {
+      "name": "settings_update_failed",
+      "value": "已跳转应用市场，可在详情页更新"
+    },
+    {
+      "name": "settings_update_not_foreground",
+      "value": "请保持应用在前台后重试"
+    },
+    {
+      "name": "settings_update_privacy",
+      "value": "请先同意隐私协议"
+    },
+    {
+      "name": "settings_update_network",
+      "value": "网络异常，请稍后重试"
+    },
+    {
+      "name": "settings_update_throttled",
+      "value": "操作过于频繁，请稍后再试"
+    },
+    {
+      "name": "settings_rate_not_signed_in",
+      "value": "请先登录华为账号"
+    },
+    {
+      "name": "settings_rate_already",
+      "value": "你已评价过，感谢支持"
+    },
+    {
+      "name": "settings_rate_failed",
+      "value": "已跳转应用市场，可在详情页评价"
+    },
+    {
+      "name": "settings_icon_title",
+      "value": "应用图标"
+    },
+    {
+      "name": "settings_icon_desc",
+      "value": "由应用市场配置的动态图标，切换后桌面生效"
+    },
+    {
+      "name": "settings_icon_default",
+      "value": "默认图标"
+    },
+    {
+      "name": "settings_icon_item",
+      "value": "图标 %d"
+    },
+    {
+      "name": "settings_icon_applied",
+      "value": "图标已切换"
+    },
+    {
+      "name": "settings_icon_failed",
+      "value": "图标切换失败，已恢复原选择"
+    },
+    {
+      "name": "settings_privacy_revoke_ok",
+      "value": "撤回"
     }
   ]
 }

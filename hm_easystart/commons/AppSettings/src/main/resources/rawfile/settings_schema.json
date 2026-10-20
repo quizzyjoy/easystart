@@ -57,14 +57,6 @@
               "subtitle": "$r:settings_help_feedback_desc"
             },
             {
-              "id": "share_app",
-              "type": "action",
-              "actionId": "shareApp",
-              "icon": { "symbol": "share", "tint": "c16" },
-              "title": "$r:settings_share",
-              "subtitle": "$r:settings_share_desc"
-            },
-            {
               "id": "developer",
               "type": "nav",
               "route": "developer",
@@ -88,20 +80,45 @@
               "valueSource": "versionName"
             },
             {
+              "id": "check_update",
+              "type": "action",
+              "actionId": "checkUpdate",
+              "icon": { "symbol": "arrow_clockwise_circle_fill", "tint": "c05" },
+              "title": "$r:settings_check_update",
+              "subtitle": "$r:settings_check_update_desc",
+              "valueSource": "updateState"
+            },
+            {
+              "id": "rate_app",
+              "type": "action",
+              "actionId": "rateApp",
+              "icon": { "symbol": "hand_thumbsup_fill", "tint": "c03" },
+              "title": "$r:settings_rate",
+              "subtitle": "$r:settings_rate_desc",
+              "deviceTypes": ["phone", "tablet", "2in1"]
+            }
+          ]
+        },
+        {
+          "id": "privacy_compliance",
+          "type": "list",
+          "title": "$r:settings_group_privacy",
+          "rows": [
+            {
               "id": "privacy",
-              "type": "nav",
-              "route": "policy",
-              "param": "privacy",
+              "type": "action",
+              "actionId": "privacyStatement",
               "icon": { "symbol": "lock_fill", "tint": "c07" },
-              "title": "$r:settings_privacy"
+              "title": "$r:settings_privacy",
+              "subtitle": "$r:settings_privacy_desc"
             },
             {
               "id": "terms",
-              "type": "nav",
-              "route": "policy",
-              "param": "terms",
+              "type": "action",
+              "actionId": "userAgreement",
               "icon": { "symbol": "doc_text_fill", "tint": "c13" },
-              "title": "$r:settings_terms"
+              "title": "$r:settings_terms",
+              "subtitle": "$r:settings_terms_desc"
             },
             {
               "id": "sdk_list",
@@ -118,6 +135,14 @@
               "route": "license",
               "icon": { "symbol": "flag_fill", "tint": "c03" },
               "title": "$r:settings_license"
+            },
+            {
+              "id": "revoke_privacy",
+              "type": "action",
+              "actionId": "revokePrivacy",
+              "icon": { "symbol": "exclamationmark_triangle_fill", "tint": "c08" },
+              "title": "$r:settings_privacy_revoke",
+              "subtitle": "$r:settings_privacy_revoke_desc"
             }
           ]
         }
@@ -219,6 +244,15 @@
               "builtin": "accentColor",
               "title": "$r:settings_appearance",
               "subtitleNote": "块型 builtin：渲染 AccentColorSetting（自带标题文案），title 仅作 schema 校验占位"
+            },
+            {
+              "id": "dynamic_icon",
+              "type": "builtin",
+              "builtin": "dynamicIcon",
+              "icon": { "symbol": "square_grid_2x2", "tint": "c04" },
+              "title": "$r:settings_icon_title",
+              "subtitle": "$r:settings_icon_desc",
+              "deviceTypes": ["phone", "tablet", "2in1"]
             }
           ]
         }

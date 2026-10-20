@@ -12,14 +12,37 @@ import {
 import { SettingsRow } from './component/SettingsRow';
 import { SettingsSelectRow, SettingsSliderRow, SettingsSwitchRow } from './component/SettingsControlRows';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { AppEnvManager, AppEnvSnapshot, BreakpointManager, ShareHelper, common } from '@quizzyjoy/platform';
-import { CommonToast } from '@easystart/app-component';
+import {
+  AppEnvManager,
+  AppEnvSnapshot,
+  AppGalleryHelper,
+  BreakpointManager,
+  MarketHelper,
+  StoreCapabilityResult,
+  StoreDynamicIcon,
+  StorePrivacyKind,
+  StoreSkill,
+  common
+} from '@quizzyjoy/platform';
+import { AppDialog, CommonToast, DialogSemantic } from '@easystart/app-component';
 import { AccentColorSetting } from '../component/AccentColorSetting';
 import { SettingsSchema, SchemaGroupDef, SchemaIconDef, SchemaRowDef } from '../model/SettingsSchema';
 import { SchemaRowStore, SettingsSchemaActions } from '../model/SchemaRowStore';
+import { SettingsRoute } from '../model/SettingsRoute';
 import { SettingsViewModel } from '../viewmodel/SettingsViewModel';
 import { AppSettingsJump } from '../util/AppSettingsJump';
+import { AppShare } from '../util/AppShare';
+import { StoreFeedback } from '../util/StoreFeedback';
 import { RawFileTextLoader } from '../util/RawFileTextLoader';
+
+/** 更新状态机（行后缀文案由它驱动；-1 未检查）。 */
+enum UpdateCheckState {
+  IDLE = -1,
+  CHECKING = 0,
+  UP_TO_DATE = 1,
+  HAS_UPDATE = 2,
+  UNAVAILABLE = 3
+}
 
 /**
  * schema 渲染器（v3.30，TODO-021）：设置页组区 / 行 / 控件的统一数据驱动渲染。
@@ -45,14 +68,18 @@ export struct SchemaSettingsSection {
   @Local store: SchemaRowStore = SchemaRowStore.getInstance();
   @Local env: AppEnvSnapshot = AppEnvManager.get();
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  /** 检查更新状态（默认 IDLE；进页静默检查一次，30 分钟内服务侧节流）。 */
+  @Local updateState: UpdateCheckState = UpdateCheckState.IDLE;
+  /** 动态图标：选项标签（首项恒为「默认图标」，纯字符串——Select 不接受 Resource）、图标 id 列表、当前选中索引。 */
+  @Local iconLabels: string[] = [];
+  @Local iconIds: string[] = [];
+  @Local iconSelected: number = 0;
   private hostContext: common.Context | undefined = undefined;
-  private appName: string = '';
 
   aboutToAppear(): void {
     this.hostContext = this.getUIContext().getHostContext();
     this.vm.load();
     this.loadSchema();
-    this.loadAppName();
   }
 
   private loadSchema(): void {
@@ -70,10 +97,40 @@ export struct SchemaSettingsSection {
         if (this.hasCacheRow(this.groups)) {
           this.vm.loadCacheSize(ctx);
         }
+        if (this.hasUpdateRow(this.groups)) {
+          this.checkUpdateSilently();
+        }
+        if (this.hasIconRow(this.groups)) {
+          this.loadDynamicIcons();
+        }
       })
       .catch((): void => {
         this.groups = SettingsSchema.fallbackGroups();
       });
+  }
+
+  /** 本页是否有「检查更新」行（决定是否静默预检查）。 */
+  private hasUpdateRow(groups: SchemaGroupDef[]): boolean {
+    for (const group of groups) {
+      for (const row of group.rows) {
+        if (row.valueSource === 'updateState') {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  /** 本页是否有动态图标行（决定是否预取图标列表）。 */
+  private hasIconRow(groups: SchemaGroupDef[]): boolean {
+    for (const group of groups) {
+      for (const row of group.rows) {
+        if (row.builtin === 'dynamicIcon') {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private collectRows(groups: SchemaGroupDef[]): SchemaRowDef[] {
@@ -95,16 +152,6 @@ export struct SchemaSettingsSection {
       }
     }
     return false;
-  }
-
-  private loadAppName(): void {
-    try {
-      if (this.hostContext !== undefined) {
-        this.appName = this.hostContext.resourceManager.getStringSync($r('app.string.app_name').id);
-      }
-    } catch (error) {
-      this.appName = '';
-    }
   }
 
   // ———————— 文案 / 资源解析 ————————
@@ -154,6 +201,26 @@ export struct SchemaSettingsSection {
     if (row.valueSource === 'versionName') {
       return this.env.versionName.length > 0 ? this.env.versionName : '—';
     }
+    if (row.valueSource === 'updateState') {
+      return this.updateStateText();
+    }
+    return '';
+  }
+
+  /** 检查更新行后缀：检查中 / 已是最新 / 发现新版本 / 暂不可用。 */
+  private updateStateText(): ResourceStr {
+    if (this.updateState === UpdateCheckState.CHECKING) {
+      return $r('app.string.settings_update_checking');
+    }
+    if (this.updateState === UpdateCheckState.UP_TO_DATE) {
+      return $r('app.string.settings_update_latest');
+    }
+    if (this.updateState === UpdateCheckState.HAS_UPDATE) {
+      return $r('app.string.settings_update_available');
+    }
+    if (this.updateState === UpdateCheckState.UNAVAILABLE) {
+      return $r('app.string.settings_update_unavailable');
+    }
     return '';
   }
 
@@ -177,12 +244,217 @@ export struct SchemaSettingsSection {
 
   private runAction(actionId: string): void {
     if (actionId === 'shareApp') {
-      ShareHelper.getInstance().shareText(`${this.appName} v${this.env.versionName}`, {
-        title: this.appName
-      });
+      // v3.39：分享入口已上移到设置根页 titleBar，设置行若配置 shareApp 仍复用同一实现
+      AppShare.share(this.getUIContext());
+      return;
+    }
+    if (actionId === 'checkUpdate') {
+      this.runCheckUpdate();
+      return;
+    }
+    if (actionId === 'rateApp') {
+      this.runRateApp();
+      return;
+    }
+    if (actionId === 'privacyStatement') {
+      this.openPrivacyLink(StorePrivacyKind.STATEMENT);
+      return;
+    }
+    if (actionId === 'userAgreement') {
+      this.openPrivacyLink(StorePrivacyKind.USER_AGREEMENT);
+      return;
+    }
+    if (actionId === 'revokePrivacy') {
+      this.confirmRevokePrivacy();
       return;
     }
     SettingsSchemaActions.run(actionId);
+  }
+
+  // ———————— 上架后能力（v3.39：更新 / 评分 / 隐私 / 动态图标，全部带降级） ————————
+
+  private updateStateOf(result: StoreCapabilityResult): UpdateCheckState {
+    if (result === StoreCapabilityResult.OK) {
+      return UpdateCheckState.HAS_UPDATE;
+    }
+    if (result === StoreCapabilityResult.UP_TO_DATE) {
+      return UpdateCheckState.UP_TO_DATE;
+    }
+    if (result === StoreCapabilityResult.THROTTLED) {
+      // 节流不算「不可用」：保持上一次状态，进页静默检查时也不打扰
+      return this.updateState === UpdateCheckState.CHECKING ? UpdateCheckState.IDLE : this.updateState;
+    }
+    return UpdateCheckState.UNAVAILABLE;
+  }
+
+  /** 进页静默检查（受 30 分钟节流；失败不弹提示，只把行后缀置为「暂不可用」）。 */
+  private checkUpdateSilently(): void {
+    const helper: AppGalleryHelper = AppGalleryHelper.getInstance();
+    if (!helper.usable(StoreSkill.UPDATE)) {
+      this.updateState = UpdateCheckState.UNAVAILABLE;
+      return;
+    }
+    this.updateState = UpdateCheckState.CHECKING;
+    helper.checkUpdate(false).then((result: StoreCapabilityResult): void => {
+      this.updateState = this.updateStateOf(result);
+    });
+  }
+
+  /** 用户主动点击：强制检查 → 有新版本则直接拉起系统升级弹框。 */
+  private runCheckUpdate(): void {
+    const helper: AppGalleryHelper = AppGalleryHelper.getInstance();
+    this.updateState = UpdateCheckState.CHECKING;
+    helper.checkUpdate(true).then((result: StoreCapabilityResult): void => {
+      this.updateState = this.updateStateOf(result);
+      if (result === StoreCapabilityResult.OK) {
+        helper.showUpdateDialog().then((shown: StoreCapabilityResult): void => {
+          if (shown !== StoreCapabilityResult.OK) {
+            StoreFeedback.openMarket($r('app.string.settings_update_failed'));
+          }
+        });
+        return;
+      }
+      if (result === StoreCapabilityResult.UP_TO_DATE) {
+        CommonToast.info($r('app.string.settings_update_none'));
+        return;
+      }
+      this.fallbackForUpdate(result);
+    });
+  }
+
+  /** 更新失败分档降级：能解释的直接提示，其余统一跳市场详情页兜底。 */
+  private fallbackForUpdate(result: StoreCapabilityResult): void {
+    const message: ResourceStr = StoreFeedback.updateMessage(result);
+    if (`${message}`.length > 0) {
+      CommonToast.info(message);
+      return;
+    }
+    StoreFeedback.openMarket($r('app.string.settings_update_failed'));
+  }
+
+  /** 应用内评分：官方弹窗优先，失败按码给不同提示，兜底跳市场。 */
+  private runRateApp(): void {
+    AppGalleryHelper.getInstance().showCommentDialog().then((result: StoreCapabilityResult): void => {
+      if (result === StoreCapabilityResult.OK) {
+        return;
+      }
+      const message: ResourceStr = StoreFeedback.rateMessage(result);
+      if (`${message}`.length > 0) {
+        CommonToast.info(message);
+        return;
+      }
+      StoreFeedback.openMarket($r('app.string.settings_rate_failed'));
+    });
+  }
+
+  /** 隐私声明 / 用户协议：官方链接优先，拿不到链接或拉起失败回退本地政策文本子页。 */
+  private openPrivacyLink(kind: StorePrivacyKind): void {
+    const url: string = AppGalleryHelper.getInstance().getPrivacyLink(kind);
+    const fallbackParam: string = kind === StorePrivacyKind.STATEMENT ? 'privacy' : 'terms';
+    if (url.length === 0) {
+      CommonToast.info($r('app.string.settings_privacy_local'));
+      this.pushRoute(SettingsRoute.POLICY, fallbackParam);
+      return;
+    }
+    MarketHelper.getInstance().openUri(url).then((ok: boolean): void => {
+      if (!ok) {
+        this.pushRoute(SettingsRoute.POLICY, fallbackParam);
+      }
+    });
+  }
+
+  /** 撤回隐私授权：危险语义二次确认 + 后果说明（撤回后更新/评分会不可用）。 */
+  private confirmRevokePrivacy(): void {
+    if (!AppGalleryHelper.getInstance().usable(StoreSkill.PRIVACY)) {
+      CommonToast.info($r('app.string.settings_privacy_unavailable'));
+      return;
+    }
+    AppDialog.open(this.getUIContext(), DialogSemantic.DANGER,
+      this.toPlainText($r('app.string.settings_privacy_revoke')),
+      this.toPlainText($r('app.string.settings_privacy_revoke_msg')),
+      (): void => {
+        const result: StoreCapabilityResult = AppGalleryHelper.getInstance().revokePrivacyConsent();
+        if (result === StoreCapabilityResult.OK) {
+          CommonToast.info($r('app.string.settings_privacy_revoked'));
+        } else {
+          CommonToast.info($r('app.string.settings_privacy_unavailable'));
+        }
+      },
+      // 危险语义复用，但动词是「撤回」不是「删除」（v3.39）
+      this.toPlainText($r('app.string.settings_privacy_revoke_ok')));
+  }
+
+  /** 资源文案转纯字符串（Select 的选项只接受纯文本，Resource 会被渲染成空）。 */
+  private toPlainText(value: ResourceStr): string {
+    if (typeof value === 'string') {
+      return value;
+    }
+    if (this.hostContext !== undefined) {
+      try {
+        return this.hostContext.resourceManager.getStringSync(value as Resource);
+      } catch (err) {
+        return '';
+      }
+    }
+    return '';
+  }
+
+  /** 动态图标选项文案（带序号的格式串；资源缺失时回落英文兜底）。 */
+  private iconItemLabel(seq: number): string {
+    if (this.hostContext !== undefined) {
+      try {
+        return this.hostContext.resourceManager.getStringSync($r('app.string.settings_icon_item').id, seq);
+      } catch (err) {
+        return `Icon ${seq}`;
+      }
+    }
+    return `Icon ${seq}`;
+  }
+
+  /** 拉取动态图标列表（首项恒「默认图标」，空列表表示未配置 → 整行隐藏）。 */
+  private loadDynamicIcons(): void {
+    AppGalleryHelper.getInstance().queryDynamicIcons().then((icons: StoreDynamicIcon[]): void => {
+      if (icons.length === 0) {
+        this.iconLabels = [];
+        this.iconIds = [];
+        this.iconSelected = 0;
+        return;
+      }
+      const labels: string[] = [this.toPlainText($r('app.string.settings_icon_default'))];
+      const ids: string[] = [''];
+      let selected: number = 0;
+      for (let index = 0; index < icons.length; index++) {
+        labels.push(this.iconItemLabel(index + 1));
+        ids.push(icons[index].iconId);
+        if (icons[index].enabled) {
+          selected = ids.length - 1;
+        }
+      }
+      this.iconLabels = labels;
+      this.iconIds = ids;
+      this.iconSelected = selected;
+    });
+  }
+
+  /** 切换动态图标（索引 0 = 恢复默认）；失败回滚显示并提示。 */
+  private onSelectIcon(index: number): void {
+    if (index < 0 || index >= this.iconIds.length) {
+      return;
+    }
+    const helper: AppGalleryHelper = AppGalleryHelper.getInstance();
+    const iconId: string = this.iconIds[index];
+    this.iconSelected = index;
+    const task: Promise<StoreCapabilityResult> = iconId.length === 0
+      ? helper.disableDynamicIcon()
+      : helper.selectDynamicIcon(iconId);
+    task.then((result: StoreCapabilityResult): void => {
+      if (result === StoreCapabilityResult.OK) {
+        CommonToast.info($r('app.string.settings_icon_applied'));
+        return;
+      }
+      CommonToast.info($r('app.string.settings_icon_failed'));
+      this.loadDynamicIcons();
+    });
   }
 
   private confirmClearCache(): void {
@@ -417,6 +689,8 @@ export struct SchemaSettingsSection {
         subtitle: row.subtitle.length > 0 ? this.resolveText(row.subtitle) : '',
         icon: this.symbolOf(row),
         iconTint: this.tintOf(row),
+        // v3.39：action 行也支持后缀动态值（检查更新行显示「检查中 / 已是最新 / 暂不可用」）
+        valueText: row.valueSource.length > 0 ? this.valueText(row) : '',
         onRowClick: (): void => {
           this.runAction(row.actionId);
         }
@@ -526,6 +800,22 @@ export struct SchemaSettingsSection {
       .padding(AppSpacing.LG)
       .borderRadius(AppRadius.XL)
       .backgroundColor($r('app.color.app_bg_card'))
+    } else if (row.builtin === 'dynamicIcon') {
+      // 动态图标（v3.39）：官方列表为空 = 未配置 / 未上架 / 系统不支持 → 整行不渲染。
+      // 用自绘 SettingsSelectRow（不用 HdsListItemCard：设置域宽度边际由 pagePadding 统一决定）。
+      if (this.iconLabels.length > 0) {
+        SettingsSelectRow({
+          title: this.resolveText(row.title),
+          subtitle: row.subtitle.length > 0 ? this.resolveText(row.subtitle) : '',
+          icon: this.symbolOf(row),
+          iconTint: this.tintOf(row),
+          options: this.iconLabels,
+          selected: this.iconSelected,
+          onSelect: (index: number): void => {
+            this.onSelectIcon(index);
+          }
+        })
+      }
     } else if (row.builtin === 'displayMode') {
       HdsListItemCard({
         prefixItem: this.prefixOf(row),

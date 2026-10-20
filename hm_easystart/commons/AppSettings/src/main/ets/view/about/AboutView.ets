@@ -1,17 +1,26 @@
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { AppEnvManager, AppEnvSnapshot, BreakpointManager, MarketHelper } from '@quizzyjoy/platform';
+import {
+  AppEnvManager,
+  AppEnvSnapshot,
+  AppGalleryHelper,
+  BreakpointManager,
+  MarketHelper,
+  StoreCapabilityResult
+} from '@quizzyjoy/platform';
 import { ButtonVariant, CommonButton } from '@quizzyjoy/vitalui';
 import { CommonToast } from '@easystart/app-component';
+import { StoreFeedback } from '../../util/StoreFeedback';
 
 /** 开源仓库地址（v3.33 上架：关于页直达）。 */
 const REPO_URL: string = 'https://github.com/quizzyjoy/easystart';
 
 /**
- * 关于本应用子页（v3.13，TODO-003）：
- * 应用头（图标 / 名称 / 版本）+ 环境信息卡 + 检查更新 / 给我们评分（应用市场详情页）。
+ * 关于本应用子页（v3.13，TODO-003；v3.39 上架后能力接入）：
+ * 应用头（图标 / 名称 / 版本）+ 环境信息卡 + 检查更新 / 给我们评分 / 开源仓库。
  *
- * 商店跳转经 Platform MarketHelper（startWant 唯一出口），无市场时 Toast 降级；
- * bundleName 由 AppEnvManager 快照自动提供，fork 改包名后零代码改动。
+ * 检查更新与评分走 Platform 的 AppGalleryHelper（应用市场官方能力），失败按
+ * StoreFeedback 的分档文案提示并兜底跳市场详情页；系统不支持时同样是跳市场，
+ * 不出现「点了没反应」。bundleName 由 AppEnvManager 快照自动提供，fork 改包名零代码改动。
  */
 @ComponentV2
 export struct AboutView {
@@ -22,11 +31,39 @@ export struct AboutView {
     return `${this.breakpoint.breakpoint}`;
   }
 
-  private openMarket(): void {
-    MarketHelper.getInstance().openAppDetail().then((ok: boolean): void => {
-      if (!ok) {
-        CommonToast.info($r('app.string.settings_market_unavailable'));
+  /** 检查更新：官方接口优先 → 有新版拉起系统升级框 → 其余降级到市场详情页。 */
+  private checkUpdate(): void {
+    const helper: AppGalleryHelper = AppGalleryHelper.getInstance();
+    helper.checkUpdate(true).then((result: StoreCapabilityResult): void => {
+      if (result === StoreCapabilityResult.OK) {
+        helper.showUpdateDialog().then((shown: StoreCapabilityResult): void => {
+          if (shown !== StoreCapabilityResult.OK) {
+            StoreFeedback.openMarket($r('app.string.settings_update_failed'));
+          }
+        });
+        return;
       }
+      const message: ResourceStr = StoreFeedback.updateMessage(result);
+      if (`${message}`.length > 0) {
+        CommonToast.info(message);
+        return;
+      }
+      StoreFeedback.openMarket($r('app.string.settings_update_failed'));
+    });
+  }
+
+  /** 应用内评分：官方弹窗优先；未登录 / 已评过给单独文案，其余降级到市场。 */
+  private rateApp(): void {
+    AppGalleryHelper.getInstance().showCommentDialog().then((result: StoreCapabilityResult): void => {
+      if (result === StoreCapabilityResult.OK) {
+        return;
+      }
+      const message: ResourceStr = StoreFeedback.rateMessage(result);
+      if (`${message}`.length > 0) {
+        CommonToast.info(message);
+        return;
+      }
+      StoreFeedback.openMarket($r('app.string.settings_rate_failed'));
     });
   }
 
@@ -99,7 +136,7 @@ export struct AboutView {
             variant: ButtonVariant.PRIMARY,
             fullWidth: true,
             onAction: (): void => {
-              this.openMarket();
+              this.checkUpdate();
             }
           })
           CommonButton({
@@ -107,7 +144,7 @@ export struct AboutView {
             variant: ButtonVariant.SECONDARY,
             fullWidth: true,
             onAction: (): void => {
-              this.openMarket();
+              this.rateApp();
             }
           })
           CommonButton({

@@ -94,10 +94,14 @@ export class AppDialog {
    * 打开标准确认对话框。
    * 语义：CONFIRM = 「确认 / 取消」品牌主按钮；DANGER = 「删除 / 取消」危险主按钮。
    * onConfirm 仅在确认时回调；取消与点外自动关闭均只关窗。
+   *
+   * @param confirmText 覆盖主按钮文案（v3.39：危险语义不等于「删除」——撤回授权、退出登录、
+   *                    重置设置这类不可逆动作用 DANGER 变体 + 自己的动词，避免「删除」误导）
    */
   static open(uiContext: UIContext, semantic: DialogSemantic, title: string, message: string,
-    onConfirm: () => void): void {
-    const confirmText: string = semantic === DialogSemantic.DANGER ? '删除' : '确认';
+    onConfirm: () => void, confirmText?: string): void {
+    const defaultText: string = semantic === DialogSemantic.DANGER ? '删除' : '确认';
+    const confirmLabel: string = (confirmText !== undefined && confirmText.length > 0) ? confirmText : defaultText;
     const confirmVariant: ButtonVariant = semantic === DialogSemantic.DANGER
       ? ButtonVariant.DANGER : ButtonVariant.PRIMARY;
     const content: AppDialogContent = new AppDialogContent();
@@ -114,7 +118,7 @@ export class AppDialog {
       }
     };
     content.actions = [
-      new DialogAction(confirmText, confirmVariant, () => {
+      new DialogAction(confirmLabel, confirmVariant, () => {
         close();
         onConfirm();
       }),

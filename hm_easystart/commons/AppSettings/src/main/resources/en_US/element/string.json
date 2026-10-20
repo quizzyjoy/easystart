@@ -455,6 +455,130 @@
     {
       "name": "settings_footer_icp",
       "value": ""
+    },
+    {
+      "name": "settings_group_privacy",
+      "value": "Privacy & Compliance"
+    },
+    {
+      "name": "settings_check_update_desc",
+      "value": "Compare with the published build; falls back to AppGallery"
+    },
+    {
+      "name": "settings_rate_desc",
+      "value": "In-app review, without leaving the app"
+    },
+    {
+      "name": "settings_privacy_desc",
+      "value": "Opens the official statement; falls back to local text"
+    },
+    {
+      "name": "settings_terms_desc",
+      "value": "Opens the official user agreement; falls back to local text"
+    },
+    {
+      "name": "settings_privacy_revoke",
+      "value": "Withdraw privacy consent"
+    },
+    {
+      "name": "settings_privacy_revoke_desc",
+      "value": "Updates and rating become unavailable afterwards"
+    },
+    {
+      "name": "settings_privacy_revoke_msg",
+      "value": "You can consent again later; while withdrawn, update check and in-app rating are unavailable."
+    },
+    {
+      "name": "settings_privacy_revoked",
+      "value": "Privacy consent withdrawn"
+    },
+    {
+      "name": "settings_privacy_unavailable",
+      "value": "Not supported or privacy hosting not enabled"
+    },
+    {
+      "name": "settings_privacy_local",
+      "value": "Official link unavailable, showing local text"
+    },
+    {
+      "name": "settings_update_checking",
+      "value": "Checking…"
+    },
+    {
+      "name": "settings_update_latest",
+      "value": "Up to date"
+    },
+    {
+      "name": "settings_update_available",
+      "value": "New version found"
+    },
+    {
+      "name": "settings_update_unavailable",
+      "value": "Unavailable"
+    },
+    {
+      "name": "settings_update_none",
+      "value": "Already up to date"
+    },
+    {
+      "name": "settings_update_failed",
+      "value": "Opened AppGallery, update there"
+    },
+    {
+      "name": "settings_update_not_foreground",
+      "value": "Keep the app in foreground and retry"
+    },
+    {
+      "name": "settings_update_privacy",
+      "value": "Agree to the privacy policy first"
+    },
+    {
+      "name": "settings_update_network",
+      "value": "Network error, try again later"
+    },
+    {
+      "name": "settings_update_throttled",
+      "value": "Too frequent, try again later"
+    },
+    {
+      "name": "settings_rate_not_signed_in",
+      "value": "Sign in to your HUAWEI ID first"
+    },
+    {
+      "name": "settings_rate_already",
+      "value": "You already reviewed this version"
+    },
+    {
+      "name": "settings_rate_failed",
+      "value": "Opened AppGallery, review there"
+    },
+    {
+      "name": "settings_icon_title",
+      "value": "App icon"
+    },
+    {
+      "name": "settings_icon_desc",
+      "value": "Dynamic icons configured in AppGallery; applies to the launcher"
+    },
+    {
+      "name": "settings_icon_default",
+      "value": "Default icon"
+    },
+    {
+      "name": "settings_icon_item",
+      "value": "Icon %d"
+    },
+    {
+      "name": "settings_icon_applied",
+      "value": "Icon switched"
+    },
+    {
+      "name": "settings_icon_failed",
+      "value": "Switch failed, previous icon restored"
+    },
+    {
+      "name": "settings_privacy_revoke_ok",
+      "value": "Withdraw"
     }
   ]
 }

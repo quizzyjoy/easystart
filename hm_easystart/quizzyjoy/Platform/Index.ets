@@ -19,6 +19,14 @@ export { OrientationManager, AppOrientation, AppOrientationStrategy } from './sr
 export { HoverStore, HoverData, HoverListener, AppFoldStatus } from './src/main/ets/hover/HoverStore';
 export { ShareHelper, ShareOptions } from './src/main/ets/share/ShareHelper';
 export { MarketHelper } from './src/main/ets/market/MarketHelper';
+export {
+  AppGalleryHelper,
+  StoreCapabilityResult,
+  StoreDynamicIcon,
+  StorePrivacyKind,
+  StorePrivacyLink,
+  StoreSkill
+} from './src/main/ets/market/AppGalleryHelper';
 export { systemShare } from '@kit.ShareKit';
 export { ScreenManager } from './src/main/ets/screen/ScreenManager';
 export { HapticManager } from './src/main/ets/haptic/HapticManager';

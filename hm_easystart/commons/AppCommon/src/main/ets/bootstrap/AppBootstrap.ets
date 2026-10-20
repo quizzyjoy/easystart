@@ -3,6 +3,7 @@ import { Logger } from '@quizzyjoy/foundation';
 import {
   AppColorMode,
   AppEnvManager,
+  AppGalleryHelper,
   BreakpointManager,
   ColorModeManager,
   GlobalErrorHandler,
@@ -63,6 +64,8 @@ export class AppBootstrap {
     NetworkMonitor.init();
     ShareHelper.getInstance().attach(context);
     MarketHelper.getInstance().attach(context);
+    // 上架后能力（检查更新 / 评分 / 隐私 / 动态图标）：canIUse 探测在 helper 内部完成
+    AppGalleryHelper.getInstance().attach(context);
     Logger.info(DOMAIN, TAG, 'prepare done');
   }
 
@@ -204,6 +207,7 @@ export class AppBootstrap {
     NetworkMonitor.destroy();
     ShareHelper.getInstance().detach();
     MarketHelper.getInstance().detach();
+    AppGalleryHelper.getInstance().detach();
     HoverStore.getInstance().destroy();
     ColorModeManager.getInstance().detach();
     SystemAppearanceManager.getInstance().detach();

@@ -298,7 +298,13 @@ export class SettingsSchema {
     'star_fill': $r('sys.symbol.star_fill'),
     'gift_fill': $r('sys.symbol.gift_fill'),
     'envelope_fill': $r('sys.symbol.envelope_fill'),
-    'qrcode': $r('sys.symbol.qrcode')
+    'qrcode': $r('sys.symbol.qrcode'),
+    // v3.39 上架后能力行（符号名经 sdk/default/openharmony/toolchains/id_defined.json 逐名核对）
+    'arrow_clockwise_circle_fill': $r('sys.symbol.arrow_clockwise_circle_fill'),
+    'hand_thumbsup_fill': $r('sys.symbol.hand_thumbsup_fill'),
+    'exclamationmark_triangle_fill': $r('sys.symbol.exclamationmark_triangle_fill'),
+    'lock_open_fill': $r('sys.symbol.lock_open_fill'),
+    'square_grid_2x2': $r('sys.symbol.square_grid_2x2')
   };
 
   /** fork 注册新符号（一行代码扩展点；未注册键渲染回落 gearshape）。 */

@@ -3,6 +3,7 @@ import { hdsMaterial, HdsNavDestination, HdsNavigation, HdsNavigationTitleMode }
 import { AppEnvManager, AppEnvSnapshot, BreakpointManager, BreakpointType } from '@quizzyjoy/platform';
 import { AppDialog, DialogSemantic } from '@easystart/app-component';
 import { SettingsRoute } from '../model/SettingsRoute';
+import { AppShare } from '../util/AppShare';
 import { SettingsView } from './SettingsView';
 import { AppearanceView } from './AppearanceView';
 import { GeneralView } from './GeneralView';
@@ -298,6 +299,20 @@ export struct SettingsDestination {
             action: () => {
               this.handleBack();
             }
+          },
+          // 分享入口（v3.39 用户裁定）：从设置行上移到设置根页 titleBar，所有设置子页常显。
+          // 点击回调必须放在 content.action（HdsNavigationIconOptions.action）。
+          menu: {
+            value: [{
+              content: {
+                icon: $r('sys.symbol.share'),
+                label: 'share',
+                action: (): void => {
+                  AppShare.share(this.getUIContext());
+                }
+              }
+            }],
+            maxCount: 1
           }
         },
         style: {
