@@ -21,6 +21,14 @@ export struct ToolsView {
   };
   @Param onOpenIconKit: () => void = (): void => {
   };
+  /**
+   * 宿主分栏时左栏的可用宽度（vp）。0 = 不分栏，按窗口断点取列数。
+   *
+   * 为什么需要它：Pura X Max 等阔折叠展开后窗口 bp=lg，但入口用 Split 分栏，
+   * 本页实际容器只有 ~420vp；若仍按 lg 取 4 列，卡片会被压到 ~100vp、标题截成「设…」。
+   */
+  @Param paneWidthVp: number = 0;
+
   @Param onOpenTransitions: () => void = (): void => {
   };
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
@@ -31,8 +39,19 @@ export struct ToolsView {
     return `${this.breakpoint.breakpoint}`;
   }
 
-  /** 列数：窄屏 2 列，中屏 3 列，宽屏 4 列。 */
+  /** 列数：按**实际容器宽度**分档（分栏时用 paneWidthVp，未分栏用窗口宽度）。 */
   private columns(): number {
+    const w: number = this.paneWidthVp > 0 ? this.paneWidthVp : this.breakpoint.windowWidthVp;
+    if (w > 0) {
+      if (w < 480) {
+        return 2;
+      }
+      if (w < 760) {
+        return 3;
+      }
+      return 4;
+    }
+    // 宽度未知时退回断点判定
     const bp: string = this.bp();
     if (bp === 'sm') {
       return 2;

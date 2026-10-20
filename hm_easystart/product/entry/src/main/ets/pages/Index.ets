@@ -1,4 +1,4 @@
-import { BreakpointManager, CapabilityManager, RouterManager, WindowAdapter } from '@quizzyjoy/platform';
+import { BreakpointManager, BreakpointType, CapabilityManager, RouterManager, WindowAdapter } from '@quizzyjoy/platform';
 import { AppRoute } from '@easystart/app-routes';
 import { isSettingsRoute, SettingsDestination } from '@easystart/app-settings';
 import {
@@ -141,6 +141,38 @@ struct Index {
   }
 
   /** build 期取占位节点（aboutToAppear 必先于 build，兜底懒建消除非空断言）。 */
+  /**
+   * 分栏左栏宽度（v3.46 修：Pura X Max 等阔折叠 bp=lg 时，Navigation 默认左栏仅 ~320vp，
+   * L1 大卡标题/描述被挤到 3 行并截断）。策略与 SettingsDestination 一致：
+   * lg/xl 取窗口宽 32%（clamp 340–420vp），md 取 44%，sm 不分栏故返回 100%。
+   */
+  /** 分栏左栏的数值宽度（vp），0 = 当前未分栏；供子视图按容器宽算列数。 */
+  private navPaneWidthVp(): number {
+    if (!this.breakpoint.isWide()) {
+      return 0;
+    }
+    const w: number = this.breakpoint.windowWidthVp;
+    if (w <= 0) {
+      return 400;
+    }
+    if (this.breakpoint.breakpoint === BreakpointType.MD) {
+      return Math.round(w * 0.44);
+    }
+    return Math.min(420, Math.max(340, Math.round(w * 0.32)));
+  }
+
+  private navBarWidthValue(): Length {
+    const w: number = this.breakpoint.windowWidthVp;
+    if (this.breakpoint.breakpoint === BreakpointType.XL || this.breakpoint.breakpoint === BreakpointType.LG) {
+      const pct: number = w > 0 ? Math.round(w * 0.32) : 400;
+      return Math.min(420, Math.max(340, pct));
+    }
+    if (this.breakpoint.breakpoint === BreakpointType.MD) {
+      return `44%`;
+    }
+    return `100%`;
+  }
+
   private getSplitPlaceholder(): ComponentContent<Object> {
     if (!this.splitPlaceholder) {
       this.splitPlaceholder = new ComponentContent<Object>(
@@ -675,6 +707,8 @@ struct Index {
       .mode(this.breakpoint.isWide() ? NavigationMode.Split : NavigationMode.Stack)
       // Split 分栏右栏空态占位（lg+ 平板/阔折叠；Stack 模式不生效，B01-UI-005）
       .splitPlaceholder(this.getSplitPlaceholder())
+      .navBarWidth(this.navBarWidthValue())
+      .navBarWidthRange({ minWidth: 300, maxWidth: 440 })
       .width('100%')
       .height('100%')
     }
@@ -718,6 +752,7 @@ struct Index {
 
       TabContent() {
         ToolsView({
+          paneWidthVp: this.navPaneWidthVp(),
           onOpenDeviceCapability: (): void => {
             RouterManager.getInstance().push(AppRoute.DEVICE_CAPABILITY);
           },
