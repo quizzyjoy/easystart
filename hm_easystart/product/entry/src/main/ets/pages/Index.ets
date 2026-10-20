@@ -767,7 +767,9 @@ struct Index {
       .tabBar(this.tabsBar[2])
     }
     .layoutWeight(1)
-    .barPosition(this.breakpoint.isWide() ? BarPosition.Start : BarPosition.End)
+    // 页签恒在底部：宽屏走 Split 时页签落在左栏底部即可；
+    // 若按宽屏切 BarPosition.Start，页签会飞到左栏顶部夹在标题与列表之间（Pura X Max 实测），与 2in1 不一致
+    .barPosition(BarPosition.End)
     // 沉浸光感完整姿势（官方总览指南）：barOverlap 内容延伸至 bar 之下 + 悬浮态 barFloatingStyle
     .barOverlap(true)
     .barFloatingStyle({

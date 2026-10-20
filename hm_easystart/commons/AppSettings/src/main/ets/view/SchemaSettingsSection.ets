@@ -11,6 +11,7 @@ import {
 } from '@kit.UIDesignKit';
 import { SettingsRow } from './component/SettingsRow';
 import { SettingsSelectRow, SettingsSliderRow, SettingsSwitchRow } from './component/SettingsControlRows';
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import {
   AppEnvManager,
@@ -59,6 +60,8 @@ export struct SchemaSettingsSection {
   @Local store: SchemaRowStore = SchemaRowStore.getInstance();
   @Local env: AppEnvSnapshot = AppEnvManager.get();
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  /** 运行时主题（v3.46：HDS SuffixSwitch 的选中色要显式传，HDS 私有 token 不吃 ThemeControl） */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
   /** 动态图标：选项标签（首项恒为「默认图标」，纯字符串——Select 不接受 Resource）、图标 id 列表、当前选中索引。 */
   @Local iconLabels: string[] = [];
   @Local iconIds: string[] = [];
@@ -811,6 +814,7 @@ export struct SchemaSettingsSection {
         },
         suffixItem: new SuffixSwitch({
           isCheck: this.vm.hapticEnabled,
+          selectColor: this.theme.brandColor(),
           onChange: (on: boolean): void => {
             this.vm.toggleHaptic(on);
           }
@@ -826,6 +830,7 @@ export struct SchemaSettingsSection {
         },
         suffixItem: new SuffixSwitch({
           isCheck: this.vm.keepScreenOn,
+          selectColor: this.theme.brandColor(),
           onChange: (on: boolean): void => {
             this.vm.toggleKeepScreenOn(on);
           }
