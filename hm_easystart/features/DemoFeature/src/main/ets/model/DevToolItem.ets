@@ -27,7 +27,7 @@ export class DevToolItem {
   desc: string = '';
   symbol: DevToolSymbol = DevToolSymbol.DISPLAY;
   status: DevToolStatus = DevToolStatus.READY;
-  /** 参考实现地址（仅 PLANNED 项填写；同时登记在开源备忘录） */
+  /** 参考实现地址（调研出处；同时登记在开源备忘录 §6） */
   sourceUrl: string = '';
 
   constructor(id: string, title: string, desc: string, symbol: DevToolSymbol, status: DevToolStatus,
@@ -52,13 +52,13 @@ export function devTools(): DevToolItem[] {
       DevToolSymbol.DISPLAY, DevToolStatus.READY)
   ];
   const planned: DevToolItem[] = [
-    new DevToolItem('uidesign', '图标处理 Kit',
-      '图标合成 / 剪切 / 缩放 / 描边：分层与单层图标效果',
-      DevToolSymbol.PALETTE, DevToolStatus.PLANNED,
+    new DevToolItem('iconkit', '图标处理 Kit',
+      'hdsDrawable 分层图标合成：size 控尺寸、hasBorder 加描边',
+      DevToolSymbol.PALETTE, DevToolStatus.READY,
       'https://gitcode.com/HarmonyOS_Samples/uidesign-kit_-sample-code_-arkts'),
     new DevToolItem('transitions', '转场动效合集',
-      '基础组件 + 通用属性 + 显式动效的多类转场案例',
-      DevToolSymbol.GRID, DevToolStatus.PLANNED,
+      '元素进出 / 曲线对比 / 共享元素 / 形变位移 四种演示',
+      DevToolSymbol.GRID, DevToolStatus.READY,
       'https://gitcode.com/HarmonyOS_Samples/transitions-collection')
   ];
   return ready.concat(planned);

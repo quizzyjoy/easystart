@@ -49,6 +49,12 @@ export class AppRoute {
   static readonly POLICY: string = 'policy';
   /** 设置·开源许可子页（v3.13，pageMap 注册名） */
   static readonly LICENSE: string = 'license';
+  /** 开发工具·UI Design Kit 图标处理（v3.42，pageMap 注册名） */
+  static readonly ICON_KIT: string = 'iconKit';
+  /** 开发工具·转场动效合集（v3.42，pageMap 注册名） */
+  static readonly TRANSITIONS: string = 'transitions';
+  /** 开发工具·共享元素转场详情（v3.42，param = 卡片 id） */
+  static readonly TRANSITION_DETAIL: string = 'transitionDetail';
   /** 示例·账号登录页范式（v3.40 从设置域迁出，pageMap 注册名） */
   static readonly ACCOUNT_SAMPLE: string = 'accountSample';
   /** 设置·公告子页（v3.28 数据驱动，pageMap 注册名；值与 SettingsRoute.ANNOUNCEMENT 逐字同值） */

@@ -3,6 +3,9 @@ import { AppRoute } from '@easystart/app-routes';
 import { isSettingsRoute, SettingsDestination } from '@easystart/app-settings';
 import {
   AccountSampleView,
+  IconKitView,
+  TransitionDetailView,
+  TransitionsView,
   ChartsDashboardView,
   ComponentGroupView,
   DemoSample,
@@ -495,6 +498,74 @@ struct Index {
         enableComponentSafeArea: true
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.ICON_KIT) {
+      // UI Design Kit 图标处理（v3.42）
+      HdsNavDestination() {
+        IconKitView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '图标处理 Kit'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.TRANSITIONS) {
+      // 转场动效合集（v3.42）
+      HdsNavDestination() {
+        TransitionsView({
+          onOpenTransitionDetail: (id: string): void => {
+            RouterManager.getInstance().push(AppRoute.TRANSITION_DETAIL, id);
+          }
+        })
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '转场动效合集'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.TRANSITION_DETAIL) {
+      // 共享元素转场详情（v3.42）：param = 卡片 id
+      HdsNavDestination() {
+        TransitionDetailView({ cardId: `${param}` })
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '共享元素转场',
+            subTitle: '列表卡与详情主体共用 sharedTransition key'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (name === AppRoute.TEMPLATE_ABOUT) {
       // L3 关于模板（v3.38）：这是什么 / 怎么用 / 如何 fork
       HdsNavDestination() {
@@ -649,6 +720,12 @@ struct Index {
         ToolsView({
           onOpenDeviceCapability: (): void => {
             RouterManager.getInstance().push(AppRoute.DEVICE_CAPABILITY);
+          },
+          onOpenIconKit: (): void => {
+            RouterManager.getInstance().push(AppRoute.ICON_KIT);
+          },
+          onOpenTransitions: (): void => {
+            RouterManager.getInstance().push(AppRoute.TRANSITIONS);
           }
         })
       }

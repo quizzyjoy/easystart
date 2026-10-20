@@ -16,6 +16,10 @@ import { DevToolItem, DevToolStatus, DevToolSymbol, devTools } from '../model/De
 export struct ToolsView {
   @Param onOpenDeviceCapability: () => void = (): void => {
   };
+  @Param onOpenIconKit: () => void = (): void => {
+  };
+  @Param onOpenTransitions: () => void = (): void => {
+  };
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
   @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
   @Local tools: DevToolItem[] = devTools();
@@ -71,14 +75,21 @@ export struct ToolsView {
   }
 
   private onTap(item: DevToolItem): void {
-    if (item.status === DevToolStatus.READY) {
-      this.onOpenDeviceCapability();
+    if (item.status === DevToolStatus.PLANNED) {
+      // 待实现：明确告知去哪看参考实现，避免「点了没反应」。
+      // 用 CommonToast（EntryAbility 已 attach）而非 AppSnackBar：后者在本页取不到宿主色票，
+      // 真机实测不显示且报 GetColorById id=-1。
+      CommonToast.info(`${item.title} 待实现：参考实现见 docs/权威参考与开源项目盘点.md §6`);
       return;
     }
-    // 待实现：明确告知去哪看参考实现，避免「点了没反应」。
-    // 用 CommonToast（EntryAbility 已 attach）而非 AppSnackBar：后者在本页取不到宿主色票，
-    // 真机实测不显示且报 GetColorById id=-1。
-    CommonToast.info(`${item.title} 待实现：参考实现见 docs/权威参考与开源项目盘点.md §6`);
+    // 已实现：按 id 分发（路由名映射唯一留在入口装配层，feature 只上抛语义）
+    if (item.id === 'iconkit') {
+      this.onOpenIconKit();
+    } else if (item.id === 'transitions') {
+      this.onOpenTransitions();
+    } else {
+      this.onOpenDeviceCapability();
+    }
   }
 
   build() {
