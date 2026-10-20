@@ -29,6 +29,7 @@ import {
   HomeTarget
 } from '@easystart/home-feature';
 import { AppFontSize, AppRadius, AppSize, AppSpacing } from '@quizzyjoy/foundation';
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { TabsBarModel } from '../model/TabsBarModel';
 import { HomeCatalogView } from '../view/HomeCatalogView';
 import { CardLaunchTarget } from '../model/CardLaunchTarget';
@@ -93,9 +94,18 @@ struct Index {
   @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
   @Local pathStack: NavPathStack = new NavPathStack();
   private tabController: HdsTabsController = new HdsTabsController();
-  private tabsBar: BottomTabBarStyle[] = TabsBarModel.getTabBarByPage();
+  /** 运行时主题：页签选中色跟随换肤（传 hex，见 TabsBarModel 注释）。 */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+  /** 页签样式（BottomTabBarStyle 不响应状态，主题变化时用新颜色重建）。 */
+  @Local tabsBar: BottomTabBarStyle[] = TabsBarModel.getTabBarByPage(UiThemeManager.getInstance().effectiveAccent());
   /** Split 分栏右栏空态占位（aboutToAppear 中构建，getUIContext 就绪后可用） */
   private splitPlaceholder: ComponentContent<Object> | undefined = undefined;
+
+  /** 切主题包 / 改强调色时重建页签样式，让选中态跟上主题色。 */
+  @Monitor('theme.presetId', 'theme.accentColor')
+  onThemeChanged(): void {
+    this.tabsBar = TabsBarModel.getTabBarByPage(this.theme.effectiveAccent());
+  }
 
   aboutToAppear(): void {
     RouterManager.getInstance().attach(this.pathStack);

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-20T23:35:36.510Z",
+  "generatedAt": "2026-10-20T23:49:04.763Z",
   "docs": [
     {
       "id": "arkts/arkts",
@@ -21,7 +21,7 @@
       "id": "主题/主题",
       "title": "HarmonyOS 主题换肤开发指南",
       "summary": "本文以开源模板工程 EasyStart（ hm easystart/ ，示例版本 v3.48 / versionCode",
-      "minutes": 12,
+      "minutes": 13,
       "sections": [
         "目录",
         "一、能力范围与效果",
