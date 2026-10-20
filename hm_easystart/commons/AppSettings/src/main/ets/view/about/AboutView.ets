@@ -7,7 +7,7 @@ import {
   MarketHelper,
   StoreCapabilityResult
 } from '@quizzyjoy/platform';
-import { ButtonVariant, CommonButton } from '@quizzyjoy/vitalui';
+import { ButtonVariant, CommonButton } from '@easystart/app-component';
 import { CommonToast } from '@easystart/app-component';
 import { StoreFeedback } from '../../util/StoreFeedback';
 

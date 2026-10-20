@@ -1,6 +1,6 @@
 import { AppFontSize, AppSpacing, AppRadius, AppSize } from '@quizzyjoy/foundation';
 import { SkeletonBlock } from './SkeletonBlock';
-import { CommonButton, ButtonVariant } from './CommonButton';
+import { VitalActionButton, VitalActionVariant } from './VitalActionButton';
 
 /** 底部加载指示器边长（vp）——与 CommonButton 内嵌菊花同视觉档，命名保形。 */
 const FOOTER_INDICATOR_SIZE: number = 18;
@@ -81,9 +81,9 @@ export struct RefreshList {
         .fontSize(AppFontSize.BODY_SM)
         .fontColor($r('app.color.app_text_secondary'))
       if (retryable) {
-        CommonButton({
+        VitalActionButton({
           text: '重试',
-          variant: ButtonVariant.SECONDARY,
+          variant: VitalActionVariant.SECONDARY,
           onAction: () => {
             this.onRetry();
           }

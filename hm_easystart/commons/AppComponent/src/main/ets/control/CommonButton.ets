@@ -1,6 +1,6 @@
-import { UiThemeManager } from '../theme/UiThemeManager';
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppRadius, AppSpacing, AppFontSize, AppStroke, AppSize } from '@quizzyjoy/foundation';
-import { MotionSpec } from '../motion/MotionSpec';
+import { MotionSpec } from '@quizzyjoy/vitalui';
 
 /** 加载指示器（内嵌菊花）边长（vp）——介于 ICON_LG(24) 与 ICON_MD(20) 之间的视觉适配值，命名保形。 */
 const LOADING_INDICATOR_SIZE: number = 18;

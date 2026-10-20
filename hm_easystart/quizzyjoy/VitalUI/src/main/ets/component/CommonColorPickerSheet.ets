@@ -1,7 +1,6 @@
 import { UiThemeManager } from '../theme/UiThemeManager';
 import { AppFontSize, AppRadius, AppSpacing, AppStroke, AppSize } from '@quizzyjoy/foundation';
-import { ButtonVariant } from './CommonButton';
-import { CommonButton } from './CommonButton';
+import { VitalActionButton, VitalActionVariant } from './VitalActionButton';
 import { CommonColorPicker } from './CommonColorPicker';
 
 /**
@@ -75,16 +74,16 @@ export struct CommonColorPickerSheet {
       .edgeEffect(EdgeEffect.Spring)
 
       Row({ space: AppSpacing.MD }) {
-        CommonButton({
+        VitalActionButton({
           text: '取消',
-          variant: ButtonVariant.TEXT,
+          variant: VitalActionVariant.TEXT,
           onAction: (): void => {
             this.show = false;
           }
         })
-        CommonButton({
+        VitalActionButton({
           text: '确定',
-          variant: ButtonVariant.PRIMARY,
+          variant: VitalActionVariant.PRIMARY,
           accentColor: this.draft,
           onAction: (): void => {
             this.onColorChange(this.draft);

@@ -1,4 +1,5 @@
-import { ActionCard, ListStatus, RefreshList, ViewState } from '@quizzyjoy/vitalui';
+import { ActionCard } from '@easystart/app-component';
+import { ListStatus, RefreshList, ViewState } from '@quizzyjoy/vitalui';
 import { AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
 import { HomeItem } from '../data/HomeRepository';

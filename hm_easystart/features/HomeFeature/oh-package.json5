@@ -8,6 +8,7 @@
   "dependencies": {
     "@quizzyjoy/foundation": "file:../../quizzyjoy/Foundation",
     "@quizzyjoy/platform": "file:../../quizzyjoy/Platform",
-    "@quizzyjoy/vitalui": "file:../../quizzyjoy/VitalUI"
+    "@quizzyjoy/vitalui": "file:../../quizzyjoy/VitalUI",
+    "@easystart/app-component": "file:../../commons/AppComponent"
   }
 }

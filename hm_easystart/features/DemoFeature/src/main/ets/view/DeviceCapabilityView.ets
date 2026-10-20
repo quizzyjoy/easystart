@@ -15,7 +15,7 @@ import {
   WindowAdapter
 } from '@quizzyjoy/platform';
 import { AppFontSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { ButtonVariant, CommonButton } from '@quizzyjoy/vitalui';
+import { ButtonVariant, CommonButton } from '@easystart/app-component';
 
 /**
  * 设备能力示例视图：断点 / 形态因子 / 窗口避让 / 网络 / 国际化 / 系统控制。

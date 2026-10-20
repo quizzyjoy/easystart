@@ -1,5 +1,5 @@
-import { UiThemeManager } from '../theme/UiThemeManager';
-import { MotionSpec } from '../motion/MotionSpec';
+import { UiThemeManager } from '@quizzyjoy/vitalui';
+import { MotionSpec } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppRadius, AppSpacing } from '@quizzyjoy/foundation';
 
 /**

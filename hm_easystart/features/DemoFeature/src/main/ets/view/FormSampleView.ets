@@ -1,10 +1,5 @@
-import {
-  ButtonVariant,
-  CommonButton,
-  CommonColorPickerSheet,
-  CommonTag,
-  TagTone
-} from '@quizzyjoy/vitalui';
+import { CommonColorPickerSheet } from '@quizzyjoy/vitalui';
+import { ButtonVariant, CommonButton, CommonTag, TagTone } from '@easystart/app-component';
 import { AppDialog, AppFormField, AppSection, AppSnackBar, AppTextDisplayModifier, CommonSearchBar, CommonToast, DialogSemantic } from '@easystart/app-component';
 import {
   AppCheckboxGroup,

@@ -1,11 +1,5 @@
-import {
-  ActionCard,
-  CommonTag,
-  FeedbackText,
-  StateContainer,
-  TagTone,
-  ViewState
-} from '@quizzyjoy/vitalui';
+import { FeedbackText, StateContainer, ViewState } from '@quizzyjoy/vitalui';
+import { ActionCard, CommonTag, TagTone } from '@easystart/app-component';
 import { AppSection, AppTextDisplayModifier, CommonSearchBar, CommonToast } from '@easystart/app-component';
 import { AppFontSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, UiMetrics } from '@quizzyjoy/platform';

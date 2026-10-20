@@ -1,25 +1,5 @@
-import {
-  ActionCard,
-  ButtonVariant,
-  ChartEntry,
-  ChartSeries,
-  ColorMath,
-  CommonButton,
-  CommonColorPicker,
-  CommonLoading,
-  CommonTag,
-  LoadingVariant,
-  MotionEffects,
-  MotionSpec,
-  PieChart,
-  QuarterRoseChart,
-  RadarChart,
-  RoseChart,
-  SkeletonBlock,
-  SizeLevel,
-  TagTone,
-  UiThemeManager
-} from '@quizzyjoy/vitalui';
+import { ChartEntry, ChartSeries, ColorMath, CommonColorPicker, CommonLoading, LoadingVariant, MotionEffects, MotionSpec, PieChart, QuarterRoseChart, RadarChart, RoseChart, SkeletonBlock, SizeLevel, UiThemeManager } from '@quizzyjoy/vitalui';
+import { ActionCard, ButtonVariant, CommonButton, CommonTag, TagTone } from '@easystart/app-component';
 import {
   AppBadge,
   AppButtonGhostModifier,

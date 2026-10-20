@@ -1,4 +1,4 @@
-import { UiThemeManager } from '../theme/UiThemeManager';
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppRadius, AppSpacing } from '@quizzyjoy/foundation';
 
 /** 标签语义色。 */

@@ -1,6 +1,7 @@
 import { AppFontSize, AppFontWeight, AppLineHeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, ShareHelper, WindowAdapter } from '@quizzyjoy/platform';
-import { ButtonVariant, CommonButton, CommonTag, TagTone, UiThemeManager } from '@quizzyjoy/vitalui';
+import { ButtonVariant, CommonButton, CommonTag, TagTone } from '@easystart/app-component';
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { HomeItem, HomeTarget } from '../data/HomeRepository';
 
 /**

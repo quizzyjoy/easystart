@@ -1,15 +1,5 @@
-import {
-  ActionCard,
-  ButtonVariant,
-  CommonButton,
-  CommonLoading,
-  FeedbackText,
-  ListStatus,
-  LoadingVariant,
-  RefreshList,
-  StateContainer,
-  ViewState
-} from '@quizzyjoy/vitalui';
+import { CommonLoading, FeedbackText, ListStatus, LoadingVariant, RefreshList, StateContainer, ViewState } from '@quizzyjoy/vitalui';
+import { ActionCard, ButtonVariant, CommonButton } from '@easystart/app-component';
 import { AppSection, AppTextDisplayModifier, CommonToast } from '@easystart/app-component';
 import { AppFontSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, UiMetrics } from '@quizzyjoy/platform';

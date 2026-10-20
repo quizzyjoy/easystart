@@ -8,11 +8,8 @@
 export { MotionSpec } from './src/main/ets/motion/MotionSpec';
 export { MotionEffects } from './src/main/ets/motion/MotionEffects';
 export { SizeLevel, ViewState, FeedbackText } from './src/main/ets/component/CommonTypes';
-export { ActionCard } from './src/main/ets/component/ActionCard';
 export { SkeletonBlock } from './src/main/ets/component/SkeletonBlock';
 export { StateContainer } from './src/main/ets/component/StateContainer';
-export { CommonButton, ButtonVariant } from './src/main/ets/component/CommonButton';
-export { CommonTag, TagTone } from './src/main/ets/component/CommonTag';
 export { RefreshList, ListStatus } from './src/main/ets/component/RefreshList';
 export { ColorMath, Rgb, Hsl } from './src/main/ets/util/ColorMath';
 export {

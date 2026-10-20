@@ -1,4 +1,4 @@
-import { ButtonVariant } from '@quizzyjoy/vitalui';
+import { ButtonVariant } from '../control/CommonButton';
 import { CommonDialog, DialogAction } from './CommonDialog';
 import { UIContext, ComponentContent } from '@quizzyjoy/platform';
 

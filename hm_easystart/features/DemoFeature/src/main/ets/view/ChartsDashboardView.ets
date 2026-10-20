@@ -1,13 +1,5 @@
-import {
-  ButtonVariant,
-  ChartEntry,
-  ChartSeries,
-  CommonButton,
-  PieChart,
-  QuarterRoseChart,
-  RadarChart,
-  RoseChart
-} from '@quizzyjoy/vitalui';
+import { ChartEntry, ChartSeries, PieChart, QuarterRoseChart, RadarChart, RoseChart } from '@quizzyjoy/vitalui';
+import { ButtonVariant, CommonButton } from '@easystart/app-component';
 import { AppSection, AppTextDisplayModifier } from '@easystart/app-component';
 import { AppFontSize, AppRadius, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, ColorModeManager } from '@quizzyjoy/platform';

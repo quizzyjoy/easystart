@@ -1,7 +1,7 @@
 import { FeedbackText, ViewState } from './CommonTypes';
 import { SkeletonBlock } from './SkeletonBlock';
 import { MotionEffects } from '../motion/MotionEffects';
-import { CommonButton, ButtonVariant } from './CommonButton';
+import { VitalActionButton, VitalActionVariant } from './VitalActionButton';
 import { AppFontSize, AppRadius, AppSpacing } from '@quizzyjoy/foundation';
 
 /** 骨架行高（vp）——正文文本行的视觉代理，命名保形。 */
@@ -72,9 +72,9 @@ export struct StateContainer {
         .fontSize(AppFontSize.BODY_SM)
         .fontColor($r('app.color.app_text_secondary'))
       if (showAction && text.actionText.length > 0) {
-        CommonButton({
+        VitalActionButton({
           text: text.actionText,
-          variant: ButtonVariant.SECONDARY,
+          variant: VitalActionVariant.SECONDARY,
           onAction: () => {
             this.onRetry();
           }

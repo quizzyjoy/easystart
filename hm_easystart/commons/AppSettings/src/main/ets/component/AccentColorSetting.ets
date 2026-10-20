@@ -1,6 +1,7 @@
 import { PreferenceKeys } from '@easystart/app-preferences';
 import { AppThemeApplier } from '@easystart/app-component';
-import { ButtonVariant, CommonButton, CommonColorPickerSheet, CommonTag, TagTone, UiThemeManager } from '@quizzyjoy/vitalui';
+import { ButtonVariant, CommonButton, CommonTag, TagTone } from '@easystart/app-component';
+import { CommonColorPickerSheet, UiThemeManager } from '@quizzyjoy/vitalui';
 import {
   AppFontSize,
   AppFontWeight,

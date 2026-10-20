@@ -1,5 +1,5 @@
 import { AppFontSize, AppFontWeight, AppRadius, AppSpacing } from '@quizzyjoy/foundation';
-import { CommonButton, ButtonVariant } from '@quizzyjoy/vitalui';
+import { CommonButton, ButtonVariant } from '../control/CommonButton';
 
 /** 对话框按钮描述。 */
 export class DialogAction {

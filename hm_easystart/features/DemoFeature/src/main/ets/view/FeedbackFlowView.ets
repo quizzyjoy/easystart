@@ -1,9 +1,4 @@
-import {
-  ButtonVariant,
-  CommonButton,
-  CommonTag,
-  TagTone
-} from '@quizzyjoy/vitalui';
+import { ButtonVariant, CommonButton, CommonTag, TagTone } from '@easystart/app-component';
 import { AppSnackBar, AppDialog, AppSection, AppSheetContainer, AppSheetOptions, AppTextDisplayModifier, CommonToast, DialogSemantic } from '@easystart/app-component';
 import { AppFontSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, UiMetrics } from '@quizzyjoy/platform';
