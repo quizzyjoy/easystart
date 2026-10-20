@@ -64,7 +64,7 @@ export struct HomeDetailView {
         .width(AppSize.TOUCH_COMFORT)
         .height(AppSize.TOUCH_COMFORT)
         .justifyContent(FlexAlign.Center)
-        .backgroundColor($r('app.color.qj_brand'))
+        .backgroundColor(this.theme.brandColor())
         .borderRadius(AppRadius.MD)
 
         Column({ space: AppSpacing.XXS }) {

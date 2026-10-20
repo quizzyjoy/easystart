@@ -1,3 +1,4 @@
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSpacing, AppStroke, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager } from '@quizzyjoy/platform';
 import { learnChapterOrDefault, LearnBlock, LearnChapter, LEARN_MISSING_CHAPTER } from '../learn/LearnContent';
@@ -12,6 +13,8 @@ import { learnChapterOrDefault, LearnBlock, LearnChapter, LEARN_MISSING_CHAPTER 
 @ComponentV2
 export struct LearnChapterView {
   /** 章节 id（入口 pageMap 传入；对应 LearnContent 的 id）。 */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param chapterId: string = '';
   @Local chapter: LearnChapter = LEARN_MISSING_CHAPTER;
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
@@ -80,7 +83,7 @@ export struct LearnChapterView {
         Row({ space: AppSpacing.SM }) {
           Text('·')
             .fontSize(AppFontSize.BODY)
-            .fontColor($r('app.color.qj_brand'))
+            .fontColor(this.theme.brandColor())
           Text(item)
             .fontSize(AppFontSize.BODY_SM)
             .fontColor($r('app.color.app_text_primary'))
@@ -109,7 +112,7 @@ export struct LearnChapterView {
     .padding(AppSpacing.MD)
     .borderRadius(AppRadius.MD)
     .backgroundColor($r('app.color.app_info_container'))
-    .border({ width: { left: AppStroke.THICK }, color: $r('app.color.qj_brand') })
+    .border({ width: { left: AppStroke.THICK }, color: this.theme.brandColor() })
   }
 
   @Builder

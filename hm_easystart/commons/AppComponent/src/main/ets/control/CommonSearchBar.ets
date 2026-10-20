@@ -1,3 +1,4 @@
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSpacing, AppSize } from '@quizzyjoy/foundation';
 
 /** 输入防抖时长（ms）——搜索类交互的应用级规范值。 */
@@ -11,6 +12,8 @@ const DEBOUNCE_MS: number = 300;
 @ComponentV2
 export struct CommonSearchBar {
   /** 占位提示文案。 */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param placeholder: ResourceStr = '搜索';
   /** 受控值（单向输入）。 */
   @Param value: string = '';
@@ -79,7 +82,7 @@ export struct CommonSearchBar {
         Text('取消')
           .fontSize(AppFontSize.BODY_SM)
           .fontWeight(AppFontWeight.MEDIUM)
-          .fontColor($r('app.color.qj_brand'))
+          .fontColor(this.theme.brandColor())
           .height(AppSize.TOUCH_MIN)
           .padding({ left: AppSpacing.SM, right: AppSpacing.SM })
           .onClick(() => {

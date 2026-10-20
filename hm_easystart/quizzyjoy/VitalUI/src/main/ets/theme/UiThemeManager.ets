@@ -56,6 +56,34 @@ export class UiThemeManager {
   }
 
   /**
+   * 品牌色上的前景色（文字/图标压品牌底时用）。
+   *
+   * 默认主题包直接用令牌 `qj_on_brand`（随深浅色）；自定义主题包按品牌色感知亮度自动选
+   * 深/浅前景，保证任意取色下都有对比度（否则「青碧底 + 白字」这类组合会发糊）。
+   */
+  onBrandColor(): ResourceColor {
+    if (this.presetId === DEFAULT_THEME_PRESET && this.accentColor.length === 0) {
+      return $r('app.color.qj_on_brand');
+    }
+    const hex: string = this.effectiveAccent().replace('#', '');
+    if (hex.length !== 6) {
+      return $r('app.color.qj_on_brand');
+    }
+    const r: number = parseInt(hex.substring(0, 2), 16) / 255;
+    const g: number = parseInt(hex.substring(2, 4), 16) / 255;
+    const b: number = parseInt(hex.substring(4, 6), 16) / 255;
+    // 感知亮度（sRGB 加权）：亮底配深字，暗底配白字
+    const luminance: number = 0.299 * r + 0.587 * g + 0.114 * b;
+    return luminance > 0.62 ? '#0A0A0A' : '#FFFFFF';
+  }
+
+  /** 品牌色的柔和层（chip 底 / 选中底），默认主题包回退 `qj_brand_light` 令牌。 */
+  brandSoftColor(): ResourceColor {
+    return this.presetId === DEFAULT_THEME_PRESET && this.accentColor.length === 0
+      ? $r('app.color.qj_brand_light') : this.effectiveAccent();
+  }
+
+  /**
    * 设置强调色。
    *
    * - `''`（空串）= **清除强调色覆盖**，回退到当前主题包基准色（v3.43 新增语义：

@@ -1,3 +1,4 @@
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { curves } from '@kit.ArkUI';
 import { AppFontSize, AppFontWeight, AppRadius, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
@@ -44,6 +45,8 @@ export function transitionCardOrDefault(id: string): TransitionCard {
  */
 @ComponentV2
 export struct TransitionsView {
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param onOpenTransitionDetail: (id: string) => void = (_id: string): void => {
   };
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
@@ -115,7 +118,7 @@ export struct TransitionsView {
             .width(96)
             .height(64)
             .borderRadius(AppRadius.MD)
-            .backgroundColor($r('app.color.qj_brand'))
+            .backgroundColor(this.theme.brandColor())
             .justifyContent(FlexAlign.Center)
             .transition(this.enterEffect())
           }
@@ -221,7 +224,7 @@ export struct TransitionsView {
               .width(44)
               .height(44)
               .borderRadius(AppRadius.SM)
-              .backgroundColor($r('app.color.qj_brand'))
+              .backgroundColor(this.theme.brandColor())
               .justifyContent(FlexAlign.Center)
               // 关键：列表侧与详情侧的 key 拼法必须一致
               .sharedTransition(`tcard-${item.id}`, { duration: 350, curve: Curve.Friction })

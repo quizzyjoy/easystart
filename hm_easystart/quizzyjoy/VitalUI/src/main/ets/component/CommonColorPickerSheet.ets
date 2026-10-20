@@ -1,3 +1,4 @@
+import { UiThemeManager } from '../theme/UiThemeManager';
 import { AppFontSize, AppRadius, AppSpacing, AppStroke, AppSize } from '@quizzyjoy/foundation';
 import { ButtonVariant } from './CommonButton';
 import { CommonButton } from './CommonButton';
@@ -13,6 +14,8 @@ import { CommonColorPicker } from './CommonColorPicker';
 @ComponentV2
 export struct CommonColorPickerSheet {
   /** 当前色（回显；'' = 跟随主题令牌）。 */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param color: string = '';
   /** 初始收藏色列表（hex 数组）。 */
   @Param initialFavoriteColors: string[] = [];
@@ -32,7 +35,7 @@ export struct CommonColorPickerSheet {
     if (this.color.length === 7) {
       return this.color;
     }
-    return $r('app.color.qj_brand');
+    return this.theme.brandColor();
   }
 
   private open(): void {
@@ -125,7 +128,7 @@ export struct CommonColorPickerSheet {
 
       Text($r('app.string.vitalui_color_change'))
         .fontSize(AppFontSize.CAPTION)
-        .fontColor($r('app.color.qj_brand'))
+        .fontColor(this.theme.brandColor())
     }
     .width('100%')
     .padding({

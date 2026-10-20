@@ -31,7 +31,9 @@ export const DEFAULT_THEME_PRESET: string = 'brand';
 /** 内置主题包（4 套：品牌紫 / 青碧 / 桃粉 / 高对比） */
 export function appThemePresets(): AppThemePreset[] {
   return [
-    new AppThemePreset('brand', '品牌紫', '#6c4de8'),
+    // 默认主题包 = 原 qj_brand 令牌（#0A59F7 品牌蓝）：迁移后默认观感与改造前完全一致
+    new AppThemePreset('brand', '品牌蓝', '#0A59F7'),
+    new AppThemePreset('violet', '靛紫', '#6c4de8'),
     new AppThemePreset('teal', '青碧', '#12A594'),
     new AppThemePreset('pink', '桃粉', '#D6409F'),
     new AppThemePreset('contrast', '高对比', '#0A0A0A')

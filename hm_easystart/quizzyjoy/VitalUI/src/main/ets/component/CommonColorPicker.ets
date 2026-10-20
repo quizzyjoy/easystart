@@ -1,3 +1,4 @@
+import { UiThemeManager } from '../theme/UiThemeManager';
 import { AppFontSize, AppRadius, AppSpacing, AppSize, AppStroke } from '@quizzyjoy/foundation';
 import { ColorMath, Hsv, Rgb } from '../util/ColorMath';
 import { ChartPalette } from '../chart/ChartData';
@@ -118,6 +119,8 @@ function normalizeFavorites(input: string[]): string[] {
 @ComponentV2
 export struct CommonColorPicker {
   /** 初始色（#RRGGBB / #AARRGGBB 均可；空/非法回退 DEFAULT_COLOR）。 */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param initialColor: string = '';
   /** 拖动实时回调（无确认按钮，对齐 HdsColorPicker 语义；输出 #rrggbb）。 */
   @Event onColorSelected: (color: string) => void = () => {
@@ -289,7 +292,7 @@ export struct CommonColorPicker {
         Text(this.tabLabel(tab))
           .fontSize(AppFontSize.CAPTION)
           .fontColor(this.activeTab === tab
-            ? $r('app.color.qj_brand') : $r('app.color.app_text_secondary'))
+            ? this.theme.brandColor() : $r('app.color.app_text_secondary'))
           .padding({
             left: AppSpacing.MD,
             right: AppSpacing.MD,
@@ -500,7 +503,7 @@ export struct CommonColorPicker {
 
       Text(this.isFavorite(this.currentHex()) ? '★ 已收藏' : '☆ 收藏')
         .fontSize(AppFontSize.CAPTION)
-        .fontColor($r('app.color.qj_brand'))
+        .fontColor(this.theme.brandColor())
         .padding({
           left: AppSpacing.MD,
           right: AppSpacing.MD,

@@ -1,3 +1,4 @@
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppLineHeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { AppEnvManager, AppEnvSnapshot, BreakpointManager, MarketHelper, common } from '@quizzyjoy/platform';
 import { AppDialog, AppEmptyState, CommonToast, DialogSemantic } from '@easystart/app-component';
@@ -24,6 +25,8 @@ const RAWFILE_NAME: string = 'developer.json';
  */
 @ComponentV2
 export struct DeveloperView {
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Local profile: DeveloperProfile = new DeveloperProfile(
     new CompanyInfo('', '', '', '', '', '', []),
     new PersonInfo('', '', [], [], '', '', '')
@@ -345,7 +348,7 @@ export struct DeveloperView {
         .width(48)
         .height(48)
         .borderRadius(AppRadius.LG)
-        .backgroundColor($r('app.color.qj_brand'))
+        .backgroundColor(this.theme.brandColor())
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
 
@@ -447,7 +450,7 @@ export struct DeveloperView {
         .width(48)
         .height(48)
         .borderRadius(AppRadius.FULL)
-        .backgroundColor($r('app.color.qj_brand'))
+        .backgroundColor(this.theme.brandColor())
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
 

@@ -1,3 +1,4 @@
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, AppStroke, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
 import { GALLERY_GROUPS, GalleryGroupEntry } from '../model/GalleryGroup';
@@ -89,6 +90,8 @@ const EXAMPLE_SECTIONS: ExampleSection[] = [
 @ComponentV2
 export struct ExamplesView {
   /** 组件示例分组（basic / visual / platform / app）。 */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param onOpenGalleryGroup: (groupId: string) => void = (_groupId: string): void => {
   };
   /** 场景示例（feedback / charts / form / list / search / hover）。 */
@@ -140,7 +143,7 @@ export struct ExamplesView {
       .width(AppSize.ICON_CHIP)
       .height(AppSize.ICON_CHIP)
       .borderRadius(AppRadius.FULL)
-      .backgroundColor(section.tint)
+      .backgroundColor(this.chipTint(section))
       .justifyContent(FlexAlign.Center)
 
       Column({ space: AppSpacing.XXS }) {
@@ -229,7 +232,7 @@ export struct ExamplesView {
       .width(AppSize.ICON_CHIP)
       .height(AppSize.ICON_CHIP)
       .borderRadius(AppRadius.FULL)
-      .backgroundColor(section.tint)
+      .backgroundColor(this.chipTint(section))
       .justifyContent(FlexAlign.Center)
 
       Column({ space: AppSpacing.XXS }) {
@@ -271,6 +274,16 @@ export struct ExamplesView {
     }
   }
 
+  /**
+   * chip 底色：**品牌域（组件示例 / 关于模板）跟随主题包**，其余域保留各自强调色以区分。
+   *
+   * 数据表是 const（不能读 this），所以取色放在渲染期按 id 判定：这是 v3.44「静态色接入
+   * 主题系统」的落地点 —— 页面装饰色走主题，语义/演示色保持固定。
+   */
+  private chipTint(section: ExampleSection): ResourceColor {
+    return (section.id === 'gallery' || section.id === 'about')
+      ? this.theme.brandColor() : section.tint;
+  }
   build() {
     Scroll() {
       Column({ space: DesignToken.sectionSpacing() }) {

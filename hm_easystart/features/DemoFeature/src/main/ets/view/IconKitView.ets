@@ -1,3 +1,4 @@
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { LayeredDrawableDescriptor } from '@kit.ArkUI';
 import { image } from '@kit.ImageKit';
 import { hdsDrawable } from '@kit.UIDesignKit';
@@ -36,6 +37,8 @@ class IconRenderItem {
  */
 @ComponentV2
 export struct IconKitView {
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param onOpenTransitions: () => void = (): void => {
   };
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
@@ -229,7 +232,7 @@ export struct IconKitView {
     .height(size)
     .borderRadius(size * 0.22)
     .border({ width: 1, color: $r('app.color.app_divider') })
-    .backgroundColor($r('app.color.qj_brand'))
+    .backgroundColor(this.theme.brandColor())
     .margin({ right: AppSpacing.LG, bottom: AppSpacing.SM })
   }
 }

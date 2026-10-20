@@ -1,3 +1,4 @@
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
 import { LEARN_CHAPTERS, LearnChapter } from '../learn/LearnContent';
@@ -11,6 +12,8 @@ import { LEARN_CHAPTERS, LearnChapter } from '../learn/LearnContent';
 @ComponentV2
 export struct LearnView {
   /** 打开章节详情（@Event 上抛，入口映射到路由）。 */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param onOpenChapter: (chapterId: string) => void = (_chapterId: string): void => {
   };
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
@@ -30,7 +33,7 @@ export struct LearnView {
       Text(this.indexLabel(index))
         .fontSize(AppFontSize.CAPTION)
         .fontWeight(AppFontWeight.MEDIUM)
-        .fontColor($r('app.color.qj_brand'))
+        .fontColor(this.theme.brandColor())
         .width(28)
         .textAlign(TextAlign.Center)
 

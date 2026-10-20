@@ -1,3 +1,4 @@
+import { UiThemeManager } from '../theme/UiThemeManager';
 import { AppFontSize, AppRadius, AppSpacing, AppStroke } from '@quizzyjoy/foundation';
 import { SizeLevel } from './CommonTypes';
 import { MotionSpec } from '../motion/MotionSpec';
@@ -43,6 +44,8 @@ const QJ_BRAND_HEX: string = '#0A59F7';
 @ComponentV2
 export struct CommonLoading {
   /** Loading 形态。 */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param variant: LoadingVariant = LoadingVariant.SPINNER;
   /** 尺寸三档（SMALL/MEDIUM/LARGE，各形态有独立映射）。 */
   @Param sizeLevel: SizeLevel = SizeLevel.MEDIUM;
@@ -63,7 +66,8 @@ export struct CommonLoading {
     if (this.accentColor.length > 0) {
       return this.accentColor;
     }
-    return $r('app.color.qj_brand');
+    // 未显式传色时跟随主题包（v3.44：静态令牌也接入主题系统）
+    return this.theme.brandColor();
   }
 
   /**
@@ -71,7 +75,9 @@ export struct CommonLoading {
    * 自定义 accentColor 时渐变起点不再残留旧品牌色）。
    */
   private accentFadeStart(): string {
-    const raw: string = this.accentColor.length > 0 ? this.accentColor : QJ_BRAND_HEX;
+    const raw: string = this.accentColor.length > 0 ? this.accentColor
+      : (this.theme.presetId === 'brand' && this.theme.accentColor.length === 0
+        ? QJ_BRAND_HEX : this.theme.effectiveAccent());
     if (raw.length === 7) {
       return `#00${raw.slice(1)}`;
     }

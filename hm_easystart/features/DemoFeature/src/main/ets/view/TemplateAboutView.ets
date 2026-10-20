@@ -1,3 +1,4 @@
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager } from '@quizzyjoy/platform';
 
@@ -49,6 +50,8 @@ const ABOUT_SECTIONS: TemplateAboutSection[] = [
 
 @ComponentV2
 export struct TemplateAboutView {
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
 
   private bp(): string {
@@ -73,7 +76,7 @@ export struct TemplateAboutView {
           Row({ space: AppSpacing.SM }) {
             Text('·')
               .fontSize(AppFontSize.BODY)
-              .fontColor($r('app.color.qj_brand'))
+              .fontColor(this.theme.brandColor())
             Text(item)
               .fontSize(AppFontSize.BODY_SM)
               .fontColor($r('app.color.app_text_primary'))

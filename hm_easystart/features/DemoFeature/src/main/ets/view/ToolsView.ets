@@ -1,3 +1,4 @@
+import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { CommonToast } from '@easystart/app-component';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
@@ -14,6 +15,8 @@ import { DevToolItem, DevToolStatus, DevToolSymbol, devTools } from '../model/De
  */
 @ComponentV2
 export struct ToolsView {
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param onOpenDeviceCapability: () => void = (): void => {
   };
   @Param onOpenIconKit: () => void = (): void => {
@@ -66,11 +69,11 @@ export struct ToolsView {
     return $r('sys.symbol.display');
   }
 
-  private tintOf(status: DevToolStatus): Resource {
-    return status === DevToolStatus.READY ? $r('app.color.qj_brand') : $r('app.color.app_bg_page');
+  private tintOf(status: DevToolStatus): ResourceColor {
+    return status === DevToolStatus.READY ? this.theme.brandColor() : $r('app.color.app_bg_page');
   }
 
-  private iconColorOf(status: DevToolStatus): Resource {
+  private iconColorOf(status: DevToolStatus): ResourceColor {
     return status === DevToolStatus.READY ? $r('app.color.app_text_on_brand') : $r('app.color.app_text_tertiary');
   }
 
