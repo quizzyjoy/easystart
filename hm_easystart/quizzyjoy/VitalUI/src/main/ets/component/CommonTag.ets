@@ -1,3 +1,4 @@
+import { UiThemeManager } from '../theme/UiThemeManager';
 import { AppFontSize, AppRadius, AppSpacing } from '@quizzyjoy/foundation';
 
 /** 标签语义色。 */
@@ -18,6 +19,8 @@ export enum TagTone {
 @ComponentV2
 export struct CommonTag {
   /** 标签文案。 */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param text: ResourceStr = '';
   /** 语义色调（NEUTRAL/BRAND/SUCCESS/WARNING/DANGER）。 */
   @Param tone: TagTone = TagTone.NEUTRAL;
@@ -47,7 +50,7 @@ export struct CommonTag {
 
   private fg(): ResourceColor {
     if (this.tone === TagTone.BRAND) {
-      return this.accentColor.length > 0 ? this.accentColor : $r('app.color.qj_brand');
+      return this.accentColor.length > 0 ? this.accentColor : this.theme.brandColor();
     }
     if (this.tone === TagTone.SUCCESS) {
       return $r('app.color.app_success');

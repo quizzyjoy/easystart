@@ -1,3 +1,5 @@
+import { AppThemeApplier } from '../theme/AppThemeApplier';
+
 /**
  * 应用级进度条 AttributeModifier（v3.21，简单换色封装）。
  *
@@ -20,7 +22,7 @@ export class AppProgressModifier implements AttributeModifier<ProgressAttribute>
   /** 轨道底色（默认 app_fill_medium 令牌）。 */
   backgroundColor: ResourceColor;
 
-  constructor(color: ResourceColor = $r('app.color.qj_brand'),
+  constructor(color: ResourceColor = AppThemeApplier.brandColor(),
     backgroundColor: ResourceColor = $r('app.color.app_fill_medium')) {
     this.color = color;
     this.backgroundColor = backgroundColor;

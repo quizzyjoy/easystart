@@ -1,4 +1,5 @@
 import { AppFontWeight, AppFontSize, AppRadius, AppStroke, AppSpacing } from '@quizzyjoy/foundation';
+import { AppThemeApplier } from '../theme/AppThemeApplier';
 
 /**
  * 应用级按钮 AttributeModifier 族（v3.4，参考 EasyMath ButtonModifier 模式并分文件）。
@@ -18,7 +19,7 @@ import { AppFontWeight, AppFontSize, AppRadius, AppStroke, AppSpacing } from '@q
 /** 主操作：品牌底 + 品牌上前景。 */
 export class AppButtonPrimaryModifier implements AttributeModifier<ButtonAttribute> {
   applyNormalAttribute(instance: ButtonAttribute): void {
-    instance.backgroundColor($r('app.color.qj_brand'))
+    instance.backgroundColor(AppThemeApplier.brandColor())
       .fontColor($r('app.color.qj_on_brand'))
       .fontSize(AppFontSize.BODY_SM)
       .fontWeight(AppFontWeight.MEDIUM)
@@ -43,11 +44,11 @@ export class AppButtonSecondaryModifier implements AttributeModifier<ButtonAttri
 export class AppButtonGhostModifier implements AttributeModifier<ButtonAttribute> {
   applyNormalAttribute(instance: ButtonAttribute): void {
     instance.backgroundColor(Color.Transparent)
-      .fontColor($r('app.color.qj_brand'))
+      .fontColor(AppThemeApplier.brandColor())
       .fontSize(AppFontSize.BODY_SM)
       .fontWeight(AppFontWeight.MEDIUM)
       .borderRadius(AppRadius.XXL)
-      .border({ width: AppStroke.THIN, color: $r('app.color.qj_brand') })
+      .border({ width: AppStroke.THIN, color: AppThemeApplier.brandColor() })
       .padding({ left: AppSpacing.XL, right: AppSpacing.XL, top: AppSpacing.MD, bottom: AppSpacing.MD })
   }
 }

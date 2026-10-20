@@ -2,9 +2,8 @@ import { AbilityConstant, Configuration, UIAbility, Want } from '@kit.AbilityKit
 import { window } from '@kit.ArkUI';
 import { Logger } from '@quizzyjoy/foundation';
 import { ColorModeManager } from '@quizzyjoy/platform';
-import { AppBootstrap } from '@easystart/app-common';
-import { UiThemeManager } from '@quizzyjoy/vitalui';
-import { CommonToast } from '@easystart/app-component';
+import { AppBootstrap, AppThemeState } from '@easystart/app-common';
+import { AppThemeApplier, CommonToast } from '@easystart/app-component';
 
 const DOMAIN: string = 'app';
 const TAG: string = 'EntryTvAbility';
@@ -19,11 +18,10 @@ export default class EntryTvAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     Logger.info(DOMAIN, TAG, 'onCreate');
     AppBootstrap.prepare(this.context);
-    // 表现层装配：启动恢复强调色（AppCommon 不依赖 VitalUI 仅读出，注入在本层；手表入口不调）
-    AppBootstrap.restoreAccentColor().then((hex: string): void => {
-      if (hex.length > 0) {
-        UiThemeManager.getInstance().setAccentColor(hex);
-      }
+    // 表现层装配：启动恢复「主题包 + 强调色」，一次铺满 L3（组件）+ L4（系统组件默认色）
+    // AppCommon 只读不注入（手表要可用），落地在 Ability（与 CommonToast.attach 同范式）
+    AppBootstrap.restoreTheme().then((state: AppThemeState): void => {
+      AppThemeApplier.apply(state.presetId, state.accentHex);
     });
   }
 

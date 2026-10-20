@@ -1,10 +1,13 @@
+import { UiThemeManager } from '../theme/UiThemeManager';
 import { MotionSpec } from '../motion/MotionSpec';
 import { AppFontSize, AppRadius, AppSpacing } from '@quizzyjoy/foundation';
 
 /**
  * 通用卡片（ActionCard）。
  *
- * 统一 API：@Param title / subtitle / clickable，@Event onAction。
+ * 统一 API：@Local theme: UiThemeManager = UiThemeManager.getInstance();
+
+  @Param title / subtitle / clickable，@Event onAction。
  * 动画：按压缩放反馈，时长与曲线取自 MotionSpec，禁止组件内自造数值。
  * 主题：accentColor 为空串时使用 qj_brand 令牌，非空时注入运行时主题色。
  */
@@ -18,13 +21,16 @@ export struct ActionCard {
   @Param clickable: boolean = true;
   /** 强调色注入（空串回退 qj_brand 令牌）。 */
   @Param accentColor: string = '';
+
+  /** 运行时主题（v3.43：未显式传 accentColor 时跟随主题包/强调色） */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
   /** 卡片点击回调（clickable=true 时触发）。 */
   @Event onAction: () => void = () => {
   };
   @Local pressed: boolean = false;
 
   private accent(): ResourceColor {
-    return this.accentColor.length > 0 ? this.accentColor : $r('app.color.qj_brand');
+    return this.accentColor.length > 0 ? this.accentColor : this.theme.brandColor();
   }
 
   build() {

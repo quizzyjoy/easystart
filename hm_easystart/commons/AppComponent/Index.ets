@@ -77,3 +77,5 @@ export { AppBadge } from './src/main/ets/control/AppBadge';
  * 勿裸引 `@ohos.arkui.advanced.SegmentButtonV2`——features 层零 @ohos/@kit 纪律。
  */
 export { SegmentButtonV2Items } from '@ohos.arkui.advanced.SegmentButtonV2';
+
+export { AppThemeApplier } from './src/main/ets/theme/AppThemeApplier';

@@ -1,4 +1,5 @@
 import { AppFontSize, AppRadius, AppSize, AppSpacing } from '@quizzyjoy/foundation';
+import { AppThemeApplier } from '../theme/AppThemeApplier';
 
 /**
  * 应用级输入框 AttributeModifier（v3.21，续 AppButton/AppText modifier 族）。
@@ -20,7 +21,7 @@ export class AppInputModifier implements AttributeModifier<TextInputAttribute> {
       .fontColor($r('app.color.app_text_primary'))
       .placeholderColor($r('app.color.app_text_tertiary'))
       .backgroundColor($r('app.color.app_fill_subtle'))
-      .caretColor($r('app.color.qj_brand'))
+      .caretColor(AppThemeApplier.brandColor())
       .height(AppSize.TOUCH_STANDARD)
       .padding({ left: AppSpacing.MD, right: AppSpacing.MD })
       .borderRadius(AppRadius.XXL)

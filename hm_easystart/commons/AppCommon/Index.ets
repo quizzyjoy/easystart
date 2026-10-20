@@ -5,4 +5,4 @@
  * 判据：换一个 app 就不能原样用的装配逻辑，放这里；能用的放共享三库。
  * 依赖 foundation + platform，**不依赖 VitalUI**（手表可用）；零 @kit 导入。
  */
-export { AppBootstrap } from './src/main/ets/bootstrap/AppBootstrap';
+export { AppBootstrap, AppThemeState } from './src/main/ets/bootstrap/AppBootstrap';

@@ -1,4 +1,5 @@
 import { AppRadius, AppSize } from '@quizzyjoy/foundation';
+import { AppThemeApplier } from '../theme/AppThemeApplier';
 
 /**
  * 应用级图标按钮 AttributeModifier（v3.21，续 AppButton/AppText modifier 族）。
@@ -10,7 +11,7 @@ import { AppRadius, AppSize } from '@quizzyjoy/foundation';
  * 只管容器外观，保持单一职责。
  *
  * 【用法】Button({ type: ButtonType.Circle }) { SymbolGlyph($r('sys.symbol.plus'))
- *   .fontSize(AppSize.ICON_SM).fontColor([$r('app.color.qj_brand')]) }
+ *   .fontSize(AppSize.ICON_SM).fontColor([AppThemeApplier.brandColor()]) }
  *   .attributeModifier(new AppIconButtonModifier())
  *
  * 【@kit 纪律】AttributeModifier / ButtonAttribute 为全局类型，零 @kit。

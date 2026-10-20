@@ -1,4 +1,5 @@
 import { AppStroke } from '@quizzyjoy/foundation';
+import { AppThemeApplier } from '../theme/AppThemeApplier';
 
 /**
  * 应用级分隔线 AttributeModifier（v3.21，简单换色封装）。
@@ -9,7 +10,7 @@ import { AppStroke } from '@quizzyjoy/foundation';
  * 换色（如强调色分隔、品牌色描边）。换一个 app 分隔线配色策略就变 → 应用级。
  *
  * 【用法】Divider().attributeModifier(new AppDividerModifier())
- *         Divider().attributeModifier(new AppDividerModifier($r('app.color.qj_brand'), AppStroke.THIN))
+ *         Divider().attributeModifier(new AppDividerModifier(AppThemeApplier.brandColor(), AppStroke.THIN))
  *
  * 【@kit 纪律】AttributeModifier / DividerAttribute 为全局类型，零 @kit。
  */

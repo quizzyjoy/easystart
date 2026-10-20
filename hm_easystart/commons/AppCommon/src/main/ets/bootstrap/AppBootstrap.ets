@@ -148,6 +148,25 @@ export class AppBootstrap {
     }
   }
 
+  /**
+   * 读取持久化的「主题包 + 强调色」（v3.43）。
+   *
+   * 仍遵循「本层只读、表现层装配在 Ability」：返回纯数据，由入口 Ability 调
+   * `AppThemeApplier.apply(presetId, accentHex)` 完成 L3（UiThemeManager）+ L4（ThemeControl）落地。
+   * 手表入口不调用（保持默认主题）。
+   */
+  static async restoreTheme(): Promise<AppThemeState> {
+    const accent: string = await AppBootstrap.restoreAccentColor();
+    let presetId: string = '';
+    try {
+      await AppBootstrap.storeReady;
+      presetId = await PreferencesStore.getString(PreferenceKeys.THEME_PRESET, '');
+    } catch (err) {
+      Logger.warn(DOMAIN, TAG, `restoreTheme preset failed: ${JSON.stringify(err)}`);
+    }
+    Logger.info(DOMAIN, TAG, `theme restored: preset=${presetId.length > 0 ? presetId : 'brand'} accent=${accent}`);
+    return new AppThemeState(presetId, accent);
+  }
   /** 窗口链路装配：断点 → 安全区（沉浸默认开）→ 方向 → 屏幕（loadContent 完成后调用）。 */
   static attachWindow(uiContext: UIContext, win: window.Window): void {
     BreakpointManager.getInstance().attach(uiContext, win);
@@ -212,5 +231,18 @@ export class AppBootstrap {
     ColorModeManager.getInstance().detach();
     SystemAppearanceManager.getInstance().detach();
     Logger.info(DOMAIN, TAG, 'destroy done');
+  }
+}
+
+/** 持久化主题快照（v3.43）：交给入口 Ability 落地，避免 AppCommon 依赖 VitalUI。 */
+export class AppThemeState {
+  /** 主题包 id（'' = 默认品牌紫） */
+  presetId: string = '';
+  /** 强调色 '#RRGGBB'（'' = 用主题包基准色） */
+  accentHex: string = '';
+
+  constructor(presetId: string, accentHex: string) {
+    this.presetId = presetId;
+    this.accentHex = accentHex;
   }
 }

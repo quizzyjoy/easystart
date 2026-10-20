@@ -33,6 +33,8 @@ export class PreferenceKeys {
 
   /** 强调色（v2.2 起任意 #RRGGBB；v2.1 历史键不加前缀、不迁移）。 */
   static readonly ACCENT_COLOR: string = 'accent_color';
+  /** 主题包 id（v3.43；空 = 默认主题包 brand） */
+  static readonly THEME_PRESET: string = 'theme_preset';
   /** v2.1 预设枚举历史键（accent_color 为空时回退读取，值本身即 hex）。 */
   static readonly ACCENT_COLOR_LEGACY: string = 'accent_preset';
   /** 收藏色（逗号分隔 hex）。 */

@@ -10,6 +10,13 @@
  */
 export { window, UIContext, ComponentContent } from '@kit.ArkUI';
 export { common } from '@kit.AbilityKit';
+export {
+  AppThemeController,
+  CustomColors,
+  CustomDarkColors,
+  CustomTheme,
+  Theme
+} from './src/main/ets/theme/AppThemeController';
 export { ErrorMapper } from './src/main/ets/error/ErrorMapper';
 export { GlobalErrorHandler, ErrorReporter } from './src/main/ets/error/GlobalErrorHandler';
 export { BreakpointType, BreakpointConstants } from './src/main/ets/breakpoint/BreakpointConstants';

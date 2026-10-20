@@ -535,6 +535,14 @@
     {
       "name": "settings_privacy_revoke_ok",
       "value": "撤回"
+    },
+    {
+      "name": "settings_theme_preset_title",
+      "value": "主题包"
+    },
+    {
+      "name": "settings_theme_preset_desc",
+      "value": "一套主题包 = 一整套配色基线（含深色变体），选中后所有页面与系统组件同步换色；强调色可在其上单点微调。"
     }
   ]
 }

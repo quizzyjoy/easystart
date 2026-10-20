@@ -1,3 +1,4 @@
+import { UiThemeManager } from '../theme/UiThemeManager';
 import { AppRadius, AppSpacing, AppFontSize, AppStroke, AppSize } from '@quizzyjoy/foundation';
 import { MotionSpec } from '../motion/MotionSpec';
 
@@ -26,6 +27,8 @@ export enum ButtonVariant {
 @ComponentV2
 export struct CommonButton {
   /** 按钮文案。 */
+  @Local theme: UiThemeManager = UiThemeManager.getInstance();
+
   @Param text: ResourceStr = '';
   /** 视觉变体。 */
   @Param variant: ButtonVariant = ButtonVariant.PRIMARY;
@@ -46,7 +49,7 @@ export struct CommonButton {
   @Local pressed: boolean = false;
 
   private accent(): ResourceColor {
-    return this.accentColor.length > 0 ? this.accentColor : $r('app.color.qj_brand');
+    return this.accentColor.length > 0 ? this.accentColor : this.theme.brandColor();
   }
 
   private bgColor(): ResourceColor {

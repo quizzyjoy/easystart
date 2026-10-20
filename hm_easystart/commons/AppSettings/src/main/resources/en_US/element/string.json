@@ -535,6 +535,14 @@
     {
       "name": "settings_privacy_revoke_ok",
       "value": "Withdraw"
+    },
+    {
+      "name": "settings_theme_preset_title",
+      "value": "Theme"
+    },
+    {
+      "name": "settings_theme_preset_desc",
+      "value": "A theme is a full color baseline (light + dark). Picking one recolors every page and system component; the accent color is a per-app override on top."
     }
   ]
 }

@@ -46,7 +46,7 @@ export struct AppFormField {
   @Local theme: UiThemeManager = UiThemeManager.getInstance();
 
   private brandColor(): ResourceColor {
-    return this.theme.accentColor.length > 0 ? this.theme.accentColor : $r('app.color.qj_brand');
+    return this.theme.brandColor();
   }
 
   private strokeColor(): ResourceColor {

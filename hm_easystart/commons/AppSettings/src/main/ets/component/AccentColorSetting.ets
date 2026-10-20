@@ -1,6 +1,15 @@
 import { PreferenceKeys } from '@easystart/app-preferences';
+import { AppThemeApplier } from '@easystart/app-component';
 import { ButtonVariant, CommonButton, CommonColorPickerSheet, CommonTag, TagTone, UiThemeManager } from '@quizzyjoy/vitalui';
-import { AppFontSize, AppFontWeight, AppSpacing, Logger } from '@quizzyjoy/foundation';
+import {
+  AppFontSize,
+  AppFontWeight,
+  AppRadius,
+  AppSpacing,
+  AppThemePreset,
+  Logger,
+  appThemePresets
+} from '@quizzyjoy/foundation';
 import { PreferencesStore, UiMetrics } from '@quizzyjoy/platform';
 
 const DOMAIN: string = 'settings';
@@ -25,6 +34,7 @@ export struct AccentColorSetting {
   @Local theme: UiThemeManager = UiThemeManager.getInstance();
   @Local restoring: boolean = true;
   @Local favorites: string[] = [];
+  @Local presets: AppThemePreset[] = appThemePresets();
 
   aboutToAppear(): void {
     this.restoreAccent();
@@ -49,6 +59,12 @@ export struct AccentColorSetting {
     if (saved.length > 0) {
       this.theme.setAccentColor(saved);
     }
+    const preset: string = await PreferencesStore.getString(PreferenceKeys.THEME_PRESET, '');
+    if (preset.length > 0) {
+      this.theme.setPresetId(preset);
+    }
+    // 进页幂等再落地一次：L3 单例 + L4 系统组件主题（防止入口未调到）
+    AppThemeApplier.apply(this.theme.presetId, this.theme.accentColor);
     this.restoring = false;
     Logger.info(DOMAIN, TAG, `accent restored: ${saved}`);
     this.restoreFavorites();
@@ -68,11 +84,28 @@ export struct AccentColorSetting {
 
   private applyColor(color: string): void {
     if (color.length === 0) {
-      this.theme.reset();
+      // 清空强调色 = 回到主题包基准色（不是回默认主题包）
+      this.theme.setAccentColor('');
     } else {
       this.theme.setAccentColor(color);
     }
+    AppThemeApplier.apply(this.theme.presetId, this.theme.accentColor);
     PreferencesStore.put(PreferenceKeys.ACCENT_COLOR, color);
+  }
+
+  /**
+   * 切换主题包：整套换肤（色板基线）。
+   *
+   * 切包时**清掉强调色覆盖**：强调色是「在主题包之上的单点微调」，若保留上一套的强调色，
+   * 用户切包后会看到颜色几乎没变（强调色优先级更高），这是实测踩到的真实困惑点。
+   */
+  private applyPreset(presetId: string): void {
+    this.theme.setAccentColor('');
+    this.theme.setPresetId(presetId);
+    AppThemeApplier.applyPreset(presetId);
+    PreferencesStore.put(PreferenceKeys.THEME_PRESET, presetId);
+    PreferencesStore.put(PreferenceKeys.ACCENT_COLOR, '');
+    Logger.info(DOMAIN, TAG, `preset applied: ${presetId} (accent override cleared)`);
   }
 
   private saveFavorites(favorites: string[]): void {
@@ -88,8 +121,47 @@ export struct AccentColorSetting {
         .fontColor($r('app.color.app_text_secondary'))
         .width('100%')
 
+      // —— 主题包（整套换肤基线）——
+      Text($r('app.string.settings_theme_preset_title'))
+        .fontSize(AppFontSize.BODY_SM)
+        .fontWeight(AppFontWeight.MEDIUM)
+        .fontColor($r('app.color.app_text_primary'))
+        .width('100%')
+        .margin({ top: AppSpacing.SM })
+      Text($r('app.string.settings_theme_preset_desc'))
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor($r('app.color.app_text_tertiary'))
+        .width('100%')
+
+      Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
+        ForEach(this.presets, (preset: AppThemePreset) => {
+          Row({ space: AppSpacing.XS }) {
+            Column()
+              .width(16)
+              .height(16)
+              .borderRadius(8)
+              .backgroundColor(preset.baseHex)
+            Text(preset.label)
+              .fontSize(AppFontSize.CAPTION)
+              .fontColor(this.theme.presetId === preset.id
+                ? $r('app.color.app_text_primary') : $r('app.color.app_text_secondary'))
+          }
+          .padding({ left: AppSpacing.SM, right: AppSpacing.SM, top: AppSpacing.XXS, bottom: AppSpacing.XXS })
+          .borderRadius(AppRadius.FULL)
+          .border({
+            width: this.theme.presetId === preset.id ? 1.5 : 1,
+            color: this.theme.presetId === preset.id ? preset.baseHex : $r('app.color.app_divider')
+          })
+          .backgroundColor($r('app.color.app_bg_card'))
+          .onClick((): void => {
+            this.applyPreset(preset.id);
+          })
+        }, (preset: AppThemePreset): string => preset.id)
+      }
+      .width('100%')
+
       CommonColorPickerSheet({
-        color: this.theme.accentColor,
+        color: this.theme.effectiveAccent(),
         initialFavoriteColors: this.favorites,
         onColorChange: (color: string): void => {
           this.applyColor(color);
@@ -118,17 +190,17 @@ export struct AccentColorSetting {
         CommonButton({
           text: $r('app.string.settings_accent_preview_primary'),
           variant: ButtonVariant.PRIMARY,
-          accentColor: this.theme.accentColor
+          accentColor: this.theme.effectiveAccent()
         })
         CommonButton({
           text: $r('app.string.settings_accent_preview_secondary'),
           variant: ButtonVariant.SECONDARY,
-          accentColor: this.theme.accentColor
+          accentColor: this.theme.effectiveAccent()
         })
         CommonTag({
           text: $r('app.string.settings_accent_preview_tag'),
           tone: TagTone.BRAND,
-          accentColor: this.theme.accentColor
+          accentColor: this.theme.effectiveAccent()
         })
       }
       .width('100%')

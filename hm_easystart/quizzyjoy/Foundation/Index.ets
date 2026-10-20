@@ -32,3 +32,9 @@ export { DesignToken } from './src/main/ets/token/DesignToken';
 
 export { ResponsiveOperator, ResponsiveRule, RuleValue } from './src/main/ets/responsive/ResponsiveRule';
 export { ResponsiveCase, ResponsiveValueResolver } from './src/main/ets/responsive/ResponsiveValue';
+export {
+  AppThemePreset,
+  DEFAULT_THEME_PRESET,
+  appThemePresets,
+  resolveThemePreset
+} from './src/main/ets/theme/AppThemePreset';
