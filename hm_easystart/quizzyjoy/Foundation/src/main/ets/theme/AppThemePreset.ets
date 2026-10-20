@@ -25,10 +25,10 @@ export class AppThemePreset {
   }
 }
 
-/** 默认主题包 id（= 现有 qj_brand 的品牌紫） */
+/** 默认主题包 id（= 现有 qj_brand 令牌，品牌蓝 #0A59F7） */
 export const DEFAULT_THEME_PRESET: string = 'brand';
 
-/** 内置主题包（4 套：品牌紫 / 青碧 / 桃粉 / 高对比） */
+/** 内置主题包（5 套：品牌蓝 / 靛紫 / 青碧 / 桃粉 / 高对比） */
 export function appThemePresets(): AppThemePreset[] {
   return [
     // 默认主题包 = 原 qj_brand 令牌（#0A59F7 品牌蓝）：迁移后默认观感与改造前完全一致

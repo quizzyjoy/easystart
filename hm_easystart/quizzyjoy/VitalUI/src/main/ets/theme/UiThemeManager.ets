@@ -79,8 +79,13 @@ export class UiThemeManager {
 
   /** 品牌色的柔和层（chip 底 / 选中底），默认主题包回退 `qj_brand_light` 令牌。 */
   brandSoftColor(): ResourceColor {
-    return this.presetId === DEFAULT_THEME_PRESET && this.accentColor.length === 0
-      ? $r('app.color.qj_brand_light') : this.effectiveAccent();
+    if (this.presetId === DEFAULT_THEME_PRESET && this.accentColor.length === 0) {
+      return $r('app.color.qj_brand_light');
+    }
+    // 非默认主题包：给「品牌色的柔和层」而不是满强度色（满强度会把 chip 底压成实心色块，
+    // 与 qj_brand_light 的观感不一致）。用 15% 透明度叠加在卡片底色上，深浅色都成立。
+    const hex: string = this.effectiveAccent();
+    return hex.length === 7 ? `#26${hex.substring(1)}` : hex;
   }
 
   /**

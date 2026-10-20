@@ -54,6 +54,7 @@ EasyStart/
 │   ├── features/            # 业务域：HomeFeature / DemoFeature / WidgetCommon
 │   └── product/             # 入口 HAP：entry / entry_pc / entry_tv / entry_wearable
 ├── docs/                    # 技术文档（快速启动 / 架构指南 / UX / 参考盘点）
+├── tutorial-theme-skinning/ # 专项教程：完整换肤系统（14 篇 + 16 张真机截图）
 └── plan/                    # 内部规划区（.gitignore 忽略，不随公开仓分发）
 ```
 
@@ -65,6 +66,7 @@ EasyStart/
 - [鸿蒙工程目录设计指南](docs/鸿蒙工程目录设计指南.md) —— 分层与目录、能力封装、设计令牌、HDS 实践
 - [UX 设计指导](docs/UX设计指导.md) —— 设计理念、原生感体验标准与验收清单
 - [权威参考与开源项目盘点](docs/权威参考与开源项目盘点.md) —— 官方文档、示例仓、开源依赖索引
+- **[完整换肤系统教程](tutorial-theme-skinning/README.md)** —— 四层颜色模型（静态令牌 / AttributeModifier / 运行时主题 / 系统组件默认色）+ 9 个真机实测坑位，13 章正文与 16 张截图
 
 ## License
 

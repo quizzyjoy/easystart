@@ -236,7 +236,7 @@ export class AppBootstrap {
 
 /** 持久化主题快照（v3.43）：交给入口 Ability 落地，避免 AppCommon 依赖 VitalUI。 */
 export class AppThemeState {
-  /** 主题包 id（'' = 默认品牌紫） */
+  /** 主题包 id（'' = 默认品牌蓝） */
   presetId: string = '';
   /** 强调色 '#RRGGBB'（'' = 用主题包基准色） */
   accentHex: string = '';
