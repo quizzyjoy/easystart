@@ -31,15 +31,33 @@ export class GalleryGroupEntry {
  *
  * v3.65：VitalUI 组件单独成区（见 `VITALUI_GROUPS`），本数组只留应用级/平台级示例。
  */
+/**
+ * 通用组件分组（顺序即 L1「组件示例」卡的行顺序、L2 长页顺序）。
+ *
+ * v3.69：原三组（入口与基础 / 平台能力与令牌 / 应用组件与动效）按**实际内容**拆成七组，
+ * 一组一页一事；VitalUI 组件仍单独成区（见 `VITALUI_GROUPS`）。
+ */
 export const GALLERY_GROUPS: GalleryGroupEntry[] = [
-  new GalleryGroupEntry('basic', '入口与基础',
-    '按钮 / 标签 / 搜索 / 轻提示与对话框 / 卡片 / 选择器弹窗',
+  new GalleryGroupEntry('act', '操作与状态',
+    '按钮六形态（含加载 / 禁用）+ 标签五档语义（含可关闭）',
     $r('sys.symbol.square_grid_2x2'), $r('app.color.qj_brand')),
-  new GalleryGroupEntry('platform', '平台能力与令牌',
-    '响应式 DSL / 折叠态折痕 / 色彩令牌 / 沉浸避让 / 分享 / 选图 / 剪贴板',
+  new GalleryGroupEntry('input', '输入与检索',
+    '搜索栏受控 + 300ms 防抖，回车与取消分流回调',
+    $r('sys.symbol.ellipsis_circle'), $r('app.color.app_accent_teal')),
+  new GalleryGroupEntry('feedback', '反馈与容器',
+    '轻提示 / 失败提示 / 确认对话框 + ActionCard 卡片容器',
+    $r('sys.symbol.checkmark_circle'), $r('app.color.app_accent_pink')),
+  new GalleryGroupEntry('overlay', '弹层与选择器',
+    '日期 / 农历 / 时间 / 日历 / 文本轮播 + Sheet（统一走 UIContext）',
+    $r('sys.symbol.paintpalette'), $r('app.color.app_accent_purple')),
+  new GalleryGroupEntry('responsive', '响应式与令牌',
+    '响应式 DSL 规则求值 + 折叠态折痕 + 49 色彩令牌对照',
     $r('sys.symbol.display'), $r('app.color.app_accent_teal')),
+  new GalleryGroupEntry('platform', '平台能力',
+    '沉浸式避让 / 系统分享 / 选图 / 剪贴板与安全组件',
+    $r('sys.symbol.doc_text'), $r('app.color.qj_brand')),
   new GalleryGroupEntry('app', '应用组件与动效',
-    'AppComponent 反馈族 / modifier 族 / 控件工厂 / 容器 / 动效规范',
+    'AppComponent 反馈族 / modifier 族 / 控件工厂 + 动效规范',
     $r('sys.symbol.gearshape_fill'), $r('app.color.app_accent_purple'))
 ];
 

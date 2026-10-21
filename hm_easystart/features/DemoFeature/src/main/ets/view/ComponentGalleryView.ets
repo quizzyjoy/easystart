@@ -408,20 +408,9 @@ export struct ComponentGalleryView {
   }
 
 
-  /**
-   * 基础组件专题（v3.68 重排）。
-   *
-   * 结构规则：**一节 = 一个组件族**，节标题带序号与「族名 · 组件名」，节内先一句用途说明
-   * 再给可变状态的全集。四条约束：
-   * 1. 「操作」只演示按钮**形态**（variant / loading / disabled），不演示行为；
-   * 2. 「反馈」只演示**触发后的语义**（info / warning / 确认对话框），用次级按钮做触发器，
-   *    与上一节的主按钮区分开，避免"又摆一排按钮"的重复感；
-   * 3. 「弹层」把日期 / 时间 / 日历 / 文本轮播四类选择器与 Sheet 收在一节，
-   *    统一说明"都走 UIContext 弹层 API"，不再散落在多个小节；
-   * 4. 骨架屏已独立成「加载与骨架」页、图表/取色器已独立成页，本页不再重复出现。
-   */
+  /** 操作与状态（v3.69：原「入口与基础」按内容拆成 act / input / feedback / overlay 四页）。 */
   @Builder
-  groupBasic() {
+  groupAct() {
         this.sectionTitle('1 · 操作 · 按钮 ButtonVariant')
         Text('六种形态：主 / 次 / 文字 / 危险 / 加载中 / 已禁用；强调色由主题注入。')
           .fontSize(AppFontSize.CAPTION)
@@ -457,6 +446,11 @@ export struct ComponentGalleryView {
         }
         .width('100%')
 
+  }
+
+  /** 输入与检索（v3.69）：搜索框受控 + 防抖，独立一页。 */
+  @Builder
+  groupInput() {
         this.sectionTitle('3 · 输入 · 搜索 CommonSearchBar')
         Text('受控 + 300ms 防抖；回车与取消分别回调，适合列表页顶部。')
           .fontSize(AppFontSize.CAPTION)
@@ -492,6 +486,11 @@ export struct ComponentGalleryView {
         }
         .width('100%')
 
+  }
+
+  /** 反馈与容器（v3.69）：轻提示 / 失败提示 / 确认对话框 + ActionCard。 */
+  @Builder
+  groupFeedback() {
         this.sectionTitle('5 · 容器 · 卡片 ActionCard')
         Text('按压缩放反馈，标题/副标题两行排版，强调色跟随主题；列表与看板的通用容器。')
           .fontSize(AppFontSize.CAPTION)
@@ -506,6 +505,11 @@ export struct ComponentGalleryView {
           }
         })
 
+  }
+
+  /** 弹层与选择器（v3.69）：四类选择器 + Sheet。 */
+  @Builder
+  groupOverlay() {
         this.sectionTitle('6 · 弹层 · 选择器与 Sheet')
         Text('四类选择器与 Sheet 都走 UIContext 弹层 API（替代已弃用的全局 dialog）；结果回写到下方只读文本。')
           .fontSize(AppFontSize.CAPTION)
@@ -717,9 +721,9 @@ export struct ComponentGalleryView {
         .width('100%')
   }
 
-  /** 画廊分组区块：groupPlatformToken（v3.26 自 build() 抽出，内容等价） */
+  /** 响应式与令牌（v3.69：原「平台能力与令牌」拆成两页）。 */
   @Builder
-  groupPlatformToken() {
+  groupResponsive() {
         this.sectionTitle('响应式 DSL（规则求值示例）')
         Column({ space: AppSpacing.XS }) {
           Text(`快照：bp=${this.breakpoint.breakpoint} · widthVp=${Math.round(this.breakpoint.windowWidthVp)} · isWide=${this.breakpoint.isWide()}`)
@@ -880,6 +884,11 @@ export struct ComponentGalleryView {
         }
         .width('100%')
 
+  }
+
+  /** 平台能力（v3.69）：沉浸避让 / 分享 / 选图 / 剪贴板。 */
+  @Builder
+  groupPlatform() {
         this.sectionTitle('沉浸式避让（WindowAdapter，v2.6 默认开）')
         Column({ space: AppSpacing.XS }) {
           Text(`沉浸：${this.windowAdapter.isImmersive ? '开' : '关'} · 顶避让 ${Math.round(this.windowAdapter.topAvoidVp)}vp · 底避让 ${Math.round(this.windowAdapter.bottomAvoidVp)}vp`)
@@ -1556,11 +1565,19 @@ export struct ComponentGalleryView {
   /** 四组按序全渲染（TV / PC 入口；手机端走 L2 单组页，不经此处）。 */
   @Builder
   allGroups() {
-    this.groupSectionHeader('入口与基础', '按钮 / 标签 / 搜索 / 轻提示与对话框 / 卡片 / 选择器弹窗')
-    this.groupBasic()
-    this.groupSectionHeader('平台能力与令牌', '响应式 DSL / 折叠态折痕 / 色彩令牌 / 沉浸避让 / 分享 / 选图 / 剪贴板')
-    this.groupPlatformToken()
-    this.groupSectionHeader('应用组件与动效', 'AppComponent 反馈族 / modifier 族 / 控件工厂 / 容器 / 动效规范')
+    this.groupSectionHeader('操作与状态', '按钮六形态 + 标签五档语义')
+    this.groupAct()
+    this.groupSectionHeader('输入与检索', '搜索栏受控 + 300ms 防抖')
+    this.groupInput()
+    this.groupSectionHeader('反馈与容器', '轻提示 / 失败提示 / 确认对话框 + ActionCard')
+    this.groupFeedback()
+    this.groupSectionHeader('弹层与选择器', '四类选择器 + Sheet（统一走 UIContext）')
+    this.groupOverlay()
+    this.groupSectionHeader('响应式与令牌', '响应式 DSL / 折叠折痕 / 色彩令牌')
+    this.groupResponsive()
+    this.groupSectionHeader('平台能力', '沉浸避让 / 分享 / 选图 / 剪贴板')
+    this.groupPlatform()
+    this.groupSectionHeader('应用组件与动效', 'AppComponent 反馈族 / modifier 族 / 控件工厂 / 动效规范')
     this.groupApp()
     this.motionBlock()
 
@@ -1581,7 +1598,22 @@ export struct ComponentGalleryView {
    */
   @Builder
   groupBody() {
-    if (this.groupId === 'chart') {
+    if (this.groupId === 'act') {
+      this.groupAct()
+    } else if (this.groupId === 'input') {
+      this.groupInput()
+    } else if (this.groupId === 'feedback') {
+      this.groupFeedback()
+    } else if (this.groupId === 'overlay') {
+      this.groupOverlay()
+    } else if (this.groupId === 'responsive') {
+      this.groupResponsive()
+    } else if (this.groupId === 'platform') {
+      this.groupPlatform()
+    } else if (this.groupId === 'app') {
+      this.groupApp()
+      this.motionBlock()
+    } else if (this.groupId === 'chart') {
       this.groupChart()
     } else if (this.groupId === 'loading') {
       this.groupLoading()
@@ -1589,15 +1621,10 @@ export struct ComponentGalleryView {
       this.groupColor()
     } else if (this.groupId === 'state') {
       this.groupState()
-    } else if (this.groupId === 'platform') {
-      this.groupPlatformToken()
-    } else if (this.groupId === 'app') {
-      this.groupApp()
-      this.motionBlock()
     } else if (this.groupId === '') {
       this.allGroups()
     } else {
-      this.groupBasic()
+      this.groupAct()
     }
   }
 

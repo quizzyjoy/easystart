@@ -1,5 +1,4 @@
-import { CommonColorPickerSheet } from '@quizzyjoy/vitalui';
-import { ButtonVariant, CommonButton, CommonTag, TagTone } from '@easystart/app-component';
+import { ButtonVariant, CommonButton } from '@easystart/app-component';
 import { AppDialog, AppFormField, AppSection, AppSnackBar, AppTextDisplayModifier, CommonSearchBar, CommonToast, DialogSemantic } from '@easystart/app-component';
 import {
   AppCheckboxGroup,
@@ -16,7 +15,7 @@ import { BreakpointManager } from '@quizzyjoy/platform';
  * 样例子页 ④：表单范式（v3.9）。
  *
  * 【fork 可整体复制的页面范式】应用级表单交互链路：AppFormField 受控域 +
- * 逐域校验红线 + 品牌色取色实时联动 + 搜索防抖 + 提交确认闭环。
+ * 逐域校验红线 + 搜索防抖 + 提交确认闭环。
  *
  * 【分层说明】状态 @Local 于视图内——DemoFeature 为示例聚合；真实业务的
  * MVVM 分层范式见 HomeFeature（ViewModel + Repository + instanceof 收窄）。
@@ -36,7 +35,6 @@ export struct FormSampleView {
   @Local nameError: string = '';
   @Local emailError: string = '';
   /** 品牌色（数据值：与 AppScope qj_brand 同值，CommonLoading.QJ_BRAND_HEX 同源先例）。 */
-  @Local brandColor: string = '#0A59F7';
   /** 扩展表单域示例态（v3.21 组件）。 */
   @Local detailValue: string = '';
   @Local genderLabel: string = '';
@@ -90,7 +88,7 @@ export struct FormSampleView {
       Text('表单范式')
         .attributeModifier(new AppTextDisplayModifier())
         .width('100%')
-      Text('AppFormField 受控域 + 逐域校验红线 + 取色实时联动 + 提交确认闭环。')
+      Text('AppFormField 受控域 + 逐域校验红线 + 搜索防抖 + 提交确认闭环。')
         .fontSize(AppFontSize.CAPTION)
         .fontColor($r('app.color.app_text_secondary'))
         .width('100%')
@@ -204,18 +202,6 @@ export struct FormSampleView {
             .width('100%')
           }
 
-          AppSection({ sectionTitle: '品牌色实时联动', description: 'CommonColorPickerSheet 草稿-确认语义（拖动不回调，确定才生效）→ CommonTag BRAND 注入' }) {
-            CommonColorPickerSheet({
-              color: this.brandColor,
-              title: '选取品牌色',
-              onColorChange: (color: string): void => {
-                this.brandColor = color;
-              }
-            })
-            CommonTag({ text: '品牌色实时联动', tone: TagTone.BRAND, accentColor: this.brandColor })
-              .margin({ top: AppSpacing.SM })
-          }
-
           AppSection({ sectionTitle: '搜索防抖（CommonSearchBar）', description: '组件内 300ms 防抖；onSearch 上抛后由本视图消费' }) {
             CommonSearchBar({
               value: this.lastSearch,
@@ -241,7 +227,6 @@ export struct FormSampleView {
             CommonButton({
               text: '提交表单',
               variant: ButtonVariant.PRIMARY,
-              accentColor: this.brandColor,
               fullWidth: true,
               loading: this.submitting,
               onAction: () => {
