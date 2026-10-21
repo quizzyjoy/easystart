@@ -381,6 +381,10 @@
       "value": "Third-party SDK list"
     },
     {
+      "name": "settings_info_replace_hint",
+      "value": "Real info shipped with this template — fork and replace it with your own project info"
+    },
+    {
       "name": "settings_sdk_list_desc",
       "value": "Third-party components used by this app"
     },

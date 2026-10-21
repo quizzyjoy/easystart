@@ -1,16 +1,51 @@
-第三方 SDK 清单（占位模板）
-============================
+第三方 SDK 清单（真实信息）
 
-本文件为应用集成的第三方 SDK / 组件清单占位，fork 按实际依赖替换。
+本应用（趣开发 EasyStart 模板）当前集成的第三方 SDK 与组件如下。本项目为开发者
+模板，不采集个人信息、不上传数据、不含广告与统计分析 SDK。
 
-上架合规提示（AGC / 应用市场审核口径）：
-- 隐私政策与本清单需列明应用集成的第三方 SDK 及其收集、使用个人信息的情况；
-- 新增第三方依赖时，同步更新本清单与隐私政策对应章节。
+一、运行期第三方组件
 
-模板自身内置（无第三方个人信息收集）：
-- HarmonyOS SDK（@kit.*）：系统 API，华为官方提供；
-- HDS UIDesignKit（@kit.UIDesignKit）：官方设计组件库；
-- 模板三库（Foundation / Platform / VitalUI）：随模板源码分发，本地运行。
+@luvi/lv-markdown-in 3.4.7
+- 提供方：luvi（个人开源作者）
+- 用途：应用内 Markdown 文档解析与原生渲染（学习页）
+- 收集信息：无。纯本地渲染，不联网
+- 许可：MIT
+- 项目地址：https://gitee.com/luvi/lv-markdown-in
 
-fork 接入第三方 SDK 后按以下格式逐行追加：
+@luvi/html2md 1.0.3（传递依赖）
+- 提供方：luvi
+- 用途：Markdown 内嵌 HTML 片段解析
+- 收集信息：无
+- 许可：MIT
+- 项目地址：https://gitee.com/luvi/html2md
+
+@cangjie-tpc/formula_hybrid 1.3.0（传递依赖，含原生库）
+- 提供方：Cangjie-TPC
+- 用途：数学公式渲染
+- 收集信息：无
+- 许可：MIT
+- 项目地址：https://gitcode.com/Cangjie-TPC/formula-ffi
+
+@cangjie-tpc/prism_hybrid 1.2.6（传递依赖，含原生库）
+- 提供方：Cangjie-TPC
+- 用途：代码块语法高亮
+- 收集信息：无
+- 许可：Apache-2.0
+- 项目地址：https://gitcode.com/Cangjie-TPC/prism4cj
+
+二、系统 SDK 与官方组件
+
+HarmonyOS SDK（@kit.*）：系统 API，华为官方提供，不收集应用数据。
+HDS UIDesignKit（@kit.UIDesignKit）：官方设计组件库，本地渲染。
+AppGallery Kit（@kit.AppGalleryKit）：仅在「检查更新 / 应用内评分」时调用，
+由系统应用市场承接，应用本身不采集数据。
+
+三、模板自有库
+
+Foundation / Platform / VitalUI 三库：随模板源码分发，本地运行，不收集信息。
+
+四、fork 后需替换
+
+本文件是模板的真实信息示例。fork 出你自己的应用后，请按以下格式逐行追加/替换，
+使其与实际集成一致（应用市场上架审核会核对本清单与隐私政策）：
 - SDK 名称 ｜ 提供方 ｜ 用途 ｜ 收集的信息 ｜ 官网 / 隐私政策链接

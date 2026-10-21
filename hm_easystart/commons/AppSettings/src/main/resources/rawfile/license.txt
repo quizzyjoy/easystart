@@ -1,28 +1,54 @@
-开源许可（模板占位）
+开源许可
 
-一、本模板许可
+一、本项目许可
 
-趣开发 EasyStart 模板基于 Apache License, Version 2.0 发布。
+趣开发 EasyStart（本模板仓）基于 Apache License, Version 2.0 发布。
+著作权人：quizzyjoy（闫东阳）。Copyright 2026 quizzyjoy.
 你可在遵守该许可的前提下使用、复制、修改与再分发本模板。
-Apache-2.0 许可证全文：https://www.apache.org/licenses/LICENSE-2.0
+许可全文：https://www.apache.org/licenses/LICENSE-2.0
 
-二、商标声明
+源码仓库：
+GitHub   https://github.com/quizzyjoy/EasyStart
+AtomGit  https://atomgit.com/quizzyjoy/EasyStart
+镜像     https://gitee.com/quizzyjoy/easystart
+         https://gitcode.com/quizzyjoy/easystart
 
-HarmonyOS、鸿蒙、HDS（HarmonyOS Design System）及相关标识为华为技术有限公司
-的商标或注册商标。本模板仅用于演示基于 HarmonyOS 的应用开发范式，不代表与华为
-存在关联或获得背书。fork 应用不得在未获授权的情况下使用上述商标作为应用名称、
-图标或宣传素材。
+二、第三方开源组件
 
-三、第三方组件
+本模板运行期引入以下开源组件，均为宽松许可（MIT / Apache-2.0），随依赖一并分发：
 
-fork 应用引入的全部开源组件及其许可证，应由 fork 方在本节逐一追加列明
-（组件名 / 版本 / 许可证 / 来源地址）。模板自身运行时依赖 HarmonyOS 系统 SDK
-与系统组件（HDS），相关权利归各自权利人所有。
+@luvi/lv-markdown-in        3.4.7   MIT          Markdown 解析与原生渲染
+@luvi/html2md               1.0.3   MIT          HTML 片段解析（上者传递依赖）
+@cangjie-tpc/formula_hybrid 1.3.0   MIT          公式渲染（上者传递依赖，含原生库）
+@cangjie-tpc/prism_hybrid   1.2.6   Apache-2.0   代码高亮（上者传递依赖，含原生库）
+
+各组件源码与许可地址：
+https://gitee.com/luvi/lv-markdown-in
+https://gitee.com/luvi/html2md
+https://gitcode.com/Cangjie-TPC/formula-ffi
+https://gitcode.com/Cangjie-TPC/prism4cj
+
+完整清单与版本以工程内 docs/第三方许可清单.md 为准。
+
+三、商标声明
+
+HarmonyOS、鸿蒙、HDS（HarmonyOS Design System）及相关标识为华为技术有限公司的
+商标或注册商标。本模板仅用于演示基于 HarmonyOS 的应用开发范式，不代表与华为存在
+关联或获得背书。fork 应用不得在未获授权的情况下使用上述商标作为应用名称、图标或
+宣传素材。
 
 ------------------------------------------------------------
 
-Open-source notices (template placeholder)
+Open-source notices
 
-EasyStart is licensed under the Apache License, Version 2.0.
+EasyStart (this template) is licensed under the Apache License, Version 2.0.
+Copyright 2026 quizzyjoy.
+
+Repository: https://github.com/quizzyjoy/EasyStart
+Mirror:     https://atomgit.com/quizzyjoy/EasyStart
+
+Bundled third-party components (MIT / Apache-2.0):
+@luvi/lv-markdown-in 3.4.7 (MIT), @luvi/html2md 1.0.3 (MIT),
+@cangjie-tpc/formula_hybrid 1.3.0 (MIT), @cangjie-tpc/prism_hybrid 1.2.6 (Apache-2.0).
+
 HarmonyOS and HDS are trademarks of Huawei Technologies Co., Ltd.
-Forks must append the full license list of every third-party component they add.

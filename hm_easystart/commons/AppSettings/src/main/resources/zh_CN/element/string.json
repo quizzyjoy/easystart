@@ -381,6 +381,10 @@
       "value": "第三方 SDK 清单"
     },
     {
+      "name": "settings_info_replace_hint",
+      "value": "模板自带的真实信息，可直接参考；fork 后请替换为你自己的项目信息"
+    },
+    {
       "name": "settings_sdk_list_desc",
       "value": "应用使用的第三方组件与来源"
     },
