@@ -9,6 +9,8 @@
  * 顶部保留「信息」按钮提示 fork 后替换。
  */
 import { RawFileTextView } from '../../component/RawFileTextView';
+import { AppDialog, DialogSemantic } from '@easystart/app-component';
+import { StorePrivacyLink, StorePrivacyLinkSnapshot } from '@quizzyjoy/platform';
 import {
   AppGalleryHelper,
   StorePrivacyKind,
@@ -83,6 +85,38 @@ export struct PolicyView {
     }
   }
 
+  /**
+   * 「查询隐私链接」诊断弹窗（对应官方示例第 9 项）。
+   *
+   * 直接展示 `getAppPrivacyMgmtInfo()` 的真实返回：能力是否可用、拿到几条链接、
+   * 每条链接的类型与 URL，以及失败时的业务错误码——排查"为什么在线版打不开/为什么
+   * 没有签署记录"时，比看日志快得多。
+   */
+  private showLinkDiagnostics(): void {
+    const snapshot: StorePrivacyLinkSnapshot = AppGalleryHelper.getInstance().getPrivacyLinkSnapshot();
+    const lines: string[] = [];
+    lines.push(`系统能力：${snapshot.supported ? '可用' : '不可用（设备形态不支持或未连接市场服务）'}`);
+    lines.push(`链接条数：${snapshot.links.length}`);
+    if (snapshot.errorCode !== 0) {
+      lines.push(`错误码：${snapshot.errorCode}`);
+      if (snapshot.errorCode === 1006700003) {
+        lines.push('含义：本应用未接入应用市场隐私托管服务，AGC 侧没有可查询的协议链接。');
+        lines.push('此时「浏览在线版」使用内置托管地址兜底：');
+        lines.push(this.onlineUrl());
+      }
+    }
+    for (const link of snapshot.links) {
+      const label: string = link.kind === StorePrivacyKind.USER_AGREEMENT ? '用户协议' : '隐私声明';
+      lines.push(`· ${label}：${link.url}`);
+    }
+    if (snapshot.errorCode === 0 && snapshot.links.length === 0) {
+      lines.push('说明：接口可调用但未返回任何链接，同样会回退内置地址。');
+    }
+    AppDialog.open(this.getUIContext(), DialogSemantic.CONFIRM,
+      '隐私链接信息', lines.join('\n'), (): void => {
+      }, '我知道了');
+  }
+
   private pad(v: number): string {
     return v < 10 ? `0${v}` : `${v}`;
   }
@@ -114,6 +148,12 @@ export struct PolicyView {
             .fontSize(12)
             .fontColor($r('app.color.app_text_secondary'))
             .layoutWeight(1)
+          Text($r('app.string.settings_privacy_query_link'))
+            .fontSize(12)
+            .fontColor($r('app.color.qj_brand'))
+            .onClick((): void => {
+              this.showLinkDiagnostics();
+            })
         }
         .width('100%')
         .padding({ left: 16, right: 16, top: 8 })

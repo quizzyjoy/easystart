@@ -611,6 +611,10 @@
     {
       "name": "settings_offline_open_online",
       "value": "浏览在线版"
+    },
+    {
+      "name": "settings_privacy_query_link",
+      "value": "查询隐私链接"
     }
   ]
 }

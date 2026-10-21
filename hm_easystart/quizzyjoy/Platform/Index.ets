@@ -35,6 +35,7 @@ export {
   StoreDynamicIcon,
   StorePrivacyKind,
   StorePrivacyLink,
+  StorePrivacyLinkSnapshot,
   StorePrivacyRecord,
   StorePrivacySnapshot,
   StorePrivacyState,

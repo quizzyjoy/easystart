@@ -611,6 +611,10 @@
     {
       "name": "settings_offline_open_online",
       "value": "View online version"
+    },
+    {
+      "name": "settings_privacy_query_link",
+      "value": "Query privacy links"
     }
   ]
 }

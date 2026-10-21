@@ -131,6 +131,28 @@ export class StorePrivacySnapshot {
   }
 }
 
+/**
+ * 隐私链接查询快照（v3.58），对应官方示例第 9 项「点击 getAppPrivacyMgmtInfo，查询隐私链接信息」。
+ *
+ * 与 `StorePrivacySnapshot` 的区别：那个查"签没签"，这个查"协议正文在哪"。
+ * 保留 `errorCode` 是把失败原因（1006700003 = 未接入托管服务）如实暴露给诊断弹窗。
+ */
+export class StorePrivacyLinkSnapshot {
+  /** 系统能力 / 设备形态是否允许调用该接口。 */
+  readonly supported: boolean;
+  /** 拿到的协议链接（0~2 条：隐私声明 / 用户协议）。 */
+  readonly links: StorePrivacyLink[];
+  /** 业务错误码（0 = 无错误）。 */
+  readonly errorCode: number;
+
+  constructor(supported: boolean, links: StorePrivacyLink[], errorCode: number) {
+    this.supported = supported;
+    this.links = links;
+    this.errorCode = errorCode;
+  }
+}
+
+
 
 
 /** 动态图标条目。 */
@@ -379,6 +401,26 @@ export class AppGalleryHelper {
    *    兜底，保证用户点开就能看到真实协议正文；
    * 3. 返回空串表示连常量都没有（理论上不会发生），调用方回退本地 rawfile 离线副本。
    */
+  /**
+   * 查询隐私链接信息（v3.58，含失败原因）。
+   *
+   * 官方示例「查询隐私链接信息」就是这一步：`getAppPrivacyMgmtInfo()` 返回
+   * `privacyInfo[]`（每项含 type / versionCode / url）。本模板包成快照，
+   * 供页面上的「查询隐私链接」诊断弹窗展示，而不是静默降级成内置常量。
+   */
+  getPrivacyLinkSnapshot(): StorePrivacyLinkSnapshot {
+    if (!this.usable(StoreSkill.PRIVACY)) {
+      return new StorePrivacyLinkSnapshot(false, [], 0);
+    }
+    try {
+      const links: StorePrivacyLink[] = this.getPrivacyLinks();
+      return new StorePrivacyLinkSnapshot(true, links, 0);
+    } catch (err) {
+      const e: BusinessError = err as BusinessError;
+      return new StorePrivacyLinkSnapshot(true, [], e.code);
+    }
+  }
+
   getPrivacyLink(kind: StorePrivacyKind): string {
     const links: StorePrivacyLink[] = this.getPrivacyLinks();
     for (const link of links) {
