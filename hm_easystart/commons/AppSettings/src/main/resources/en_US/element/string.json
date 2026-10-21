@@ -458,7 +458,7 @@
     },
     {
       "name": "settings_privacy_local",
-      "value": "Official link unavailable, showing local text"
+      "value": "Network unavailable — showing the offline copy"
     },
     {
       "name": "settings_update_checking",
@@ -607,6 +607,10 @@
     {
       "name": "apps_status_unpublished",
       "value": "Coming soon"
+    },
+    {
+      "name": "settings_offline_open_online",
+      "value": "Open online version"
     }
   ]
 }

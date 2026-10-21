@@ -9,6 +9,7 @@
  * 顶部保留「信息」按钮提示 fork 后替换。
  */
 import { RawFileTextView } from '../../component/RawFileTextView';
+import { PrivacyLinks, StorePrivacyKind } from '@quizzyjoy/platform';
 
 @ComponentV2
 export struct PolicyView {
@@ -29,10 +30,22 @@ export struct PolicyView {
     return 'policy_privacy.txt';
   }
 
+  /** 隐私政策 / 用户协议的在线托管地址（离线副本页的「打开在线版」出口）。 */
+  private onlineUrl(): string {
+    if (this.kind === 'terms') {
+      return PrivacyLinks.hostedUrl(StorePrivacyKind.USER_AGREEMENT);
+    }
+    if (this.kind === 'privacy') {
+      return PrivacyLinks.hostedUrl(StorePrivacyKind.STATEMENT);
+    }
+    return '';
+  }
+
   build() {
     RawFileTextView({
       fileName: this.policyFileName(),
-      infoTip: this.kind === 'sdk' ? PolicyView.SDK_INFO_TIP : ''
+      infoTip: this.kind === 'sdk' ? PolicyView.SDK_INFO_TIP : '',
+      onlineUrl: this.onlineUrl()
     })
   }
 }

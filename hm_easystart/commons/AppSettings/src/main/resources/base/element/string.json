@@ -458,7 +458,7 @@
     },
     {
       "name": "settings_privacy_local",
-      "value": "未获取到官方链接，已打开本地文本"
+      "value": "网络不可用，已显示离线副本"
     },
     {
       "name": "settings_update_checking",
@@ -607,6 +607,10 @@
     {
       "name": "apps_status_unpublished",
       "value": "待上架"
+    },
+    {
+      "name": "settings_offline_open_online",
+      "value": "打开在线版"
     }
   ]
 }

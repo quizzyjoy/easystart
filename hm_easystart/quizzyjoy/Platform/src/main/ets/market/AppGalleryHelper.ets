@@ -4,6 +4,7 @@ import { appInfoManager, commentManager, privacyManager, updateManager } from '@
 import { Logger } from '@quizzyjoy/foundation';
 import { ErrorMapper } from '../error/ErrorMapper';
 import { AppEnvManager } from '../device/AppEnvManager';
+import { PrivacyLinks } from './PrivacyLinks';
 
 const DOMAIN: string = 'platform';
 const TAG: string = 'AppGalleryHelper';
@@ -311,7 +312,15 @@ export class AppGalleryHelper {
     return links;
   }
 
-  /** 取某一类官方链接（拿不到返回空串，调用方降级）。 */
+  /**
+   * 取某一类协议链接（为空时才降级到本地离线文本）。
+   *
+   * 顺序（v3.52）：
+   * 1. 应用市场隐私托管服务返回的**官方链接**（需已上架并接入该服务）；
+   * 2. 内置**真实托管地址** `PrivacyLinks.hostedUrl(kind)`——未上架 / 服务不可用时的
+   *    兜底，保证用户点开就能看到真实协议正文；
+   * 3. 返回空串表示连常量都没有（理论上不会发生），调用方回退本地 rawfile 离线副本。
+   */
   getPrivacyLink(kind: StorePrivacyKind): string {
     const links: StorePrivacyLink[] = this.getPrivacyLinks();
     for (const link of links) {
@@ -319,7 +328,7 @@ export class AppGalleryHelper {
         return link.url;
       }
     }
-    return '';
+    return PrivacyLinks.hostedUrl(kind);
   }
 
   /**

@@ -27,6 +27,7 @@ export { HoverStore, HoverData, HoverListener, AppFoldStatus } from './src/main/
 export { ShareHelper, ShareOptions } from './src/main/ets/share/ShareHelper';
 export { MarketHelper } from './src/main/ets/market/MarketHelper';
 export { AppLauncher, LaunchResult } from './src/main/ets/market/AppLauncher';
+export { PrivacyLinks } from './src/main/ets/market/PrivacyLinks';
 export {
   AppGalleryHelper,
   StoreCapabilityResult,

@@ -1,6 +1,6 @@
 import { util } from '@kit.ArkTS';
 import { AppFontSize, AppLineHeight, AppRadius, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { BreakpointManager, common } from '@quizzyjoy/platform';
+import { BreakpointManager, common, MarketHelper } from '@quizzyjoy/platform';
 import { AppDialog, DialogSemantic } from '@easystart/app-component';
 
 /**
@@ -19,6 +19,8 @@ export struct RawFileTextView {
   @Param fileName: string = '';
   /** 非空时在正文上方渲染「信息」按钮，点击弹出该提示文案。 */
   @Param infoTip: string = '';
+  /** 非空时渲染「打开在线版」按钮（离线副本 → 在线托管的回退出口）。 */
+  @Param onlineUrl: string = '';
   @Local content: string = '';
   @Local loadFailed: boolean = false;
 
@@ -36,6 +38,14 @@ export struct RawFileTextView {
     } catch (err) {
       this.loadFailed = true;
     }
+  }
+
+  /** 离线副本 → 打开在线托管版（失败只记日志，页面仍是可读的离线副本）。 */
+  private async openOnline(): Promise<void> {
+    if (this.onlineUrl.length === 0) {
+      return;
+    }
+    await MarketHelper.getInstance().openUri(this.onlineUrl);
   }
 
   /** 弹出「本页为模板真实信息示例」提示。 */
@@ -69,6 +79,20 @@ export struct RawFileTextView {
           .backgroundColor($r('app.color.app_bg_page_deep'))
           .onClick((): void => {
             this.showInfo();
+          })
+        }
+        if (this.onlineUrl.length > 0) {
+          Row({ space: AppSpacing.XS }) {
+            SymbolGlyph($r('sys.symbol.link'))
+              .fontSize(AppFontSize.CAPTION)
+              .fontColor([$r('app.color.qj_brand')])
+            Text($r('app.string.settings_offline_open_online'))
+              .fontSize(AppFontSize.CAPTION)
+              .fontColor($r('app.color.qj_brand'))
+          }
+          .padding({ top: AppSpacing.XS, bottom: AppSpacing.XS })
+          .onClick((): void => {
+            this.openOnline();
           })
         }
         Text(this.loadFailed ? $r('app.string.settings_rawfile_missing') : this.content)

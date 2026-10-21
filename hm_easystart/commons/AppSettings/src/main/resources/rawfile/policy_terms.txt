@@ -1,11 +1,50 @@
-用户协议（模板占位）
+用户协议（离线副本）
 
-本文件为 趣开发 EasyStart 模板的占位文本，不构成真实用户协议。
+本文件是「趣开发 EasyStart」用户协议的**离线副本**，用于无网络或无法拉起浏览器时阅读。
 
-fork 本模板发布应用前，请：
-1. 用贵应用真实的用户协议 / 服务条款全文替换本文件全部内容；
-2. 列明服务内容、用户行为规范、知识产权、免责声明与争议解决方式；
-3. 注明生效日期。
+在线正式版本（以此为准）：
+https://agreement-drcn.hispace.dbankcloud.cn/index.html?lang=zh&agreementId=2065909374747958976
 
-This is a placeholder shipped with the EasyStart template. Replace it with
-your real user agreement before publishing any forked application.
+一、协议范围
+
+本协议适用于你使用「趣开发 EasyStart」应用（含手机 / 折叠屏 / 2in1 / 平板 / 电视等形态）。
+
+二、许可
+
+本应用以 Apache License 2.0 开源发布，你可在遵守该许可的前提下使用、复制、修改与再分发。
+许可全文：https://www.apache.org/licenses/LICENSE-2.0
+
+三、使用规范
+
+1. 不得利用本应用从事违法违规活动；
+2. 不得移除应用内的开源许可与商标声明；
+3. 基于本应用二次开发的产品，其名称、图标与宣传素材不得暗示华为或原作者背书。
+
+四、知识产权
+
+HarmonyOS、鸿蒙、HDS 及相关标识为华为技术有限公司的商标或注册商标。
+应用内示例代码与文档著作权归原作者所有，依 Apache-2.0 授权。
+
+五、免责声明
+
+本应用按「现状」提供，不附带任何明示或默示担保。因使用本应用产生的风险由使用者自行承担。
+
+六、协议更新
+
+协议更新后将在应用内更新离线副本，并以在线版本为准。继续使用即视为接受更新后的协议。
+
+七、联系我们
+
+开发者：quizzyjoy（闫东阳）
+邮箱：3014551329@qq.com
+
+生效日期：2026-10-21
+
+------------------------------------------------------------
+
+User Agreement (offline copy)
+
+Offline copy for reading without network. The online version is authoritative:
+https://agreement-drcn.hispace.dbankcloud.cn/index.html?lang=zh&agreementId=2065909374747958976
+
+Licensed under Apache License 2.0. Contact: 3014551329@qq.com
