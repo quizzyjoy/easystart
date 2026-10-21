@@ -1,5 +1,9 @@
 {
   "module": {
+    "querySchemes": [
+      "appmarket",
+      "https"
+    ],
     "name": "entry_pc",
     "type": "entry",
     "description": "$string:module_desc",

@@ -603,6 +603,10 @@
     {
       "name": "apps_fork_tip",
       "value": "This page is a sample app matrix; fork and replace it with your own list in AppMatrix.ets."
+    },
+    {
+      "name": "apps_status_unpublished",
+      "value": "Coming soon"
     }
   ]
 }

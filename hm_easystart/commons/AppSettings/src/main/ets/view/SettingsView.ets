@@ -28,9 +28,9 @@ export struct SettingsView {
   @Builder
   appHeader() {
     Column({ space: AppSpacing.SM }) {
-      // 蓝图默认 foreground 为透明占位，桌面图标实际呈 background 品牌蓝底；
-      // 此处与桌面图标保持一致（AboutView 同款先例），fork 替换分层图标后自动更新。
-      Image($r('app.media.background'))
+      // v3.51：用 AppScope 的真实品牌图 app_logo（= 方形完整图标 default），
+      // 圆角由 borderRadius 处理，不再用 background 纯色底占位。
+      Image($r('app.media.app_logo'))
         .width(AppSize.AVATAR_MD)
         .height(AppSize.AVATAR_MD)
         .borderRadius(AppRadius.XL)

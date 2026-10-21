@@ -603,6 +603,10 @@
     {
       "name": "apps_fork_tip",
       "value": "本页是模板自带的产品矩阵示例，fork 后替换为你自己的应用列表（AppMatrix.ets）。"
+    },
+    {
+      "name": "apps_status_unpublished",
+      "value": "待上架"
     }
   ]
 }

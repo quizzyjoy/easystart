@@ -98,9 +98,8 @@ export struct AboutView {
       Column({ space: DesignToken.sectionSpacing() }) {
         // —— 应用头 ——
         Column({ space: AppSpacing.SM }) {
-        // 蓝图默认 foreground 为透明占位，桌面图标实际呈 background 品牌蓝底；
-        // 此处与桌面图标保持一致，fork 替换分层图标后自动更新。
-        Image($r('app.media.background'))
+        // v3.51：真实品牌图（AppScope media/app_logo.png），圆角由 borderRadius 处理。
+        Image($r('app.media.app_logo'))
           .width(AppSize.AVATAR_LG)
           .height(AppSize.AVATAR_LG)
           .borderRadius(AppRadius.XL)

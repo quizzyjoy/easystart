@@ -78,8 +78,8 @@ export class AppMatrix {
       desc: $r('app.string.apps_vibestereo_desc'),
       bundleName: 'com.quizzyjoy.vibestereo',
       icon: $r('app.media.app_vibestereo'),
-      status: AppEntryStatus.PUBLISHED,
-      statusLabel: $r('app.string.apps_status_published'),
+      status: AppEntryStatus.UNPUBLISHED,
+      statusLabel: $r('app.string.apps_status_unpublished'),
       intro: '音乐可视化播放器：本地曲库播放与频谱可视化，支持多端适配。'
     },
     {
@@ -88,8 +88,8 @@ export class AppMatrix {
       desc: $r('app.string.apps_easytools_desc'),
       bundleName: 'com.quizzyjoy.easytools',
       icon: $r('app.media.app_easytools'),
-      status: AppEntryStatus.PUBLISHED,
-      statusLabel: $r('app.string.apps_status_published'),
+      status: AppEntryStatus.UNPUBLISHED,
+      statusLabel: $r('app.string.apps_status_unpublished'),
       intro: '随易工具箱：哈希、编解码、ID 生成、正则与 JSON 等开发者常用小工具集合。'
     }
   ];
