@@ -1,5 +1,6 @@
 import { SectionNavRow, sectionNavDesc, sectionNavRows, sectionNavTitle } from '../model/SectionNav';
-import { AppFontSize, AppFontWeight, AppRadius, AppSpacing } from '@quizzyjoy/foundation';
+import { AppFontSize, AppFontWeight, AppRadius, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
+import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
 
 /**
  * 示例 Tab 的二级导航页（v3.66）。
@@ -22,6 +23,23 @@ export struct SectionNavView {
   };
 
   @Local rows: SectionNavRow[] = [];
+  /** 断点与窗口避让：padding / 最大内容宽 / 底部避让全部走设计令牌（v3.68）。 */
+  @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
+
+  private bp(): string {
+    return `${this.breakpoint.breakpoint}`;
+  }
+
+  /** 宽屏（lg 及以上）子项排两列；手机 / 折叠竖屏单列。 */
+  private isWide(): boolean {
+    return this.breakpoint.isWide();
+  }
+
+  /** 子项宽度：宽屏 48.5%，窄屏 100%。 */
+  private rowWidth(): string {
+    return this.isWide() ? '48.5%' : '100%';
+  }
 
   aboutToAppear(): void {
     this.rows = sectionNavRows(this.sectionId);
@@ -37,7 +55,7 @@ export struct SectionNavView {
   }
 
   @Builder
-  navRow(row: SectionNavRow, last: boolean) {
+  navRow(row: SectionNavRow, detached: boolean) {
     Column() {
       Row({ space: AppSpacing.SM }) {
         Column({ space: AppSpacing.XXS }) {
@@ -62,15 +80,12 @@ export struct SectionNavView {
       }
       .width('100%')
       .alignItems(VerticalAlign.Center)
-      .padding({ top: AppSpacing.MD, bottom: AppSpacing.MD })
-
-      if (!last) {
-        Divider()
-          .strokeWidth(0.5)
-          .color($r('app.color.app_divider'))
-      }
+      .padding(DesignToken.cardPadding())
     }
-    .width('100%')
+    .width(this.rowWidth())
+    .margin({ bottom: detached ? DesignToken.cardGap() : AppSpacing.SM })
+    .borderRadius(AppRadius.XL)
+    .backgroundColor($r('app.color.app_bg_card'))
     .onClick((): void => {
       this.handleRow(row);
     })
@@ -84,15 +99,12 @@ export struct SectionNavView {
           .fontColor($r('app.color.app_text_tertiary'))
           .width('100%')
 
-        Column() {
+        Flex({ wrap: FlexWrap.Wrap, justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Start }) {
           ForEach(this.rows, (row: SectionNavRow, index: number) => {
-            this.navRow(row, index === this.rows.length - 1)
+            this.navRow(row, this.isWide())
           }, (row: SectionNavRow): string => `${this.sectionId}_${row.id}`)
         }
         .width('100%')
-        .padding({ left: AppSpacing.MD, right: AppSpacing.MD })
-        .borderRadius(AppRadius.XL)
-        .backgroundColor($r('app.color.app_bg_card'))
 
         Text(`共 ${this.rows.length} 个子页 · ${sectionNavTitle(this.sectionId)}`)
           .fontSize(AppFontSize.CAPTION)
@@ -101,11 +113,12 @@ export struct SectionNavView {
       }
       .width('100%')
       .alignItems(HorizontalAlign.Start)
+      .constraintSize({ maxWidth: DesignToken.contentMaxWidth(this.bp()) })
       .padding({
-        left: AppSpacing.LG,
-        right: AppSpacing.LG,
+        left: DesignToken.pagePadding(this.bp()),
+        right: DesignToken.pagePadding(this.bp()),
         top: AppSpacing.MD,
-        bottom: AppSpacing.XXXL
+        bottom: DesignToken.tabPageBottomPadding(this.bp(), this.windowAdapter.bottomAvoidVp)
       })
     }
     .width('100%')

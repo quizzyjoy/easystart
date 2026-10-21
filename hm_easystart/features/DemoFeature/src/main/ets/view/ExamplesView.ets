@@ -202,9 +202,10 @@ export struct ExamplesView {
         .fontSize(AppFontSize.TITLE_SM)
         .fontColor([$r('app.color.app_text_tertiary')])
     }
-    .width('100%')
+    .width(this.cardWidth())
     .alignItems(VerticalAlign.Center)
-    .padding(AppSpacing.MD)
+    .padding(DesignToken.cardPadding())
+    .margin({ bottom: DesignToken.cardGap() })
     .borderRadius(AppRadius.XL)
     .backgroundColor($r('app.color.app_bg_card'))
     .onClick((): void => {
@@ -224,6 +225,11 @@ export struct ExamplesView {
    * 数据表是 const（不能读 this），所以取色放在渲染期按 id 判定：这是 v3.44「静态色接入
    * 主题系统」的落地点 —— 页面装饰色走主题，语义/演示色保持固定。
    */
+  /** 入口卡宽度：宽屏（lg 及以上）两列，窄屏单列（v3.68 多设备适配）。 */
+  private cardWidth(): string {
+    return this.breakpoint.isWide() ? '48.5%' : '100%';
+  }
+
   private chipTint(section: ExampleSection): ResourceColor {
     return (section.id === 'gallery' || section.id === 'about')
       ? this.theme.brandColor() : section.tint;
@@ -236,9 +242,12 @@ export struct ExamplesView {
           .fontColor($r('app.color.app_text_tertiary'))
           .width('100%')
 
-        ForEach(EXAMPLE_SECTIONS, (section: ExampleSection) => {
-          this.section(section)
-        }, (section: ExampleSection): string => section.id)
+        Flex({ wrap: FlexWrap.Wrap, justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Start }) {
+          ForEach(EXAMPLE_SECTIONS, (section: ExampleSection) => {
+            this.section(section)
+          }, (section: ExampleSection): string => section.id)
+        }
+        .width('100%')
       }
       .width('100%')
       .alignItems(HorizontalAlign.Start)

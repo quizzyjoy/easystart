@@ -408,10 +408,25 @@ export struct ComponentGalleryView {
   }
 
 
-  /** 画廊分组区块：groupBasic（v3.26 自 build() 抽出，内容等价） */
+  /**
+   * 基础组件专题（v3.68 重排）。
+   *
+   * 结构规则：**一节 = 一个组件族**，节标题带序号与「族名 · 组件名」，节内先一句用途说明
+   * 再给可变状态的全集。四条约束：
+   * 1. 「操作」只演示按钮**形态**（variant / loading / disabled），不演示行为；
+   * 2. 「反馈」只演示**触发后的语义**（info / warning / 确认对话框），用次级按钮做触发器，
+   *    与上一节的主按钮区分开，避免"又摆一排按钮"的重复感；
+   * 3. 「弹层」把日期 / 时间 / 日历 / 文本轮播四类选择器与 Sheet 收在一节，
+   *    统一说明"都走 UIContext 弹层 API"，不再散落在多个小节；
+   * 4. 骨架屏已独立成「加载与骨架」页、图表/取色器已独立成页，本页不再重复出现。
+   */
   @Builder
   groupBasic() {
-        this.sectionTitle('按钮 ButtonVariant')
+        this.sectionTitle('1 · 操作 · 按钮 ButtonVariant')
+        Text('六种形态：主 / 次 / 文字 / 危险 / 加载中 / 已禁用；强调色由主题注入。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
         Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
           CommonButton({ text: '主操作', variant: ButtonVariant.PRIMARY, accentColor: this.theme.accentColor })
           CommonButton({ text: '次操作', variant: ButtonVariant.SECONDARY, accentColor: this.theme.accentColor })
@@ -422,7 +437,11 @@ export struct ComponentGalleryView {
         }
         .width('100%')
 
-        this.sectionTitle('标签 TagTone')
+        this.sectionTitle('2 · 状态 · 标签 TagTone')
+        Text('五档语义色 + 可关闭态；品牌档跟随运行时强调色。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
         Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
           CommonTag({ text: '中性', tone: TagTone.NEUTRAL })
           CommonTag({ text: '品牌', tone: TagTone.BRAND, accentColor: this.theme.accentColor })
@@ -438,7 +457,11 @@ export struct ComponentGalleryView {
         }
         .width('100%')
 
-        this.sectionTitle('搜索（300ms 防抖）')
+        this.sectionTitle('3 · 输入 · 搜索 CommonSearchBar')
+        Text('受控 + 300ms 防抖；回车与取消分别回调，适合列表页顶部。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
         CommonSearchBar({
           value: this.keyword,
           showCancel: true,
@@ -451,21 +474,29 @@ export struct ComponentGalleryView {
           }
         })
 
-        this.sectionTitle('轻提示 / 对话框')
+        this.sectionTitle('4 · 反馈 · 轻提示与确认')
+        Text('语义由触发方式决定：info 用于结果告知、warning 用于失败提示、对话框用于需要用户决策的确认。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
         Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
-          CommonButton({ text: 'Toast', variant: ButtonVariant.SECONDARY, onAction: () => {
+          CommonButton({ text: '轻提示', variant: ButtonVariant.SECONDARY, onAction: () => {
             this.showToast();
           } })
-          CommonButton({ text: 'Toast 警告', variant: ButtonVariant.SECONDARY, onAction: () => {
+          CommonButton({ text: '失败提示', variant: ButtonVariant.SECONDARY, onAction: () => {
             this.showToastWarn();
           } })
-          CommonButton({ text: '打开对话框', variant: ButtonVariant.PRIMARY, accentColor: this.theme.accentColor, onAction: () => {
+          CommonButton({ text: '确认对话框', variant: ButtonVariant.SECONDARY, onAction: () => {
             this.openDialog();
           } })
         }
         .width('100%')
 
-        this.sectionTitle('卡片')
+        this.sectionTitle('5 · 容器 · 卡片 ActionCard')
+        Text('按压缩放反馈，标题/副标题两行排版，强调色跟随主题；列表与看板的通用容器。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
         ActionCard({
           title: 'ActionCard',
           subtitle: '按压缩放反馈，颜色跟随令牌，支持运行时强调色注入',
@@ -475,7 +506,33 @@ export struct ComponentGalleryView {
           }
         })
 
-        this.sectionTitle('选择器与弹窗（日期 / 时间 / 日历 / 文本轮播，v3.29）')
+        this.sectionTitle('6 · 弹层 · 选择器与 Sheet')
+        Text('四类选择器与 Sheet 都走 UIContext 弹层 API（替代已弃用的全局 dialog）；结果回写到下方只读文本。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
+        Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
+          CommonButton({ text: '日期', variant: ButtonVariant.SECONDARY, onAction: () => {
+            this.openDatePicker(false);
+          } })
+          CommonButton({ text: '日期（农历）', variant: ButtonVariant.SECONDARY, onAction: () => {
+            this.openDatePicker(true);
+          } })
+          CommonButton({ text: '时间', variant: ButtonVariant.SECONDARY, onAction: () => {
+            this.openTimePicker();
+          } })
+          CommonButton({ text: '日历', variant: ButtonVariant.SECONDARY, onAction: () => {
+            this.openCalendarDialog();
+          } })
+          CommonButton({ text: '文本轮播', variant: ButtonVariant.SECONDARY, onAction: () => {
+            this.openWheelPicker();
+          } })
+          CommonButton({ text: 'Sheet', variant: ButtonVariant.SECONDARY, onAction: () => {
+            this.sheetShow = true;
+          } })
+        }
+        .width('100%')
+
         Column({ space: AppSpacing.XS }) {
           Text(`日期：${this.pickerDateText} · 农历：${this.pickerLunarText}`)
             .fontSize(AppFontSize.CAPTION)
@@ -486,27 +543,6 @@ export struct ComponentGalleryView {
           Text(`文本轮播：${this.pickerWheelText}`)
             .fontSize(AppFontSize.CAPTION)
             .fontColor($r('app.color.app_text_secondary'))
-          Text('弹窗族走 UIContext.showXxxDialog（替代已弃用全局 dialog）；日历弹窗为全局 CalendarPickerDialog.show')
-            .fontSize(AppFontSize.CAPTION)
-            .fontColor($r('app.color.app_text_tertiary'))
-          Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
-            CommonButton({ text: '日期', variant: ButtonVariant.SECONDARY, onAction: () => {
-              this.openDatePicker(false);
-            } })
-            CommonButton({ text: '日期（农历）', variant: ButtonVariant.SECONDARY, onAction: () => {
-              this.openDatePicker(true);
-            } })
-            CommonButton({ text: '时间', variant: ButtonVariant.SECONDARY, onAction: () => {
-              this.openTimePicker();
-            } })
-            CommonButton({ text: '日历', variant: ButtonVariant.SECONDARY, onAction: () => {
-              this.openCalendarDialog();
-            } })
-            CommonButton({ text: '文本轮播', variant: ButtonVariant.SECONDARY, onAction: () => {
-              this.openWheelPicker();
-            } })
-          }
-          .width('100%')
         }
         .alignItems(HorizontalAlign.Start)
         .width('100%')
