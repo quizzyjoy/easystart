@@ -79,3 +79,8 @@ replay_pid*
 # TODO 台账、Git 提交约束、对账/审计报告、分包清单、设计草稿等均在此；
 # 开源版只保留 docs/ 下的技术文档。
 /plan/
+
+# 签名材料：DevEco 加密材料缓存（material/ 下无扩展名文件，扩展名规则盖不住）
+/Profile/签名/hm/material/
+# 证书签名请求（含公钥，无入库必要）
+*.csr
