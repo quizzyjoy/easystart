@@ -655,6 +655,46 @@
     {
       "name": "apps_intro_qq_failed",
       "value": "Cannot open the QQ group link. Check whether QQ is installed."
+    },
+    {
+      "name": "apps_intro_seg_intro",
+      "value": "Overview"
+    },
+    {
+      "name": "apps_intro_seg_group",
+      "value": "Community"
+    },
+    {
+      "name": "apps_intro_seg_detail",
+      "value": "Details"
+    },
+    {
+      "name": "apps_intro_group_tip",
+      "value": "Questions, suggestions and bug reports are welcome in the group. Scan the QR code or search the group number."
+    },
+    {
+      "name": "apps_intro_group_number_label",
+      "value": "Group ID"
+    },
+    {
+      "name": "apps_intro_group_copy",
+      "value": "Copy group ID"
+    },
+    {
+      "name": "apps_intro_group_copied",
+      "value": "Group ID copied. Search it in QQ to join."
+    },
+    {
+      "name": "apps_intro_group_qr_tip",
+      "value": "Scan with mobile QQ, or tap the button to open the group directly."
+    },
+    {
+      "name": "apps_intro_group_search_tip",
+      "value": "No QR entry for this group. Copy the group ID and search it in QQ."
+    },
+    {
+      "name": "apps_intro_detail_source",
+      "value": "Content from the product page on the official site."
     }
   ]
 }

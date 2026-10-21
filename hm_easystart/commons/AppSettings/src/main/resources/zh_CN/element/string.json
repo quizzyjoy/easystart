@@ -655,6 +655,46 @@
     {
       "name": "apps_intro_qq_failed",
       "value": "无法打开 QQ 群链接，请检查是否安装 QQ"
+    },
+    {
+      "name": "apps_intro_seg_intro",
+      "value": "简介"
+    },
+    {
+      "name": "apps_intro_seg_group",
+      "value": "交流群"
+    },
+    {
+      "name": "apps_intro_seg_detail",
+      "value": "详情"
+    },
+    {
+      "name": "apps_intro_group_tip",
+      "value": "使用问题、建议与 bug 反馈都欢迎发在群里；也可以扫码或用群号搜索加入。"
+    },
+    {
+      "name": "apps_intro_group_number_label",
+      "value": "群号"
+    },
+    {
+      "name": "apps_intro_group_copy",
+      "value": "复制群号"
+    },
+    {
+      "name": "apps_intro_group_copied",
+      "value": "群号已复制，可在 QQ 中搜索加入"
+    },
+    {
+      "name": "apps_intro_group_qr_tip",
+      "value": "手机 QQ 扫码入群，或点按钮直接跳转。"
+    },
+    {
+      "name": "apps_intro_group_search_tip",
+      "value": "该群未提供扫码入口，复制群号后到 QQ 搜索加入。"
+    },
+    {
+      "name": "apps_intro_detail_source",
+      "value": "以上内容取自产品官网的介绍卡片。"
     }
   ]
 }
