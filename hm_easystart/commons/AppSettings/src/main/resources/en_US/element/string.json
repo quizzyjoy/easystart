@@ -547,6 +547,62 @@
     {
       "name": "settings_theme_preset_desc",
       "value": "A theme is a full color baseline (light + dark). Picking one recolors every page and system component; the accent color is a per-app override on top."
+    },
+    {
+      "name": "settings_app_matrix",
+      "value": "App showcase"
+    },
+    {
+      "name": "settings_app_matrix_desc",
+      "value": "The quizzyjoy family · 4 apps"
+    },
+    {
+      "name": "apps_intro",
+      "value": "These four apps share one ArkTS baseline: the quizzyjoy libs, the commons app layer and features; only the product layer differs."
+    },
+    {
+      "name": "apps_easystart_name",
+      "value": "EasyStart"
+    },
+    {
+      "name": "apps_easystart_desc",
+      "value": "Four-end template with demos, tutorials and dev tools"
+    },
+    {
+      "name": "apps_easymath_name",
+      "value": "EasyMath"
+    },
+    {
+      "name": "apps_easymath_desc",
+      "value": "Question bank, curated textbooks and a daily challenge"
+    },
+    {
+      "name": "apps_vibestereo_name",
+      "value": "VibeStereo"
+    },
+    {
+      "name": "apps_vibestereo_desc",
+      "value": "Visual music player with local library and spectrum"
+    },
+    {
+      "name": "apps_easytools_name",
+      "value": "EasyTools"
+    },
+    {
+      "name": "apps_easytools_desc",
+      "value": "Hash, codec, ID, regex and JSON utilities"
+    },
+    {
+      "name": "apps_status_self",
+      "value": "Current"
+    },
+    {
+      "name": "apps_status_published",
+      "value": "Published"
+    },
+    {
+      "name": "apps_fork_tip",
+      "value": "This page is a sample app matrix; fork and replace it with your own list in AppMatrix.ets."
     }
   ]
 }

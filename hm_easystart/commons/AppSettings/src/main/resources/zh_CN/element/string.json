@@ -547,6 +547,62 @@
     {
       "name": "settings_theme_preset_desc",
       "value": "一套主题包 = 一整套配色基线（含深色变体），选中后所有页面与系统组件同步换色；强调色可在其上单点微调。"
+    },
+    {
+      "name": "settings_app_matrix",
+      "value": "应用矩阵"
+    },
+    {
+      "name": "settings_app_matrix_desc",
+      "value": "趣开发系列 · 4 个应用"
+    },
+    {
+      "name": "apps_intro",
+      "value": "这四个应用共用同一套 ArkTS 基线：quizzyjoy 三库 + commons 应用域 + features 业务域，各自只替换产品层。"
+    },
+    {
+      "name": "apps_easystart_name",
+      "value": "趣开发 EasyStart"
+    },
+    {
+      "name": "apps_easystart_desc",
+      "value": "四端模板与组件演示，内置开发教程与开发工具"
+    },
+    {
+      "name": "apps_easymath_name",
+      "value": "随易数学 EasyMath"
+    },
+    {
+      "name": "apps_easymath_desc",
+      "value": "题库、教材精选与每日一题"
+    },
+    {
+      "name": "apps_vibestereo_name",
+      "value": "临境声场 VibeStereo"
+    },
+    {
+      "name": "apps_vibestereo_desc",
+      "value": "音乐可视化播放器，本地曲库与频谱"
+    },
+    {
+      "name": "apps_easytools_name",
+      "value": "随易工具箱 EasyTools"
+    },
+    {
+      "name": "apps_easytools_desc",
+      "value": "哈希、编解码、ID、正则与 JSON 等开发小工具"
+    },
+    {
+      "name": "apps_status_self",
+      "value": "当前应用"
+    },
+    {
+      "name": "apps_status_published",
+      "value": "已上架"
+    },
+    {
+      "name": "apps_fork_tip",
+      "value": "本页是模板自带的产品矩阵示例，fork 后替换为你自己的应用列表（AppMatrix.ets）。"
     }
   ]
 }

@@ -14,6 +14,7 @@ import { DeveloperView } from './DeveloperView';
 import { AboutView } from './about/AboutView';
 import { PolicyView } from './about/PolicyView';
 import { LicenseView } from './about/LicenseView';
+import { AppsView } from './about/AppsView';
 
 /** 宽屏分栏右栏空态占位（未选中任何设置项时）。 */
 @Builder
@@ -197,6 +198,9 @@ export struct SettingsDestination {
     if (name === SettingsRoute.SDK_LIST) {
       return $r('app.string.settings_sdk_list');
     }
+    if (name === SettingsRoute.APPS) {
+      return $r('app.string.settings_app_matrix');
+    }
     return $r('app.string.settings_title');
   }
 
@@ -226,6 +230,12 @@ export struct SettingsDestination {
     } else if (name === SettingsRoute.SDK_LIST) {
       // SDK 清单直达别名（深链用）：与关于组 SDK 行同落政策文本子页
       PolicyView({ kind: 'sdk' })
+    } else if (name === SettingsRoute.APPS) {
+      AppsView({
+        onOpenSelf: (): void => {
+          this.settingStack.pushPath({ name: SettingsRoute.ABOUT });
+        }
+      })
     }
   }
 

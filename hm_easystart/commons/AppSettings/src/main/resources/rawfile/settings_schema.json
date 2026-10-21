@@ -12,7 +12,10 @@
               "id": "appearance_entry",
               "type": "nav",
               "route": "appearance",
-              "icon": { "symbol": "paintbrush_fill", "tint": "c01" },
+              "icon": {
+                "symbol": "paintbrush_fill",
+                "tint": "c01"
+              },
               "title": "$r:settings_appearance",
               "subtitle": "$r:settings_appearance_desc",
               "valueSource": "displayMode"
@@ -21,7 +24,10 @@
               "id": "general_entry",
               "type": "nav",
               "route": "general",
-              "icon": { "symbol": "slider_horizontal_2", "tint": "c06" },
+              "icon": {
+                "symbol": "slider_horizontal_2",
+                "tint": "c06"
+              },
               "title": "$r:settings_general_title",
               "subtitle": "$r:settings_general_desc"
             }
@@ -36,7 +42,10 @@
               "id": "announcement",
               "type": "nav",
               "route": "announcement",
-              "icon": { "symbol": "bell_fill", "tint": "c09" },
+              "icon": {
+                "symbol": "bell_fill",
+                "tint": "c09"
+              },
               "title": "$r:settings_announcement",
               "subtitle": "$r:settings_announcement_desc"
             },
@@ -44,7 +53,10 @@
               "id": "version_log",
               "type": "nav",
               "route": "versionLog",
-              "icon": { "symbol": "doc_text_badge_clock_fill", "tint": "c12" },
+              "icon": {
+                "symbol": "doc_text_badge_clock_fill",
+                "tint": "c12"
+              },
               "title": "$r:settings_version_log",
               "subtitle": "$r:settings_version_log_desc"
             },
@@ -52,7 +64,10 @@
               "id": "help_feedback",
               "type": "nav",
               "route": "helpFeedback",
-              "icon": { "symbol": "envelope_badge_adiowaves_fill", "tint": "c14" },
+              "icon": {
+                "symbol": "envelope_badge_adiowaves_fill",
+                "tint": "c14"
+              },
               "title": "$r:settings_help_feedback",
               "subtitle": "$r:settings_help_feedback_desc"
             },
@@ -60,7 +75,10 @@
               "id": "developer",
               "type": "nav",
               "route": "developer",
-              "icon": { "symbol": "person_2_fill", "tint": "c11" },
+              "icon": {
+                "symbol": "person_2_fill",
+                "tint": "c11"
+              },
               "title": "$r:settings_developer",
               "subtitle": "$r:settings_developer_desc"
             }
@@ -72,10 +90,24 @@
           "title": "$r:settings_group_about",
           "rows": [
             {
+              "id": "app_matrix_entry",
+              "type": "nav",
+              "route": "apps",
+              "icon": {
+                "symbol": "square_grid_2x2",
+                "tint": "c10"
+              },
+              "title": "$r:settings_app_matrix",
+              "subtitle": "$r:settings_app_matrix_desc"
+            },
+            {
               "id": "about_entry",
               "type": "nav",
               "route": "about",
-              "icon": { "symbol": "info_circle_fill", "tint": "c02" },
+              "icon": {
+                "symbol": "info_circle_fill",
+                "tint": "c02"
+              },
               "title": "$r:settings_about",
               "valueSource": "versionName"
             }
@@ -90,7 +122,10 @@
               "id": "privacy",
               "type": "action",
               "actionId": "privacyStatement",
-              "icon": { "symbol": "lock_fill", "tint": "c07" },
+              "icon": {
+                "symbol": "lock_fill",
+                "tint": "c07"
+              },
               "title": "$r:settings_privacy",
               "subtitle": "$r:settings_privacy_desc"
             },
@@ -98,7 +133,10 @@
               "id": "terms",
               "type": "action",
               "actionId": "userAgreement",
-              "icon": { "symbol": "doc_text_fill", "tint": "c13" },
+              "icon": {
+                "symbol": "doc_text_fill",
+                "tint": "c13"
+              },
               "title": "$r:settings_terms",
               "subtitle": "$r:settings_terms_desc"
             },
@@ -107,7 +145,10 @@
               "type": "nav",
               "route": "policy",
               "param": "sdk",
-              "icon": { "symbol": "checkmark_circle_fill", "tint": "c05" },
+              "icon": {
+                "symbol": "checkmark_circle_fill",
+                "tint": "c05"
+              },
               "title": "$r:settings_sdk_list",
               "subtitle": "$r:settings_sdk_list_desc"
             },
@@ -115,14 +156,20 @@
               "id": "license",
               "type": "nav",
               "route": "license",
-              "icon": { "symbol": "flag_fill", "tint": "c03" },
+              "icon": {
+                "symbol": "flag_fill",
+                "tint": "c03"
+              },
               "title": "$r:settings_license"
             },
             {
               "id": "revoke_privacy",
               "type": "action",
               "actionId": "revokePrivacy",
-              "icon": { "symbol": "exclamationmark_triangle_fill", "tint": "c08" },
+              "icon": {
+                "symbol": "exclamationmark_triangle_fill",
+                "tint": "c08"
+              },
               "title": "$r:settings_privacy_revoke",
               "subtitle": "$r:settings_privacy_revoke_desc"
             }
@@ -141,7 +188,10 @@
               "id": "language",
               "type": "builtin",
               "builtin": "language",
-              "icon": { "symbol": "textformat", "tint": "c13" },
+              "icon": {
+                "symbol": "textformat",
+                "tint": "c13"
+              },
               "title": "$r:settings_language",
               "subtitle": "$r:settings_language_desc"
             },
@@ -149,7 +199,10 @@
               "id": "font_size",
               "type": "builtin",
               "builtin": "fontSize",
-              "icon": { "symbol": "textformat_size_square_fill", "tint": "c16" },
+              "icon": {
+                "symbol": "textformat_size_square_fill",
+                "tint": "c16"
+              },
               "title": "$r:settings_font_size",
               "subtitle": "$r:settings_font_size_desc"
             },
@@ -157,7 +210,10 @@
               "id": "haptic",
               "type": "builtin",
               "builtin": "haptic",
-              "icon": { "symbol": "heart_fill", "tint": "c04" },
+              "icon": {
+                "symbol": "heart_fill",
+                "tint": "c04"
+              },
               "title": "$r:settings_haptic",
               "subtitle": "$r:settings_haptic_desc"
             },
@@ -165,7 +221,10 @@
               "id": "keep_screen_on",
               "type": "builtin",
               "builtin": "keepScreenOn",
-              "icon": { "symbol": "clock_fill", "tint": "c18" },
+              "icon": {
+                "symbol": "clock_fill",
+                "tint": "c18"
+              },
               "title": "$r:settings_keep_screen_on",
               "subtitle": "$r:settings_keep_screen_on_desc"
             },
@@ -173,10 +232,16 @@
               "id": "orientation",
               "type": "builtin",
               "builtin": "orientation",
-              "icon": { "symbol": "screen_rotation", "tint": "c20" },
+              "icon": {
+                "symbol": "screen_rotation",
+                "tint": "c20"
+              },
               "title": "$r:settings_orientation",
               "subtitle": "$r:settings_orientation_desc",
-              "deviceTypes": ["phone", "tablet"]
+              "deviceTypes": [
+                "phone",
+                "tablet"
+              ]
             }
           ]
         },
@@ -189,7 +254,10 @@
               "id": "clear_cache",
               "type": "builtin",
               "builtin": "clearCache",
-              "icon": { "symbol": "trash_fill", "tint": "c10" },
+              "icon": {
+                "symbol": "trash_fill",
+                "tint": "c10"
+              },
               "title": "$r:settings_clear_cache",
               "subtitle": "$r:settings_clear_cache_desc"
             },
@@ -197,7 +265,10 @@
               "id": "system_settings",
               "type": "builtin",
               "builtin": "systemJump",
-              "icon": { "symbol": "gearshape_fill", "tint": "c08" },
+              "icon": {
+                "symbol": "gearshape_fill",
+                "tint": "c08"
+              },
               "title": "$r:settings_system_settings",
               "subtitle": "$r:settings_system_settings_desc"
             }
@@ -216,7 +287,10 @@
               "id": "display_mode",
               "type": "builtin",
               "builtin": "displayMode",
-              "icon": { "symbol": "sun_max_fill", "tint": "c01" },
+              "icon": {
+                "symbol": "sun_max_fill",
+                "tint": "c01"
+              },
               "title": "$r:settings_display_mode",
               "subtitle": "$r:settings_display_mode_desc"
             },
@@ -231,10 +305,17 @@
               "id": "dynamic_icon",
               "type": "builtin",
               "builtin": "dynamicIcon",
-              "icon": { "symbol": "square_grid_2x2", "tint": "c04" },
+              "icon": {
+                "symbol": "square_grid_2x2",
+                "tint": "c04"
+              },
               "title": "$r:settings_icon_title",
               "subtitle": "$r:settings_icon_desc",
-              "deviceTypes": ["phone", "tablet", "2in1"]
+              "deviceTypes": [
+                "phone",
+                "tablet",
+                "2in1"
+              ]
             }
           ]
         }

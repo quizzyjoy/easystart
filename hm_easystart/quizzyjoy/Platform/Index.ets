@@ -26,6 +26,7 @@ export { OrientationManager, AppOrientation, AppOrientationStrategy } from './sr
 export { HoverStore, HoverData, HoverListener, AppFoldStatus } from './src/main/ets/hover/HoverStore';
 export { ShareHelper, ShareOptions } from './src/main/ets/share/ShareHelper';
 export { MarketHelper } from './src/main/ets/market/MarketHelper';
+export { AppLauncher, LaunchResult } from './src/main/ets/market/AppLauncher';
 export {
   AppGalleryHelper,
   StoreCapabilityResult,

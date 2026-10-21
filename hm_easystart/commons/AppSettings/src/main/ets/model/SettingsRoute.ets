@@ -32,6 +32,8 @@ export class SettingsRoute {
   static readonly DEVELOPER: string = 'developer';
   /** 第三方 SDK 清单子页（v3.28 PolicyView kind 扩展；值同 AppRoute.SDK_LIST） */
   static readonly SDK_LIST: string = 'sdkList';
+  /** 应用矩阵子页（v3.50；趣开发系列应用聚合） */
+  static readonly APPS: string = 'apps';
 }
 
 /**
@@ -51,5 +53,6 @@ export function isSettingsRoute(name: string): boolean {
     || name === SettingsRoute.HELP_FEEDBACK
     || name === SettingsRoute.VERSION_LOG
     || name === SettingsRoute.DEVELOPER
-    || name === SettingsRoute.SDK_LIST;
+    || name === SettingsRoute.SDK_LIST
+    || name === SettingsRoute.APPS;
 }
