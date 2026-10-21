@@ -13,6 +13,10 @@
       "value": "学习"
     },
     {
+      "name": "tab_demo",
+      "value": "示例"
+    },
+    {
       "name": "tab_device",
       "value": "开发工具"
     }

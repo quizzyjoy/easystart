@@ -113,11 +113,13 @@ struct TvIndex {
   tabArea() {
     Tabs({ barPosition: BarPosition.Start, index: this.currentIndex }) {
       TabContent() {
-        // TV 无 Navigation 宿主，直接把四组按序全渲染（groupId 省略 = 全量长页）；
-        // 样例子页（场景范式）不向 TV 开放，入口事件已随 v3.38 移除。
+        // TV 无 Navigation 宿主，直接把全部组件分组按序全渲染（groupId 省略 = 全量长页）；
+        // 样例子页（场景范式 / 模板能力 / 令牌 / 关于）不向 TV 开放，入口事件已随 v3.38 移除。
+        // v3.75：页签文案改用独立的 tab_demo（原先复用 tab_gallery，其值是「学习」，
+        // 造成"写学习、内容是组件示例"的串台）。
         ComponentGalleryView()
       }
-      .tabBar($r('app.string.tab_gallery'))
+      .tabBar($r('app.string.tab_demo'))
 
       TabContent() {
         DeviceCapabilityView()
