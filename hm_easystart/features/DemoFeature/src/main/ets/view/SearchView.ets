@@ -138,9 +138,14 @@ export struct SearchView {
 
   @Builder
   noMatchSection() {
+    // 空态给出可点的出口（清空搜索），否则用户只能逐字删除（v3.76）
     StateContainer({
       state: ViewState.EMPTY,
-      emptyText: new FeedbackText('未找到匹配', `没有与「${this.keyword}」相关的条目，换个关键词试试`, '')
+      emptyText: new FeedbackText('未找到匹配', `没有与「${this.keyword}」相关的条目，换个关键词试试`, '清空搜索'),
+      onRetry: (): void => {
+        this.keyword = '';
+        this.results = [];
+      }
     })
   }
 

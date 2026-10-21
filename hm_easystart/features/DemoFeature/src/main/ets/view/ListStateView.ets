@@ -161,7 +161,7 @@ export struct ListStateView {
       Column() {
         this.pageHeader()
 
-        AppSection({ sectionTitle: '态切换', description: 'LOADING / EMPTY / ERROR / CONTENT 四态一键切换（示例 StateContainer 契约）' }) {
+        AppSection({ sectionTitle: '整页态切换', description: 'LOADING / EMPTY / ERROR / CONTENT 四态一键切换（StateContainer 契约，管整页壳）' }) {
           Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
             CommonButton({
               text: '加载中',
@@ -198,6 +198,41 @@ export struct ListStateView {
             .fontColor($r('app.color.app_text_tertiary'))
             .width('100%')
             .margin({ top: AppSpacing.SM })
+        }
+
+        AppSection({ sectionTitle: '列表态切换（RefreshList 自身状态机）', description: '直接改 ListStatus，验证组件内部 ERROR / EMPTY / 加载更多 / 「没有更多了」的分支' }) {
+          Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
+            CommonButton({
+              text: '列表错误',
+              variant: this.listStatus === ListStatus.ERROR ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
+              onAction: () => {
+                // 加载失败通常没有数据；RefreshList 的错误分支要求 items 为空
+                this.items = [];
+                this.listStatus = ListStatus.ERROR;
+              }
+            })
+            CommonButton({
+              text: '列表空',
+              variant: this.listStatus === ListStatus.EMPTY ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
+              onAction: () => {
+                this.items = [];
+                this.listStatus = ListStatus.EMPTY;
+              }
+            })
+            CommonButton({
+              text: '补到 18 条',
+              variant: ButtonVariant.SECONDARY,
+              onAction: () => {
+                const more: Object[] = this.items.slice();
+                while (more.length < 18) {
+                  more.push(new DemoListItem(`条目 ${more.length + 1}`, '用于触发「没有更多了」'));
+                }
+                this.items = more;
+                this.listStatus = ListStatus.SUCCESS;
+              }
+            })
+          }
+          .width('100%')
         }
 
         Column() {
