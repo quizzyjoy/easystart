@@ -49,6 +49,8 @@ export struct AppsView {
   @Local introQqNumber: string = '';
   @Local introQqUrl: string = '';
   @Local introQqHasQr: boolean = false;
+  /** 详情卡是否双列（按容器实际宽度断点，v3.63）。 */
+  @Local detailWide: boolean = false;
 
   /** 包名等宽展示用等宽字体族（不引外部字体，靠 CSS 等宽回退）。 */
   private static readonly MONO_FONT: string = 'HarmonyOS Sans Mono, monospace';
@@ -277,23 +279,38 @@ export struct AppsView {
     .alignItems(HorizontalAlign.Start)
   }
 
-  /** 段 3：详情与特性（条目来自产品官网的介绍卡片）。 */
+  /**
+   * 段 3：详情与特性（条目来自产品官网的介绍卡片）。
+   *
+   * 断点响应（v3.63）：用 `Flex` + wrap 而不是 `Grid`——`Grid` 直接放在 `Scroll` 里
+   * 不给显式高度会塌成 0（仓内已知坑），Flex wrap 高度自适应且能换行成多列。
+   * 列数按**容器实际宽度**判断（不是屏幕宽度）：超过 620vp 才升双列，
+   * 保证卡片不会被压得过窄而难读；手机 / 窄窗仍是单列。
+   */
   @Builder
   segDetail() {
     Column({ space: AppSpacing.SM }) {
-      ForEach(this.introFeatureLines, (line: string, index: number) => {
-        Column() {
-          Text(line)
-            .fontSize(AppFontSize.BODY_SM)
-            .fontColor($r('app.color.app_text_secondary'))
-            .lineHeight(AppFontSize.BODY_SM * 1.65)
-            .width('100%')
-        }
-        .width('100%')
-        .padding(AppSpacing.MD)
-        .borderRadius(AppRadius.MD)
-        .backgroundColor($r('app.color.app_bg_card'))
-      }, (line: string, index: number): string => `${index}`)
+      Flex({ wrap: FlexWrap.Wrap, justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Start }) {
+        ForEach(this.introFeatureLines, (line: string, index: number) => {
+          Column() {
+            Text(line)
+              .fontSize(AppFontSize.BODY_SM)
+              .fontColor($r('app.color.app_text_secondary'))
+              .lineHeight(AppFontSize.BODY_SM * 1.65)
+              .width('100%')
+          }
+          .width(this.detailWide ? '48.5%' : '100%')
+          .padding(AppSpacing.MD)
+          .margin({ bottom: AppSpacing.SM })
+          .borderRadius(AppRadius.MD)
+          .backgroundColor($r('app.color.app_bg_card'))
+        }, (line: string, index: number): string => `${index}`)
+      }
+      .width('100%')
+      .onAreaChange((oldArea: Area, newArea: Area): void => {
+        const width: number = Number(newArea.width);
+        this.detailWide = width >= 620;
+      })
 
       Text($r('app.string.apps_intro_detail_source'))
         .fontSize(AppFontSize.CAPTION)
