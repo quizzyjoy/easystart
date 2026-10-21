@@ -227,6 +227,46 @@
     {
       "name": "scene_hover_desc",
       "value": "折叠屏半折叠（帐篷态）真实折痕分屏示例"
+    },
+    {
+      "name": "examples_card_engineering_title",
+      "value": "工程能力"
+    },
+    {
+      "name": "examples_card_engineering_desc",
+      "value": "权限 / 网络 / 长列表 / 无障碍：四道横切能力的可运行范式"
+    },
+    {
+      "name": "engineering_permission_title",
+      "value": "运行时权限"
+    },
+    {
+      "name": "engineering_permission_desc",
+      "value": "申请 → 系统弹窗 → 拒绝 → 去设置，四段闭环"
+    },
+    {
+      "name": "engineering_network_title",
+      "value": "网络请求"
+    },
+    {
+      "name": "engineering_network_desc",
+      "value": "2xx / 非 2xx / 超时三型收场，含响应体预览"
+    },
+    {
+      "name": "engineering_listperf_title",
+      "value": "长列表性能"
+    },
+    {
+      "name": "engineering_listperf_desc",
+      "value": "ForEach 2000 行 vs LazyForEach 6 行的实测对照"
+    },
+    {
+      "name": "engineering_a11y_title",
+      "value": "无障碍"
+    },
+    {
+      "name": "engineering_a11y_desc",
+      "value": "text / level / group / description 的「错误 vs 正确」对照"
     }
   ]
 }

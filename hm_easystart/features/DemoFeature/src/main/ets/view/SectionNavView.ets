@@ -8,8 +8,9 @@ import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
  * 首页（L1）只留六个入口卡，子入口全部收进本页：一页一事，列出该入口下的所有子项，
  * 点击把 id 上抛给宿主（不 import RouterManager，导航纪律与其它视图一致）。
  *
- * 三个入口共用本页：`gallery`（组件示例 3 行）/ `vitalui`（VitalUI 组件 4 行）/
- * `scene`（场景示例 6 行）。行数据与首页卡来自同一份元数据（`model/SectionNav`）。
+ * 四个入口共用本页：`gallery`（组件示例 7 行）/ `vitalui`（VitalUI 组件 4 行）/
+ * `scene`（场景示例 6 行）/ `engineering`（工程能力 4 行）。
+ * 行数据与首页卡来自同一份元数据（`model/SectionNav`）。
  */
 @ComponentV2
 export struct SectionNavView {
@@ -45,9 +46,14 @@ export struct SectionNavView {
     this.rows = sectionNavRows(this.sectionId);
   }
 
-  /** 行点击：场景入口走 onOpenScene，其余走 onOpenGroup。 */
+  /**
+   * 行点击分发。
+   *
+   * - `scene` / `engineering`：行直接对应一个页面 → 走 onOpenScene（页面型）
+   * - `gallery` / `vitalui`：行对应一个组件分组 → 走 onOpenGroup（分组型）
+   */
   private handleRow(row: SectionNavRow): void {
-    if (this.sectionId === 'scene') {
+    if (this.sectionId === 'scene' || this.sectionId === 'engineering') {
       this.onOpenScene(row.id);
       return;
     }

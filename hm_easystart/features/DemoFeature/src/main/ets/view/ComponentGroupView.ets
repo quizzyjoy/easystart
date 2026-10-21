@@ -1,5 +1,4 @@
 import { ComponentGalleryView } from './ComponentGalleryView';
-import { DemoSample } from './DemoSample';
 
 /**
  * 组件示例分组页（L2，v3.38 三级架构）。
@@ -13,16 +12,7 @@ export struct ComponentGroupView {
   /** basic / visual / platform / app（未知值由 ComponentGalleryView 回落「入口与基础」）。 */
   @Param groupId: string = 'basic';
 
-  /** 独立示例入口（v3.79）：本层只透传，路由映射留在入口装配层。 */
-  @Event onOpenSample: (sample: DemoSample) => void = (_sample: DemoSample): void => {
-  };
-
   build() {
-    ComponentGalleryView({
-      groupId: this.groupId,
-      onOpenSample: (sample: DemoSample): void => {
-        this.onOpenSample(sample);
-      }
-    })
+    ComponentGalleryView({ groupId: this.groupId })
   }
 }

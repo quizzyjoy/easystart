@@ -258,6 +258,14 @@ struct Index {
       sample = DemoSample.SEARCH;
     } else if (sceneId === 'hover') {
       sample = DemoSample.FOLD_HOVER;
+    } else if (sceneId === 'permission') {
+      sample = DemoSample.PERMISSION;
+    } else if (sceneId === 'network') {
+      sample = DemoSample.NETWORK;
+    } else if (sceneId === 'listperf') {
+      sample = DemoSample.LIST_PERF;
+    } else if (sceneId === 'a11y') {
+      sample = DemoSample.A11Y;
     }
     this.openDemoPage(sample);
   }
@@ -646,12 +654,7 @@ struct Index {
     } else if (name === AppRoute.GALLERY_GROUP) {
       // L2 组件分组页（v3.38）：param = basic/visual/platform/app，标题由分组元数据决定
       HdsNavDestination() {
-        ComponentGroupView({
-          groupId: `${param}`,
-          onOpenSample: (sample: DemoSample): void => {
-            this.openDemoPage(sample);
-          }
-        })
+        ComponentGroupView({ groupId: `${param}` })
       }
       .titleBar({
         content: {

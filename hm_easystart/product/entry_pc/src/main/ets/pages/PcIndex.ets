@@ -235,6 +235,14 @@ struct PcIndex {
       sample = DemoSample.SEARCH;
     } else if (sceneId === 'hover') {
       sample = DemoSample.FOLD_HOVER;
+    } else if (sceneId === 'permission') {
+      sample = DemoSample.PERMISSION;
+    } else if (sceneId === 'network') {
+      sample = DemoSample.NETWORK;
+    } else if (sceneId === 'listperf') {
+      sample = DemoSample.LIST_PERF;
+    } else if (sceneId === 'a11y') {
+      sample = DemoSample.A11Y;
     }
     this.openDemoPage(sample);
   }
@@ -613,12 +621,7 @@ struct PcIndex {
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (name === AppRoute.GALLERY_GROUP) {
       HdsNavDestination() {
-        ComponentGroupView({
-          groupId: `${param}`,
-          onOpenSample: (sample: DemoSample): void => {
-            this.openDemoPage(sample);
-          }
-        })
+        ComponentGroupView({ groupId: `${param}` })
       }
       .titleBar({
         content: {

@@ -187,6 +187,46 @@
     {
       "name": "scene_hover_desc",
       "value": "折疊屏半折疊（帳篷態）真實折痕分屏範例"
+    },
+    {
+      "name": "examples_card_engineering_title",
+      "value": "工程能力"
+    },
+    {
+      "name": "examples_card_engineering_desc",
+      "value": "權限 / 網路 / 長列表 / 無障礙：四道橫切能力的可運行範式"
+    },
+    {
+      "name": "engineering_permission_title",
+      "value": "執行時權限"
+    },
+    {
+      "name": "engineering_permission_desc",
+      "value": "申請 → 系統彈窗 → 拒絕 → 去設定，四段閉環"
+    },
+    {
+      "name": "engineering_network_title",
+      "value": "網路請求"
+    },
+    {
+      "name": "engineering_network_desc",
+      "value": "2xx / 非 2xx / 逾時三型收場，含回應體預覽"
+    },
+    {
+      "name": "engineering_listperf_title",
+      "value": "長列表效能"
+    },
+    {
+      "name": "engineering_listperf_desc",
+      "value": "ForEach 2000 列 vs LazyForEach 6 列的實測對照"
+    },
+    {
+      "name": "engineering_a11y_title",
+      "value": "無障礙"
+    },
+    {
+      "name": "engineering_a11y_desc",
+      "value": "text / level / group / description 的「錯誤 vs 正確」對照"
     }
   ]
 }

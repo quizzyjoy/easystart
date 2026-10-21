@@ -33,6 +33,23 @@ export const SCENE_NAV_ROWS: SectionNavRow[] = [
   new SectionNavRow('hover', $r('app.string.scene_hover_title'), $r('app.string.scene_hover_desc'))
 ];
 
+/**
+ * 工程能力四行（v3.79）。
+ *
+ * 这四项都是"多段状态"型示例（权限四段、网络三型、性能两模式、无障碍四 API），
+ * 因此各自独立成页；本文件只负责把它们注册进二级导航，与场景示例同构。
+ */
+export const ENGINEERING_NAV_ROWS: SectionNavRow[] = [
+  new SectionNavRow('permission', $r('app.string.engineering_permission_title'),
+    $r('app.string.engineering_permission_desc')),
+  new SectionNavRow('network', $r('app.string.engineering_network_title'),
+    $r('app.string.engineering_network_desc')),
+  new SectionNavRow('listperf', $r('app.string.engineering_listperf_title'),
+    $r('app.string.engineering_listperf_desc')),
+  new SectionNavRow('a11y', $r('app.string.engineering_a11y_title'),
+    $r('app.string.engineering_a11y_desc'))
+];
+
 /** 二级页标题（未知 id 回落「示例」）。 */
 export function sectionNavTitle(sectionId: string): string {
   if (sectionId === 'gallery') {
@@ -43,6 +60,9 @@ export function sectionNavTitle(sectionId: string): string {
   }
   if (sectionId === 'scene') {
     return '场景示例';
+  }
+  if (sectionId === 'engineering') {
+    return '工程能力';
   }
   return '示例';
 }
@@ -58,6 +78,9 @@ export function sectionNavDesc(sectionId: string): string {
   if (sectionId === 'scene') {
     return '可整体复制的页面范式：选一个场景进入完整示例页。';
   }
+  if (sectionId === 'engineering') {
+    return '工程横切能力：权限 / 网络 / 长列表 / 无障碍，每项一个独立页，含真实设备实测结论。';
+  }
   return '';
 }
 
@@ -65,6 +88,9 @@ export function sectionNavDesc(sectionId: string): string {
 export function sectionNavRows(sectionId: string): SectionNavRow[] {
   if (sectionId === 'scene') {
     return SCENE_NAV_ROWS;
+  }
+  if (sectionId === 'engineering') {
+    return ENGINEERING_NAV_ROWS;
   }
   const source: GalleryGroupEntry[] = sectionId === 'vitalui' ? VITALUI_GROUPS : GALLERY_GROUPS;
   return source.map((group: GalleryGroupEntry): SectionNavRow =>

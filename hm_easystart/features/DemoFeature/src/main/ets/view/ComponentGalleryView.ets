@@ -107,13 +107,6 @@ const WHEEL_PICKER_RANGE: string[] = ['轻量', '标准', '专业', '旗舰', '�
 export struct ComponentGalleryView {
   /** 分组 id（basic / visual / platform / app）；空 = 四组按序全渲染（TV / PC 入口）。 */
   @Param groupId: string = '';
-  /**
-   * 跳出行内示例（v3.79）：权限 / 网络 / 长列表 / 无障碍都改成独立页，
-   * 本组件只上抛枚举，路由映射留在入口装配层（与场景示例同一纪律）。
-   */
-  @Event onOpenSample: (sample: DemoSample) => void = (_sample: DemoSample): void => {
-  };
-
   @Local theme: UiThemeManager = UiThemeManager.getInstance();
   @Local keyword: string = '';
   @Local dialogId: number = -1;
@@ -953,7 +946,6 @@ export struct ComponentGalleryView {
         .clip(true)
         .borderRadius(AppRadius.MD)
         .backgroundColor($r('app.color.app_bg_page_deep'))
-        this.sampleEntry('长列表性能（独立页）', 'ForEach 2000 行 vs LazyForEach 6 行的计数对照', DemoSample.LIST_PERF)
   }
 
 
@@ -993,45 +985,6 @@ export struct ComponentGalleryView {
       this.listStatus = next.length === 0 ? ListStatus.EMPTY : ListStatus.SUCCESS;
       this.listTimer = -1;
     }, 500);
-  }
-
-  /** 响应式与令牌（v3.69：原「平台能力与令牌」拆成两页）。 */
-  /**
-   * 独立示例入口行（v3.79）。
-   *
-   * 权限 / 网络 / 长列表 / 无障碍都有"多段状态"要讲，塞进长页会被压成一行按钮，
-   * 因此统一改成独立页：这里只留一行入口，点击后由入口装配层 push 对应路由。
-   */
-  @Builder
-  sampleEntry(title: string, desc: string, sample: DemoSample) {
-    Row({ space: AppSpacing.MD }) {
-      Column({ space: 2 }) {
-        Text(title)
-          .fontSize(AppFontSize.BODY)
-          .fontWeight(AppFontWeight.MEDIUM)
-          .fontColor($r('app.color.app_text_primary'))
-          .width('100%')
-        Text(desc)
-          .fontSize(AppFontSize.CAPTION)
-          .fontColor($r('app.color.app_text_tertiary'))
-          .width('100%')
-          .maxLines(2)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-      }
-      .layoutWeight(1)
-      .alignItems(HorizontalAlign.Start)
-
-      SymbolGlyph($r('sys.symbol.chevron_right'))
-        .fontSize(16)
-        .fontColor([$r('app.color.app_text_tertiary')])
-    }
-    .width('100%')
-    .padding(AppSpacing.MD)
-    .borderRadius(AppRadius.MD)
-    .backgroundColor($r('app.color.app_bg_card'))
-    .onClick((): void => {
-      this.onOpenSample(sample);
-    })
   }
 
   @Builder
@@ -1328,9 +1281,6 @@ export struct ComponentGalleryView {
           .alignItems(HorizontalAlign.Start)
           .width('100%')
         }
-        this.sampleEntry('运行时权限（独立页）', '申请 → 系统弹窗 → 拒绝 → 去设置，四段闭环', DemoSample.PERMISSION)
-        this.sampleEntry('网络请求（独立页）', '2xx / 非 2xx / 超时三型收场，实测 200 与 404 与超时', DemoSample.NETWORK)
-        this.sampleEntry('无障碍四件套（独立页）', 'text / level / group / description 的「错误 vs 正确」对照', DemoSample.A11Y)
   }
 
 

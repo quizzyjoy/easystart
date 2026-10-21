@@ -227,6 +227,46 @@
     {
       "name": "scene_hover_desc",
       "value": "Half-folded (tent) split layout driven by real crease metrics"
+    },
+    {
+      "name": "examples_card_engineering_title",
+      "value": "Engineering"
+    },
+    {
+      "name": "examples_card_engineering_desc",
+      "value": "Permissions, networking, long lists, accessibility: four cross-cutting patterns"
+    },
+    {
+      "name": "engineering_permission_title",
+      "value": "Runtime Permissions"
+    },
+    {
+      "name": "engineering_permission_desc",
+      "value": "Request, system dialog, denial, then open settings: the full loop"
+    },
+    {
+      "name": "engineering_network_title",
+      "value": "Network Requests"
+    },
+    {
+      "name": "engineering_network_desc",
+      "value": "Three outcomes: 2xx, non-2xx, timeout, with response preview"
+    },
+    {
+      "name": "engineering_listperf_title",
+      "value": "Long List Performance"
+    },
+    {
+      "name": "engineering_listperf_desc",
+      "value": "Measured: ForEach creates 2000 rows, LazyForEach only 6"
+    },
+    {
+      "name": "engineering_a11y_title",
+      "value": "Accessibility"
+    },
+    {
+      "name": "engineering_a11y_desc",
+      "value": "Four APIs compared wrong vs right: text, level, group, description"
     }
   ]
 }
