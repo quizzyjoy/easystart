@@ -430,11 +430,11 @@
     },
     {
       "name": "settings_privacy_desc",
-      "value": "优先打开官方隐私声明，未托管时显示本地文本"
+      "value": "离线副本，可在页内浏览在线版"
     },
     {
       "name": "settings_terms_desc",
-      "value": "优先打开官方用户协议，未托管时显示本地文本"
+      "value": "离线副本，可在页内浏览在线版"
     },
     {
       "name": "settings_privacy_revoke",
@@ -610,7 +610,7 @@
     },
     {
       "name": "settings_offline_open_online",
-      "value": "打开在线版"
+      "value": "浏览在线版"
     }
   ]
 }

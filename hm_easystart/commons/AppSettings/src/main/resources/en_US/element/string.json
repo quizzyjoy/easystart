@@ -430,11 +430,11 @@
     },
     {
       "name": "settings_privacy_desc",
-      "value": "Opens the official statement; falls back to local text"
+      "value": "Offline copy; view the online version in-page"
     },
     {
       "name": "settings_terms_desc",
-      "value": "Opens the official user agreement; falls back to local text"
+      "value": "Offline copy; view the online version in-page"
     },
     {
       "name": "settings_privacy_revoke",
@@ -610,7 +610,7 @@
     },
     {
       "name": "settings_offline_open_online",
-      "value": "Open online version"
+      "value": "View online version"
     }
   ]
 }

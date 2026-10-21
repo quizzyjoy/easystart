@@ -279,20 +279,19 @@ export struct SchemaSettingsSection {
     });
   }
 
-  /** 隐私声明 / 用户协议：官方链接优先，拿不到链接或拉起失败回退本地政策文本子页。 */
+  /**
+   * 隐私声明 / 用户协议：**默认加载离线副本页**（v3.53 起改为离线优先）。
+   *
+   * 离线副本随包分发、开页即读，不依赖网络与浏览器；页内提供「浏览在线版」链接，
+   * 点击后打开华为托管的正式协议页（地址由 `AppGalleryHelper.getPrivacyLink` 给出：
+   * AGC 官方链接优先，未托管时回退内置真实托管地址）。
+   *
+   * 之所以不再「先开浏览器」：无网 / 无浏览器 / 系统拦截时会先闪一个失败态再回退，
+   * 用户体感差；协议又是低频但要"随时能读"的内容，离线直开更稳。
+   */
   private openPrivacyLink(kind: StorePrivacyKind): void {
-    const url: string = AppGalleryHelper.getInstance().getPrivacyLink(kind);
-    const fallbackParam: string = kind === StorePrivacyKind.STATEMENT ? 'privacy' : 'terms';
-    if (url.length === 0) {
-      CommonToast.info($r('app.string.settings_privacy_local'));
-      this.pushRoute(SettingsRoute.POLICY, fallbackParam);
-      return;
-    }
-    MarketHelper.getInstance().openUri(url).then((ok: boolean): void => {
-      if (!ok) {
-        this.pushRoute(SettingsRoute.POLICY, fallbackParam);
-      }
-    });
+    const param: string = kind === StorePrivacyKind.STATEMENT ? 'privacy' : 'terms';
+    this.pushRoute(SettingsRoute.POLICY, param);
   }
 
   /** 撤回隐私授权：危险语义二次确认 + 后果说明（撤回后更新/评分会不可用）。 */
