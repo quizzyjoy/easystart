@@ -14,6 +14,7 @@ import {
   TransitionsView,
   ChartsDashboardView,
   ComponentGroupView,
+  SectionNavView,
   DemoSample,
   DesignTokensView,
   DeviceCapabilityView,
@@ -27,7 +28,8 @@ import {
   SearchView,
   TemplateAboutView,
   ToolsView,
-  galleryGroupTitle
+  galleryGroupTitle,
+  sectionNavTitle
 } from '@easystart/demo-feature';
 import {
   HomeDetailView,
@@ -516,6 +518,35 @@ struct Index {
         enableComponentSafeArea: true // ② 内容区自动避让 titlebar
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.SECTION_NAV) {
+      // 示例 Tab 二级导航页（v3.66）：param = gallery / vitalui / scene
+      HdsNavDestination() {
+        SectionNavView({
+          sectionId: `${param}`,
+          onOpenGroup: (groupId: string): void => {
+            RouterManager.getInstance().push(AppRoute.GALLERY_GROUP, groupId);
+          },
+          onOpenScene: (sceneId: string): void => {
+            this.openSceneById(sceneId);
+          }
+        })
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: sectionNavTitle(`${param}`)
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (name === AppRoute.GALLERY_GROUP) {
       // L2 组件分组页（v3.38）：param = basic/visual/platform/app，标题由分组元数据决定
       HdsNavDestination() {
@@ -868,6 +899,9 @@ struct Index {
     HdsTabs({ controller: this.tabController }) {
       TabContent() {
         ExamplesView({
+          onOpenSectionNav: (sectionId: string): void => {
+            RouterManager.getInstance().push(AppRoute.SECTION_NAV, sectionId);
+          },
           onOpenGalleryGroup: (groupId: string): void => {
             RouterManager.getInstance().push(AppRoute.GALLERY_GROUP, groupId);
           },

@@ -11,6 +11,7 @@ import {
   RegexToolView,
   SymbolView,
   ComponentGroupView,
+  SectionNavView,
   DemoSample,
   DesignTokensView,
   DeviceCapabilityView,
@@ -25,6 +26,7 @@ import {
   TemplateAboutView,
   ToolsView,
   galleryGroupTitle,
+  sectionNavTitle,
 } from '@easystart/demo-feature';
 import {
   HomeDetailView,
@@ -484,6 +486,35 @@ struct PcIndex {
         enableComponentSafeArea: true // ② 内容区自动避让 titlebar
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.SECTION_NAV) {
+      // 示例 Tab 二级导航页（v3.66）：param = gallery / vitalui / scene
+      HdsNavDestination() {
+        SectionNavView({
+          sectionId: `${param}`,
+          onOpenGroup: (groupId: string): void => {
+            RouterManager.getInstance().push(AppRoute.GALLERY_GROUP, groupId);
+          },
+          onOpenScene: (sceneId: string): void => {
+            this.openSceneById(sceneId);
+          }
+        })
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: sectionNavTitle(`${param}`)
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (name === AppRoute.GALLERY_GROUP) {
       HdsNavDestination() {
         ComponentGroupView({ groupId: `${param}` })
@@ -772,6 +803,9 @@ struct PcIndex {
     HdsTabs({ controller: this.tabController }) {
       TabContent() {
         ExamplesView({
+          onOpenSectionNav: (sectionId: string): void => {
+            RouterManager.getInstance().push(AppRoute.SECTION_NAV, sectionId);
+          },
           onOpenGalleryGroup: (groupId: string): void => {
             RouterManager.getInstance().push(AppRoute.GALLERY_GROUP, groupId);
           },

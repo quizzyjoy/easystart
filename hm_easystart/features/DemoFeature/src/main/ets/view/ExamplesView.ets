@@ -2,6 +2,7 @@ import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, AppStroke, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
 import { GALLERY_GROUPS, GalleryGroupEntry, VITALUI_GROUPS } from '../model/GalleryGroup';
+import { SCENE_NAV_ROWS, SectionNavRow } from '../model/SectionNav';
 
 /** 大卡内的一个子入口行（只承载文案与去向 id）。 */
 class ExampleRow {
@@ -52,18 +53,9 @@ const GALLERY_ROWS: ExampleRow[] = GALLERY_GROUPS.map((group: GalleryGroupEntry)
 const VITALUI_ROWS: ExampleRow[] = VITALUI_GROUPS.map((group: GalleryGroupEntry): ExampleRow =>
   new ExampleRow(group.id, group.title, group.desc));
 
-/**
- * 场景示例六行（v3.38 去重：令牌总览移入「设计令牌」卡，不再在此重复）。
- * id 与入口 openSceneById 的 switch 一一对应。
- */
-const SCENE_ROWS: ExampleRow[] = [
-  new ExampleRow('feedback', '反馈流', '提交失败重试链路 / 危险确认 / 筛选 Sheet 多选回写'),
-  new ExampleRow('charts', '数据看板', '四图表断点栅格 + 深浅色联动重绘 + 选中详情联动'),
-  new ExampleRow('form', '表单范式', 'AppFormField 受控域 + 逐域校验红线 + 取色联动'),
-  new ExampleRow('list', '列表四态', 'StateContainer 四态切换 + RefreshList 刷新与分页'),
-  new ExampleRow('search', '搜索场景', 'CommonSearchBar 防抖受控 + 热词 / 结果 / 空态'),
-  new ExampleRow('hover', '悬停态分屏', '折叠屏半折叠（帐篷态）真实折痕分屏示例')
-];
+/** 场景示例六行（数据唯一出处 model/SectionNav，二级导航页共用同一份）。 */
+const SCENE_ROWS: ExampleRow[] = SCENE_NAV_ROWS.map((row: SectionNavRow): ExampleRow =>
+  new ExampleRow(row.id, row.title, row.desc));
 
 /**
  * L1 首页五个能力域（顺序即首页顺序）。
@@ -78,7 +70,7 @@ const EXAMPLE_SECTIONS: ExampleSection[] = [
     $r('sys.symbol.paintpalette'), $r('app.color.app_accent_pink'), 'gallery', VITALUI_ROWS),
   new ExampleSection('scene', '场景示例', '可整体复制的页面范式：反馈 / 看板 / 表单 / 列表 / 搜索 / 分屏',
     $r('sys.symbol.doc_text_badge_clock'), $r('app.color.app_accent_purple'), 'scene', SCENE_ROWS),
-  new ExampleSection('capability', '模板能力', '设置中心 / 详情页范式 / 账号登录页 / 设备能力：模板已装好的四块基础设施',
+  new ExampleSection('capability', '模板能力', '设置中心 / 详情页范式 / 账号登录页：模板已装好的三块基础设施',
     $r('sys.symbol.gearshape_fill'), $r('app.color.app_accent_teal'), 'catalog', []),
   new ExampleSection('tokens', '设计令牌', '字阶 / 圆角 / 间距 / 描边 / 阴影 / 触摸目标 / 色彩全量对照',
     $r('sys.symbol.paintpalette'), $r('app.color.app_accent_pink'), 'tokens', []),
@@ -100,6 +92,9 @@ export struct ExamplesView {
 
   @Param onOpenGalleryGroup: (groupId: string) => void = (_groupId: string): void => {
   };
+  /** 二级导航（v3.66：组件示例 / VitalUI 组件 / 场景示例 三张卡的子入口页）。 */
+  @Param onOpenSectionNav: (sectionId: string) => void = (_sectionId: string): void => {
+  };
   /** 场景示例（feedback / charts / form / list / search / hover）。 */
   @Param onOpenScene: (sceneId: string) => void = (_sceneId: string): void => {
   };
@@ -119,21 +114,23 @@ export struct ExamplesView {
     return `${this.breakpoint.breakpoint}`;
   }
 
+  /**
+   * 卡点击（v3.66：首页只显示入口，不再内嵌行）。
+   *
+   * 有子入口的卡（组件示例 / VitalUI 组件 / 场景示例）统一进二级导航页；
+   * 单页卡（模板能力 / 设计令牌 / 关于模板）直接进各自页面——它们本身就是二级页。
+   */
   private openSection(section: ExampleSection): void {
+    if (section.rows.length > 0) {
+      this.onOpenSectionNav(section.id);
+      return;
+    }
     if (section.target === 'catalog') {
       this.onOpenCatalog();
     } else if (section.target === 'tokens') {
       this.onOpenTokens();
     } else if (section.target === 'template') {
       this.onOpenTemplate();
-    }
-  }
-
-  private openRow(section: ExampleSection, row: ExampleRow): void {
-    if (section.target === 'gallery') {
-      this.onOpenGalleryGroup(row.id);
-    } else if (section.target === 'scene') {
-      this.onOpenScene(row.id);
     }
   }
 
@@ -168,62 +165,6 @@ export struct ExamplesView {
     }
     .width('100%')
     .alignItems(VerticalAlign.Center)
-  }
-
-  /** 大卡内的一行子入口（标题 + 说明 + 箭头）。 */
-  @Builder
-  rowItem(section: ExampleSection, row: ExampleRow) {
-    Row({ space: AppSpacing.SM }) {
-      Column({ space: AppSpacing.XXS }) {
-        Text(row.title)
-          .fontSize(AppFontSize.BODY_SM)
-          .fontWeight(AppFontWeight.MEDIUM)
-          .fontColor($r('app.color.app_text_primary'))
-          .width('100%')
-        Text(row.desc)
-          .fontSize(AppFontSize.CAPTION)
-          .fontColor($r('app.color.app_text_tertiary'))
-          .width('100%')
-          .maxLines(2)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-      }
-      .layoutWeight(1)
-      .alignItems(HorizontalAlign.Start)
-
-      SymbolGlyph($r('sys.symbol.chevron_right'))
-        .fontSize(AppFontSize.TITLE_SM)
-        .fontColor([$r('app.color.app_text_tertiary')])
-    }
-    .width('100%')
-    .alignItems(VerticalAlign.Center)
-    .padding({ top: AppSpacing.SM, bottom: AppSpacing.SM })
-    .onClick((): void => {
-      this.openRow(section, row);
-    })
-  }
-
-  /** 多行大卡（组件示例 / 场景示例）。 */
-  @Builder
-  sectionWithRows(section: ExampleSection) {
-    Column({ space: AppSpacing.XS }) {
-      this.sectionHead(section)
-      Column() {
-        ForEach(section.rows, (row: ExampleRow, index: number) => {
-          if (index > 0) {
-            Divider()
-              .strokeWidth(AppStroke.THIN)
-              .color($r('app.color.app_divider'))
-          }
-          this.rowItem(section, row)
-        }, (row: ExampleRow): string => `${section.id}_${row.id}`)
-      }
-      .width('100%')
-    }
-    .width('100%')
-    .alignItems(HorizontalAlign.Start)
-    .padding(AppSpacing.MD)
-    .borderRadius(AppRadius.XL)
-    .backgroundColor($r('app.color.app_bg_card'))
   }
 
   /** 单路大卡（模板能力 / 设计令牌 / 关于模板）：整卡可点。 */
@@ -271,13 +212,10 @@ export struct ExamplesView {
     })
   }
 
+  /** 首页六卡统一为入口卡（v3.66）：只显示标题/说明/箭头，点击进二级导航或单页。 */
   @Builder
   section(section: ExampleSection) {
-    if (section.rows.length > 0) {
-      this.sectionWithRows(section)
-    } else {
-      this.sectionLink(section)
-    }
+    this.sectionLink(section)
   }
 
   /**

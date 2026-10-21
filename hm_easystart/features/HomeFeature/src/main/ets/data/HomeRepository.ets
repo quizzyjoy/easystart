@@ -91,10 +91,7 @@ export class HomeRepository {
           ]),
         new HomeItem('3', '账号登录页范式',
           '手机号 + 验证码 / 第三方登录 / 注销入口的完整登录页骨架（预览态，未接账号体系）',
-          HomeTarget.ACCOUNT_SAMPLE),
-        new HomeItem('4', '设备能力',
-          '断点 / 能力探测 / 设备形态 / 窗口适配等平台能力面板（切换到底部「开发工具」Tab）',
-          HomeTarget.DEVICE)
+          HomeTarget.ACCOUNT_SAMPLE)
       ];
       if (items.length === 0) {
         // 可预期失败：属于正常业务分支，用 Result 返回而非抛异常

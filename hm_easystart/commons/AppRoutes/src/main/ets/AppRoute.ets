@@ -25,6 +25,8 @@ export class AppRoute {
   /** 设置页（v3.12，独立子页；入口为首页 titleBar 齿轮，pageMap 注册名） */
   /** 示例·组件示例分组页（v3.37，pageMap 注册名；param = basic/visual/platform/app） */
   static readonly GALLERY_GROUP: string = 'GALLERY_GROUP';
+  /** 示例 Tab 二级导航页（v3.66：组件示例 / VitalUI 组件 / 场景示例 的子入口页）。 */
+  static readonly SECTION_NAV: string = 'SECTION_NAV';
 
   /** 示例·模板能力目录页（v3.37，pageMap 注册名） */
   static readonly HOME_CATALOG: string = 'HOME_CATALOG';
