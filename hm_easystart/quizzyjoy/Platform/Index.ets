@@ -36,6 +36,8 @@ export {
   StorePrivacyKind,
   StorePrivacyLink,
   StorePrivacyRecord,
+  StorePrivacySnapshot,
+  StorePrivacyState,
   StoreSkill
 } from './src/main/ets/market/AppGalleryHelper';
 export { systemShare } from '@kit.ShareKit';

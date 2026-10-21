@@ -9,7 +9,13 @@
  * 顶部保留「信息」按钮提示 fork 后替换。
  */
 import { RawFileTextView } from '../../component/RawFileTextView';
-import { AppGalleryHelper, StorePrivacyKind, StorePrivacyRecord } from '@quizzyjoy/platform';
+import {
+  AppGalleryHelper,
+  StorePrivacyKind,
+  StorePrivacyRecord,
+  StorePrivacySnapshot,
+  StorePrivacyState
+} from '@quizzyjoy/platform';
 
 @ComponentV2
 export struct PolicyView {
@@ -47,15 +53,25 @@ export struct PolicyView {
       this.privacyState = '';
       return;
     }
-    const records: StorePrivacyRecord[] = AppGalleryHelper.getInstance().getPrivacyResults();
-    if (records.length === 0) {
-      this.privacyState = '隐私状态：未知（未接入应用市场隐私托管服务）';
+    const snapshot: StorePrivacySnapshot = AppGalleryHelper.getInstance().getPrivacySnapshot();
+    if (snapshot.state === StorePrivacyState.UNSUPPORTED) {
+      this.privacyState = '隐私状态：当前设备不支持查询（未连接应用市场服务）';
       return;
     }
+    if (snapshot.state === StorePrivacyState.NOT_SUBSCRIBED) {
+      // 1006700003：本应用未接入应用市场隐私托管服务，系统侧没有签署记录可查
+      this.privacyState = '隐私状态：未接入应用市场隐私托管服务（无签署记录）';
+      return;
+    }
+    if (snapshot.state === StorePrivacyState.NO_RECORD) {
+      this.privacyState = '隐私状态：未签署';
+      return;
+    }
+    const records: StorePrivacyRecord[] = snapshot.records;
     const agreed: StorePrivacyRecord | undefined =
       records.find((r: StorePrivacyRecord): boolean => r.agreed);
     if (agreed === undefined) {
-      this.privacyState = '隐私状态：未同意';
+      this.privacyState = `隐私状态：已撤回（协议 v${records[0].versionCode}）`;
       return;
     }
     if (agreed.signingTimestamp > 0) {

@@ -99,6 +99,39 @@ export class StorePrivacyRecord {
   }
 }
 
+/**
+ * 隐私状态的可解释结果（v3.57）。
+ *
+ * 之前的 `getPrivacyResults()` 只返回数组，空数组有三种完全不同的原因，
+ * UI 只能笼统显示"未知"。这里把「为什么查不到」显式建模，让页面能给出准确说明：
+ * - `UNSUPPORTED`：设备/形态不支持隐私托管能力（canIUse 为假、未 attach、手表端）；
+ * - `NOT_SUBSCRIBED`：设备支持，但本应用未接入应用市场隐私托管服务
+ *   （`getAppPrivacyResult` 抛 1006700003），此时系统里根本没有签署记录；
+ * - `NO_RECORD`：接口可调用但返回空（应用已接入但用户尚未走过系统隐私弹窗）；
+ * - `RECORDED`：拿到了记录，`agreed` 决定"已同意 / 未同意"。
+ */
+export enum StorePrivacyState {
+  UNSUPPORTED = 'unsupported',
+  NOT_SUBSCRIBED = 'notSubscribed',
+  NO_RECORD = 'noRecord',
+  RECORDED = 'recorded'
+}
+
+/** 隐私状态快照：状态 + 记录 + 原始错误码（便于日志与页面文案）。 */
+export class StorePrivacySnapshot {
+  readonly state: StorePrivacyState;
+  readonly records: StorePrivacyRecord[];
+  /** 业务错误码（0 = 无错误；1006700003 = 未接入托管服务）。 */
+  readonly errorCode: number;
+
+  constructor(state: StorePrivacyState, records: StorePrivacyRecord[], errorCode: number) {
+    this.state = state;
+    this.records = records;
+    this.errorCode = errorCode;
+  }
+}
+
+
 
 /** 动态图标条目。 */
 export class StoreDynamicIcon {
@@ -362,10 +395,20 @@ export class AppGalleryHelper {
    * 未接入隐私托管服务时抛 1006700003，这里吞掉返回空数组（调用方按"未知"展示）。
    */
   getPrivacyResults(): StorePrivacyRecord[] {
-    const records: StorePrivacyRecord[] = [];
+    return this.getPrivacySnapshot().records;
+  }
+
+  /**
+   * 查询隐私状态（v3.57）：把"查不到"的三种原因区分开。
+   *
+   * 真机实测：本模板未接入托管服务时 `getAppPrivacyResult()` 抛 1006700003，
+   * 页面据此应显示「未接入隐私托管服务」而不是笼统的「未知」。
+   */
+  getPrivacySnapshot(): StorePrivacySnapshot {
     if (!this.usable(StoreSkill.PRIVACY)) {
-      return records;
+      return new StorePrivacySnapshot(StorePrivacyState.UNSUPPORTED, [], 0);
     }
+    const records: StorePrivacyRecord[] = [];
     try {
       const results: privacyManager.AppPrivacyResult[] = privacyManager.getAppPrivacyResult();
       for (const item of results) {
@@ -376,12 +419,15 @@ export class AppGalleryHelper {
           item.signingTimestamp !== undefined ? item.signingTimestamp : 0
         ));
       }
+      const state: StorePrivacyState =
+        records.length > 0 ? StorePrivacyState.RECORDED : StorePrivacyState.NO_RECORD;
+      return new StorePrivacySnapshot(state, records, 0);
     } catch (err) {
       const e: BusinessError = err as BusinessError;
       Logger.warn(DOMAIN, TAG,
         `getAppPrivacyResult failed: ${ErrorMapper.fromBusiness(e, DOMAIN, 'privacyResult').toLog()}`);
+      return new StorePrivacySnapshot(StorePrivacyState.NOT_SUBSCRIBED, [], e.code);
     }
-    return records;
   }
 
   /**
