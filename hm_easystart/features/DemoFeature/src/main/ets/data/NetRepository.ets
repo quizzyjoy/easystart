@@ -105,7 +105,17 @@ export class NetRepository {
       });
       const cost: number = Date.now() - started;
       const code: number = response.responseCode;
-      const body: string = typeof response.result === 'string' ? response.result : '';
+      // result 的类型是 string | Object | ArrayBuffer：expectDataType=STRING 通常给 string，
+      // 但个别实现会回 Object（此时 typeof 判 string 会失败，导致"预览永远空白"），统一兜底。
+      const raw: string | Object | ArrayBuffer = response.result;
+      let body: string = '';
+      if (typeof raw === 'string') {
+        body = raw;
+      } else if (raw instanceof ArrayBuffer) {
+        body = `（${raw.byteLength} 字节二进制响应）`;
+      } else {
+        body = JSON.stringify(raw);
+      }
 
       if (code >= 200 && code < 300) {
         return new NetReport(NetOutcome.OK, code, cost, NetRepository.preview(body));
