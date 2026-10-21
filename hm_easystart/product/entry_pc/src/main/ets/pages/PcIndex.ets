@@ -11,6 +11,10 @@ import {
   RegexToolView,
   SymbolView,
   ComponentGroupView,
+  PermissionSampleView,
+  NetworkSampleView,
+  ListPerfSampleView,
+  A11ySampleView,
   SectionNavView,
   DemoSample,
   DesignTokensView,
@@ -193,6 +197,18 @@ struct PcIndex {
         break;
       case DemoSample.FOLD_HOVER:
         RouterManager.getInstance().push(AppRoute.DEMO_FOLD_HOVER);
+        break;
+      case DemoSample.PERMISSION:
+        RouterManager.getInstance().push(AppRoute.DEMO_PERMISSION);
+        break;
+      case DemoSample.NETWORK:
+        RouterManager.getInstance().push(AppRoute.DEMO_NETWORK);
+        break;
+      case DemoSample.LIST_PERF:
+        RouterManager.getInstance().push(AppRoute.DEMO_LIST_PERF);
+        break;
+      case DemoSample.A11Y:
+        RouterManager.getInstance().push(AppRoute.DEMO_A11Y);
         break;
       default:
         break;
@@ -515,9 +531,94 @@ struct PcIndex {
         enableComponentSafeArea: true
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.DEMO_PERMISSION) {
+      HdsNavDestination() {
+        PermissionSampleView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '运行时权限'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.DEMO_NETWORK) {
+      HdsNavDestination() {
+        NetworkSampleView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '网络请求'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.DEMO_LIST_PERF) {
+      HdsNavDestination() {
+        ListPerfSampleView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '长列表性能'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.DEMO_A11Y) {
+      HdsNavDestination() {
+        A11ySampleView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '无障碍'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (name === AppRoute.GALLERY_GROUP) {
       HdsNavDestination() {
-        ComponentGroupView({ groupId: `${param}` })
+        ComponentGroupView({
+          groupId: `${param}`,
+          onOpenSample: (sample: DemoSample): void => {
+            this.openDemoPage(sample);
+          }
+        })
       }
       .titleBar({
         content: {

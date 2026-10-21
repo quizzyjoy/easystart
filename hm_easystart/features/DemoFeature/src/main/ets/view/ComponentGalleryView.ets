@@ -1,5 +1,6 @@
 import { ChartEntry, ChartSeries, ColorMath, CommonColorPicker, CommonLoading, FeedbackText, ListStatus, LoadingVariant, RefreshList, MotionEffects, MotionSpec, PieChart, QuarterRoseChart, RadarChart, RoseChart, SkeletonBlock, SizeLevel, StateContainer, UiThemeManager, ViewState } from '@quizzyjoy/vitalui';
 import { ActionCard, ButtonVariant, CommonButton, CommonTag, TagTone } from '@easystart/app-component';
+import { DemoSample } from './DemoSample';
 import {
   AppBadge,
   AppButtonGhostModifier,
@@ -40,12 +41,8 @@ import {
   SegmentButtonV2Items
 } from '@easystart/app-component';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, AppStroke, DesignToken, ResponsiveCase, ResponsiveOperator, ResponsiveRule, ResponsiveValueResolver } from '@quizzyjoy/foundation';
-import { AppFoldStatus, BreakpointManager, CapabilityManager, ColorModeManager, DeviceManager, DeviceType,
-  FeatureGate, HoverStore, PermissionHelper, ShareHelper, UiMetrics, WindowAdapter } from '@quizzyjoy/platform';
-import { NetOutcome, NetReport, NetRepository } from '../data/NetRepository';
-import { SimpleDataSource } from '../data/ListDataSource';
-import type { common } from '@kit.AbilityKit';
-import { abilityAccessCtrl } from '@kit.AbilityKit';
+import { AppFoldStatus, BreakpointManager, ColorModeManager, DeviceManager, DeviceType, HoverStore,
+  ShareHelper, UiMetrics, WindowAdapter } from '@quizzyjoy/platform';
 import { ClipboardUtil } from '../util/ClipboardUtil';
 import { FileDemoUtil } from '../util/FileDemoUtil';
 import { PhotoPickUtil } from '../util/PhotoPickUtil';
@@ -110,6 +107,13 @@ const WHEEL_PICKER_RANGE: string[] = ['轻量', '标准', '专业', '旗舰', '�
 export struct ComponentGalleryView {
   /** 分组 id（basic / visual / platform / app）；空 = 四组按序全渲染（TV / PC 入口）。 */
   @Param groupId: string = '';
+  /**
+   * 跳出行内示例（v3.79）：权限 / 网络 / 长列表 / 无障碍都改成独立页，
+   * 本组件只上抛枚举，路由映射留在入口装配层（与场景示例同一纪律）。
+   */
+  @Event onOpenSample: (sample: DemoSample) => void = (_sample: DemoSample): void => {
+  };
+
   @Local theme: UiThemeManager = UiThemeManager.getInstance();
   @Local keyword: string = '';
   @Local dialogId: number = -1;
@@ -122,27 +126,15 @@ export struct ComponentGalleryView {
   /** AppSheet 示例显隐（V2：单向绑定 + onDisappear/onClose 回写，不用 $$ 双向语法） */
   @Local sheetShow: boolean = false;
   /** 运行时权限示例：授权状态文案。 */
-  @Local permStateText: string = '';
-  @Local permGranted: boolean = false;
-  @Local permBusy: boolean = false;
   /** 网络示例：请求进行中（防连点）。 */
-  @Local netBusy: boolean = false;
   /** 网络示例：最近一次结果的结论文案。 */
-  @Local netSummary: string = '尚未请求';
   /** 网络示例：响应片段。 */
-  @Local netBody: string = '';
   /** 长列表演示：0 = 未渲染，1 = ForEach（一次性），2 = LazyForEach（按需） */
-  @Local perfMode: number = 0;
   /** 长列表演示：数据条数 */
-  @Local perfCount: number = 200;
   /** ForEach 实际创建过的行数（onAppear 累加，这是可验证的硬指标） */
-  @Local foreachCreated: number = 0;
   /** LazyForEach 实际创建过的行数 */
-  @Local lazyCreated: number = 0;
   /** LazyForEach 的数据源（必须真实现 IDataSource） */
-  private lazySource: SimpleDataSource = new SimpleDataSource();
   /** ForEach 的普通数组 */
-  private foreachItems: string[] = [];
   /** 弹层页：bindPopup / bindContentCover 的可见性（Menu / ContextMenu 由系统接管，无需状态）。 */
   @Local popupVisible: boolean = false;
   @Local coverVisible: boolean = false;
@@ -204,129 +196,6 @@ export struct ComponentGalleryView {
   }
 
   /**
-   * 准备长列表数据并切到指定模式。
-   *
-   * 计数归零放在这里而不是按钮里，保证"每次切换都是一次干净的测量"。
-   */
-  private startPerf(mode: number, count: number): void {
-    this.perfCount = count;
-    this.perfMode = mode;
-    this.foreachCreated = 0;
-    this.lazyCreated = 0;
-
-    const arr: string[] = [];
-    for (let i = 0; i < count; i++) {
-      arr.push(`第 ${i + 1} 条`);
-    }
-    this.foreachItems = arr;
-    this.lazySource.reset(count, '第');
-  }
-
-  /** ForEach 行 */
-  @Builder
-  perfForeachRow(text: string) {
-    Row() {
-      Text(text)
-        .fontSize(AppFontSize.BODY_SM)
-        .fontColor($r('app.color.app_text_primary'))
-      Blank()
-      Text('ForEach')
-        .fontSize(AppFontSize.CAPTION)
-        .fontColor($r('app.color.app_text_quaternary'))
-    }
-    .width('100%')
-    .height(48)
-    .padding({ left: AppSpacing.MD, right: AppSpacing.MD })
-    .onAppear((): void => {
-      this.foreachCreated = this.foreachCreated + 1;
-    })
-  }
-
-  /** LazyForEach 行 */
-  @Builder
-  perfLazyRow(text: string) {
-    Row() {
-      Text(text)
-        .fontSize(AppFontSize.BODY_SM)
-        .fontColor($r('app.color.app_text_primary'))
-      Blank()
-      Text('LazyForEach')
-        .fontSize(AppFontSize.CAPTION)
-        .fontColor($r('app.color.app_text_quaternary'))
-    }
-    .width('100%')
-    .height(48)
-    .padding({ left: AppSpacing.MD, right: AppSpacing.MD })
-    .onAppear((): void => {
-      this.lazyCreated = this.lazyCreated + 1;
-    })
-  }
-
-  /** 网络示例：按 URL 发一次请求，把四类收场都渲染出来。 */
-  private async runNet(url: string, timeoutMs: number): Promise<void> {
-    if (this.netBusy) {
-      return;
-    }
-    this.netBusy = true;
-    this.netSummary = `请求中…（timeout ${timeoutMs}ms）`;
-    this.netBody = '';
-    const report: NetReport = await NetRepository.get(url, timeoutMs);
-    this.netBusy = false;
-    this.netSummary = report.summary();
-    this.netBody = report.bodyPreview;
-  }
-
-  /** 权限示例只在手机 / 平板 / 2in1 开放（仅这两类入口声明了该权限）。 */
-  private permissionSupported(): boolean {
-    return CapabilityManager.isUnifiedHandsetFamily();
-  }
-
-  private abilityContext(): common.UIAbilityContext {
-    return getContext(this) as common.UIAbilityContext;
-  }
-
-  /** 刷新授权状态（进页面 / 申请后各调一次）。 */
-  private async refreshPermissionState(): Promise<void> {
-    if (!this.permissionSupported()) {
-      this.permStateText = '本端未声明该权限（示例只在手机 / 2in1 生效）';
-      this.permGranted = false;
-      return;
-    }
-    const granted: boolean = await PermissionHelper.isGranted(this.abilityContext(),
-      PermissionHelper.PERMISSION_LOCATION);
-    this.permGranted = granted;
-    this.permStateText = granted ? '已授权：可读取近似位置' : '未授权：读取位置会被系统拦截';
-  }
-
-  /** 首次申请：走系统弹窗。 */
-  private async requestPermission(): Promise<void> {
-    if (this.permBusy || !this.permissionSupported()) {
-      return;
-    }
-    this.permBusy = true;
-    const denied: string[] = await PermissionHelper.request(this.abilityContext(),
-      [PermissionHelper.PERMISSION_LOCATION]);
-    this.permBusy = false;
-    await this.refreshPermissionState();
-    CommonToast.info(denied.length === 0 ? '已授权近似位置' : '用户拒绝了授权，可点「去设置」手动开启');
-  }
-
-  /** 被拒后的二次入口：拉起权限设置页（系统不会再弹窗）。 */
-  private async openPermissionSetting(): Promise<void> {
-    if (!this.permissionSupported()) {
-      return;
-    }
-    try {
-      const manager = abilityAccessCtrl.createAtManager();
-      await manager.requestPermissionOnSetting(this.abilityContext(),
-        [PermissionHelper.PERMISSION_LOCATION]);
-      await this.refreshPermissionState();
-    } catch (err) {
-      CommonToast.warn('拉起权限设置失败，请到 系统设置 → 应用 → 本应用 手动开启');
-    }
-  }
-
-  /**
    * v3.74：不再在此 attach/detach `HoverStore`。
    *
    * `HoverStore` 是窗口级单例，由 `AppBootstrap` 在窗口装载/销毁时管理；
@@ -334,7 +203,6 @@ export struct ComponentGalleryView {
    * `HoverSplitView`、`AppHoverSplit` 显示"非折叠设备、数据恒 0"（跨页损坏）。
    */
   aboutToAppear(): void {
-    this.refreshPermissionState();
   }
 
   aboutToDisappear(): void {
@@ -1085,119 +953,9 @@ export struct ComponentGalleryView {
         .clip(true)
         .borderRadius(AppRadius.MD)
         .backgroundColor($r('app.color.app_bg_page_deep'))
-        this.perfSection()
+        this.sampleEntry('长列表性能（独立页）', 'ForEach 2000 行 vs LazyForEach 6 行的计数对照', DemoSample.LIST_PERF)
   }
 
-
-  /**
-   * 长列表性能示例（P0-3）：ForEach vs LazyForEach，比的是**实际创建的行数**。
-   *
-   * 为什么不比耗时：渲染耗时受设备/帧率影响大，同机两次测量都抖动；
-   * 而 `onAppear` 触发次数是确定性的——2000 条数据下 ForEach 会创建 2000 个节点，
-   * LazyForEach 只创建可视区那十几个。这个差异是"照抄哪个"的直接依据。
-   */
-  @Builder
-  perfSection() {
-    this.sectionTitle('长列表性能（ForEach vs LazyForEach · 比实际创建行数）')
-    Text('ForEach 放在 Scroll+Column（全量创建），LazyForEach 放在 List（按需创建）；计数来自每行 onAppear —— 可复现，不依赖设备性能。')
-      .fontSize(AppFontSize.CAPTION)
-      .fontColor($r('app.color.app_text_tertiary'))
-      .width('100%')
-      .margin({ bottom: AppSpacing.SM })
-
-    Column({ space: AppSpacing.SM }) {
-      Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.XS) }) {
-        CommonButton({
-          text: '200 条 · ForEach',
-          variant: this.perfMode === 1 && this.perfCount === 200 ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
-          accentColor: this.theme.accentColor,
-          onAction: (): void => {
-            this.startPerf(1, 200);
-          }
-        })
-        CommonButton({
-          text: '2000 条 · ForEach',
-          variant: this.perfMode === 1 && this.perfCount === 2000 ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
-          accentColor: this.theme.accentColor,
-          onAction: (): void => {
-            this.startPerf(1, 2000);
-          }
-        })
-        CommonButton({
-          text: '2000 条 · Lazy',
-          variant: this.perfMode === 2 ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
-          accentColor: this.theme.accentColor,
-          onAction: (): void => {
-            this.startPerf(2, 2000);
-          }
-        })
-      }
-      .width('100%')
-
-      Text(this.perfSummary())
-        .fontSize(AppFontSize.BODY_SM)
-        .fontColor(this.perfMode === 2 ? this.theme.brandColor() : $r('app.color.app_text_primary'))
-        .width('100%')
-
-      if (this.perfMode === 1) {
-        // 关键：ForEach 要放在**非虚拟化容器**里才能看出差异。
-        // 第一版用了 List + ForEach，实测只创建 12 行（List 自身也会虚拟化），
-        // 那样两种写法计数几乎一样、演示不出结论。
-        Scroll() {
-          Column() {
-            ForEach(this.foreachItems, (text: string) => {
-              this.perfForeachRow(text)
-            }, (text: string, index: number): string => `f-${index}`)
-          }
-          .width('100%')
-        }
-        .width('100%')
-        .height(260)
-        .borderRadius(AppRadius.MD)
-        .backgroundColor($r('app.color.app_bg_card'))
-        .scrollBar(BarState.Off)
-      } else if (this.perfMode === 2) {
-        List() {
-          LazyForEach(this.lazySource, (text: string) => {
-            ListItem() {
-              this.perfLazyRow(text)
-            }
-          }, (text: string, index: number): string => `l-${index}`)
-        }
-        .cachedCount(4)
-        .width('100%')
-        .height(260)
-        .borderRadius(AppRadius.MD)
-        .backgroundColor($r('app.color.app_bg_card'))
-        .scrollBar(BarState.Off)
-      } else {
-        Text('选一种写法开始测量：2000 条时差异最明显。')
-          .fontSize(AppFontSize.CAPTION)
-          .fontColor($r('app.color.app_text_quaternary'))
-          .width('100%')
-          .padding(AppSpacing.MD)
-          .borderRadius(AppRadius.MD)
-          .backgroundColor($r('app.color.app_bg_card'))
-      }
-
-      Text('结论：List 里的 ForEach 其实也会被虚拟化（实测同样只建十几行）；真正差异在「非虚拟化容器」——大量数据放进 Scroll+Column+ForEach 会一次性建满，务必改用 List/Grid + LazyForEach。')
-        .fontSize(AppFontSize.CAPTION)
-        .fontColor($r('app.color.app_text_quaternary'))
-        .width('100%')
-    }
-    .alignItems(HorizontalAlign.Start)
-    .width('100%')
-  }
-
-  /** 一行结论：已创建多少行 / 一共多少条。 */
-  private perfSummary(): string {
-    if (this.perfMode === 0) {
-      return '尚未开始';
-    }
-    const created: number = this.perfMode === 1 ? this.foreachCreated : this.lazyCreated;
-    const mode: string = this.perfMode === 1 ? 'ForEach' : 'LazyForEach';
-    return `${mode}：已创建 ${created} / ${this.perfCount} 行`;
-  }
 
   /** 状态页列表行（@Builder：itemBuilder 回调里不能直接写 UI 语法）。 */
   @Builder
@@ -1238,6 +996,44 @@ export struct ComponentGalleryView {
   }
 
   /** 响应式与令牌（v3.69：原「平台能力与令牌」拆成两页）。 */
+  /**
+   * 独立示例入口行（v3.79）。
+   *
+   * 权限 / 网络 / 长列表 / 无障碍都有"多段状态"要讲，塞进长页会被压成一行按钮，
+   * 因此统一改成独立页：这里只留一行入口，点击后由入口装配层 push 对应路由。
+   */
+  @Builder
+  sampleEntry(title: string, desc: string, sample: DemoSample) {
+    Row({ space: AppSpacing.MD }) {
+      Column({ space: 2 }) {
+        Text(title)
+          .fontSize(AppFontSize.BODY)
+          .fontWeight(AppFontWeight.MEDIUM)
+          .fontColor($r('app.color.app_text_primary'))
+          .width('100%')
+        Text(desc)
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
+          .maxLines(2)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+      }
+      .layoutWeight(1)
+      .alignItems(HorizontalAlign.Start)
+
+      SymbolGlyph($r('sys.symbol.chevron_right'))
+        .fontSize(16)
+        .fontColor([$r('app.color.app_text_tertiary')])
+    }
+    .width('100%')
+    .padding(AppSpacing.MD)
+    .borderRadius(AppRadius.MD)
+    .backgroundColor($r('app.color.app_bg_card'))
+    .onClick((): void => {
+      this.onOpenSample(sample);
+    })
+  }
+
   @Builder
   groupResponsive() {
         this.sectionTitle('响应式 DSL（规则求值示例）')
@@ -1532,159 +1328,11 @@ export struct ComponentGalleryView {
           .alignItems(HorizontalAlign.Start)
           .width('100%')
         }
-        this.netSection()
-        this.permissionSection()
+        this.sampleEntry('运行时权限（独立页）', '申请 → 系统弹窗 → 拒绝 → 去设置，四段闭环', DemoSample.PERMISSION)
+        this.sampleEntry('网络请求（独立页）', '2xx / 非 2xx / 超时三型收场，实测 200 与 404 与超时', DemoSample.NETWORK)
+        this.sampleEntry('无障碍四件套（独立页）', 'text / level / group / description 的「错误 vs 正确」对照', DemoSample.A11Y)
   }
 
-
-  /**
-   * 网络请求示例（P0-2）：正常 / 非 2xx / 超时 三类收场。
-   *
-   * 模板原本有 NetworkMonitor（只看连通性）、ErrorMapper、Result，却没有"发请求"这一步。
-   * 这里补的是**失败分类**：HTTP 状态码错、超时、传输异常，三者处置完全不同。
-   */
-  @Builder
-  netSection() {
-    this.sectionTitle('网络请求（真实 HTTP · 四类收场分型）')
-    Text('NetRepository.get(url, timeoutMs)：内部 http.createHttp() + finally destroy；把「HTTP 非 2xx / 超时 / 传输异常」分成三种收场，而不是一个 success=false。')
-      .fontSize(AppFontSize.CAPTION)
-      .fontColor($r('app.color.app_text_tertiary'))
-      .width('100%')
-      .margin({ bottom: AppSpacing.SM })
-
-    Column({ space: AppSpacing.SM }) {
-      Text(this.netSummary)
-        .fontSize(AppFontSize.BODY_SM)
-        .fontColor($r('app.color.app_text_primary'))
-        .width('100%')
-      if (this.netBody.length > 0) {
-        Text(this.netBody)
-          .fontSize(AppFontSize.CAPTION)
-          .fontColor($r('app.color.app_text_tertiary'))
-          .width('100%')
-          .maxLines(4)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-          .padding(AppSpacing.SM)
-          .borderRadius(AppRadius.SM)
-          .backgroundColor($r('app.color.app_bg_card'))
-      }
-      Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
-        CommonButton({
-          text: '正常请求',
-          variant: ButtonVariant.PRIMARY,
-          accentColor: this.theme.accentColor,
-          disabled: this.netBusy,
-          onAction: (): void => {
-            this.runNet(NetRepository.URL_OK, 8000);
-          }
-        })
-        CommonButton({
-          text: '404',
-          variant: ButtonVariant.SECONDARY,
-          accentColor: this.theme.accentColor,
-          disabled: this.netBusy,
-          onAction: (): void => {
-            this.runNet(NetRepository.URL_404, 8000);
-          }
-        })
-        CommonButton({
-          text: '超时（2s）',
-          variant: ButtonVariant.SECONDARY,
-          accentColor: this.theme.accentColor,
-          disabled: this.netBusy,
-          onAction: (): void => {
-            this.runNet(NetRepository.URL_SLOW, 2000);
-          }
-        })
-      }
-      .width('100%')
-
-      Text('需要 ohos.permission.INTERNET（system_grant，装包即得）；断网时走 TRANSPORT_ERROR 分支并打出 code。')
-        .fontSize(AppFontSize.CAPTION)
-        .fontColor($r('app.color.app_text_quaternary'))
-        .width('100%')
-    }
-    .alignItems(HorizontalAlign.Start)
-    .width('100%')
-  }
-
-  /**
-   * 运行时权限示例：申请 → 系统弹窗 → 拒绝 → 去设置。
-   *
-   * 补齐的是模板最容易被跳过的一步：用户拒绝一次后系统不再弹窗，
-   * 只能 `requestPermissionOnSetting` 拉起权限设置页。
-   */
-  @Builder
-  permissionSection() {
-    this.sectionTitle('运行时权限（申请 → 系统弹窗 → 拒绝 → 去设置）')
-    Text('PermissionHelper 已封装 checkAccessToken / requestPermissionsFromUser；这里补「拒绝之后」——系统不再弹窗，只能 requestPermissionOnSetting 拉起设置页。')
-      .fontSize(AppFontSize.CAPTION)
-      .fontColor($r('app.color.app_text_tertiary'))
-      .width('100%')
-      .margin({ bottom: AppSpacing.SM })
-
-    Column({ space: AppSpacing.SM }) {
-      Row({ space: AppSpacing.SM }) {
-        Text('近似位置')
-          .fontSize(AppFontSize.BODY_SM)
-          .fontColor($r('app.color.app_text_secondary'))
-        Blank()
-        Text(this.permGranted ? '已授权' : '未授权')
-          .fontSize(AppFontSize.CAPTION)
-          .fontColor(this.permGranted ? this.theme.brandColor() : $r('app.color.app_text_tertiary'))
-          .padding({ left: AppSpacing.SM, right: AppSpacing.SM, top: 2, bottom: 2 })
-          .borderRadius(AppRadius.FULL)
-          .backgroundColor($r('app.color.app_bg_card'))
-      }
-      .width('100%')
-      .alignItems(VerticalAlign.Center)
-
-      Text(this.permStateText.length > 0 ? this.permStateText : '状态检查中…')
-        .fontSize(AppFontSize.CAPTION)
-        .fontColor($r('app.color.app_text_secondary'))
-        .width('100%')
-
-      Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
-        CommonButton({
-          text: this.permBusy ? '申请中…' : (this.permGranted ? '重新申请' : '申请近似位置'),
-          variant: ButtonVariant.PRIMARY,
-          accentColor: this.theme.accentColor,
-          disabled: this.permBusy || !this.permissionSupported(),
-          onAction: (): void => {
-            this.requestPermission();
-          }
-        })
-        CommonButton({
-          text: '去设置',
-          variant: ButtonVariant.SECONDARY,
-          accentColor: this.theme.accentColor,
-          disabled: !this.permissionSupported(),
-          onAction: (): void => {
-            this.openPermissionSetting();
-          }
-        })
-        CommonButton({
-          text: '刷新状态',
-          variant: ButtonVariant.SECONDARY,
-          accentColor: this.theme.accentColor,
-          disabled: !this.permissionSupported(),
-          onAction: (): void => {
-            this.refreshPermissionState();
-          }
-        })
-      }
-      .width('100%')
-
-      Text(this.permissionSupported()
-        ? '拒绝一次后系统不再弹窗属预期行为；「去设置」走 requestPermissionOnSetting。'
-        : '当前形态未在 module.json5 声明该权限，按钮已禁用（示例只在 entry / entry_pc 生效）。')
-        .fontSize(AppFontSize.CAPTION)
-        .fontColor($r('app.color.app_text_quaternary'))
-        .width('100%')
-    }
-    .alignItems(HorizontalAlign.Start)
-    .width('100%')
-  }
 
   /** 画廊分组区块：groupApp（v3.26 自 build() 抽出，内容等价） */
   @Builder

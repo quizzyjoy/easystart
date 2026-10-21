@@ -19,5 +19,13 @@ export enum DemoSample {
   /** 搜索场景（入口映射 AppRoute.DEMO_SEARCH） */
   SEARCH,
   /** 悬停态分屏（v3.31 / FOLD-01；入口启动独立 FoldHoverAbility，不走路由） */
-  FOLD_HOVER
+  FOLD_HOVER,
+  /** 运行时权限（v3.79 独立页：申请 → 弹窗 → 拒绝 → 去设置） */
+  PERMISSION,
+  /** 网络请求（v3.79 独立页：2xx / 非 2xx / 超时三型） */
+  NETWORK,
+  /** 长列表性能（v3.79 独立页：ForEach vs LazyForEach 计数对照） */
+  LIST_PERF,
+  /** 无障碍四件套（v3.79 独立页：text / level / group / description） */
+  A11Y
 }

@@ -22,6 +22,14 @@ export class AppRoute {
   static readonly DEMO_SEARCH: string = 'demoSearch';
   /** 样例子页：悬停态分屏（v3.31 / FOLD-01，pageMap 注册名） */
   static readonly DEMO_FOLD_HOVER: string = 'demoFoldHover';
+  /** 运行时权限示例（v3.79） */
+  static readonly DEMO_PERMISSION: string = 'demoPermission';
+  /** 网络请求示例（v3.79） */
+  static readonly DEMO_NETWORK: string = 'demoNetwork';
+  /** 长列表性能示例（v3.79） */
+  static readonly DEMO_LIST_PERF: string = 'demoListPerf';
+  /** 无障碍示例（v3.79） */
+  static readonly DEMO_A11Y: string = 'demoA11y';
   /** 设置页（v3.12，独立子页；入口为首页 titleBar 齿轮，pageMap 注册名） */
   /** 示例·组件示例分组页（v3.37，pageMap 注册名；param = basic/visual/platform/app） */
   static readonly GALLERY_GROUP: string = 'GALLERY_GROUP';
