@@ -1,5 +1,4 @@
 {
   "startWindowBackgroundColor": "$color:qj_brand",
-  "startWindowAppIcon": "$media:startIcon",
-  "startWindowBrandingImage": "$media:startIcon"
+  "startWindowAppIcon": "$media:foreground"
 }

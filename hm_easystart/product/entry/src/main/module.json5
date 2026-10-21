@@ -22,8 +22,8 @@
         "description": "$string:EntryAbility_desc",
         "icon": "$media:layered_image",
         "label": "$string:EntryAbility_label",
-        "startWindowIcon": "$media:startIcon",
-        "startWindowBackground": "$color:start_window_background",
+        "startWindowIcon": "$media:foreground",
+        "startWindowBackground": "$color:qj_brand",
         "startWindow": "$profile:start_window",
         "exported": true,
         "skills": [
