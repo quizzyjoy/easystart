@@ -36,6 +36,8 @@ export struct HomeListView {
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
   /** 窗口适配器（tabPageBottomPadding 的底部避让高度入参）。 */
   @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
+  /** 列表容器实际宽度（vp）：由 onAreaChange 回填，驱动列数（v3.71）。 */
+  @Local containerW: number = 0;
   /** 点击卡片打开详情（入口注入跳转实现；feature 不感知导航）。 */
   @Event onOpenDetail: (item: HomeItem) => void = () => {
   };
@@ -67,8 +69,18 @@ export struct HomeListView {
   }
 
   /** 按断点列数把 items 打包成栅格行（build 期求值，items/断点变化即重算）。 */
+  /**
+   * 列数：按**容器实际宽度**算（v3.71）。
+   * 原先用断点（md→2 / lg→3），分栏左栏 340–420vp 时目录被 push 进右栏仍取 3 列 → 卡片被压窄。
+   * 单卡最小可读宽 280vp。
+   */
+  private gridColumns(): number {
+    const widthVp: number = this.containerW > 0 ? this.containerW : this.breakpoint.windowWidthVp;
+    return DesignToken.gridColumns(widthVp, 280);
+  }
+
   private gridRows(): Object[] {
-    const columns: number = this.viewModel.columns(this.bp());
+    const columns: number = this.gridColumns();
     const source: HomeItem[] = this.viewModel.items;
     const rows: Object[] = [];
     for (let i = 0; i < source.length; i += columns) {
@@ -113,6 +125,9 @@ export struct HomeListView {
       }
       .width('100%')
       .layoutWeight(1)
+      .onAreaChange((_old: Area, area: Area): void => {
+        this.containerW = Number(area.width);
+      })
       .constraintSize({ maxWidth: DesignToken.contentMaxWidth(this.bp()) })
       .padding({
         left: DesignToken.pagePadding(this.bp()),

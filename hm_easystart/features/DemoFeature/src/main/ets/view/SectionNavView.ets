@@ -25,20 +25,20 @@ export struct SectionNavView {
   @Local rows: SectionNavRow[] = [];
   /** 断点与窗口避让：padding / 最大内容宽 / 底部避让全部走设计令牌（v3.68）。 */
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  /** 行容器实际宽度（vp）：由 Flex 的 onAreaChange 回填。 */
+  @Local containerW: number = 0;
   @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
 
   private bp(): string {
     return `${this.breakpoint.breakpoint}`;
   }
 
-  /** 宽屏（lg 及以上）子项排两列；手机 / 折叠竖屏单列。 */
-  private isWide(): boolean {
-    return this.breakpoint.isWide();
-  }
-
-  /** 子项宽度：宽屏 48.5%，窄屏 100%。 */
+  /**
+   * 子项宽度：按**容器实际宽度**判定（v3.71）。
+   * 导航行单列最小可读宽 360vp——分栏左栏 340–420vp 时不会硬塞两列。
+   */
   private rowWidth(): string {
-    return this.isWide() ? '48.5%' : '100%';
+    return DesignToken.twoUpWidth(this.containerW > 0 ? this.containerW : this.breakpoint.windowWidthVp, 360);
   }
 
   aboutToAppear(): void {
@@ -55,7 +55,7 @@ export struct SectionNavView {
   }
 
   @Builder
-  navRow(row: SectionNavRow, detached: boolean) {
+  navRow(row: SectionNavRow) {
     Column() {
       Row({ space: AppSpacing.SM }) {
         Column({ space: AppSpacing.XXS }) {
@@ -83,7 +83,7 @@ export struct SectionNavView {
       .padding(DesignToken.cardPadding())
     }
     .width(this.rowWidth())
-    .margin({ bottom: detached ? DesignToken.cardGap() : AppSpacing.SM })
+    .margin({ bottom: DesignToken.cardGap() })
     .borderRadius(AppRadius.XL)
     .backgroundColor($r('app.color.app_bg_card'))
     .onClick((): void => {
@@ -101,10 +101,13 @@ export struct SectionNavView {
 
         Flex({ wrap: FlexWrap.Wrap, justifyContent: FlexAlign.SpaceBetween, alignItems: ItemAlign.Start }) {
           ForEach(this.rows, (row: SectionNavRow, index: number) => {
-            this.navRow(row, this.isWide())
+            this.navRow(row)
           }, (row: SectionNavRow): string => `${this.sectionId}_${row.id}`)
         }
         .width('100%')
+        .onAreaChange((_old: Area, area: Area): void => {
+          this.containerW = Number(area.width);
+        })
 
         Text(`共 ${this.rows.length} 个子页 · ${sectionNavTitle(this.sectionId)}`)
           .fontSize(AppFontSize.CAPTION)

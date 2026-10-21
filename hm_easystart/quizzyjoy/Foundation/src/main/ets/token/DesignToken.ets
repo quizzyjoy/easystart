@@ -47,6 +47,31 @@ export class DesignToken {
       PAGE_PADDING_CASES, snapshot, AppSpacing.LG);
   }
 
+  /**
+   * 按**容器实际宽度**算列数（v3.71）。
+   *
+   * 为什么不用断点：`isWide()` 回答的是"窗口够宽"，回答不了"分栏左栏 360vp 够不够两列"。
+   * 折叠屏 / 2in1 分栏下容器宽往往只有 340–420vp，此时按窗口断点排两列会把卡片压到 ~165vp。
+   * 调用方用 `onAreaChange` 拿到自身宽度后传进来即可，无需宿主改签名。
+   *
+   * @param containerWidthVp 容器宽度（vp）
+   * @param minItemVp 单列可读的最小宽度（卡片类建议 320，导航行建议 360）
+   * @param gapVp 列间距（默认取 md 档的网格间距）
+   */
+  static gridColumns(containerWidthVp: number, minItemVp: number, gapVp: number = AppSpacing.MD): number {
+    if (containerWidthVp <= 0 || minItemVp <= 0) {
+      return 1;
+    }
+    const perItem: number = minItemVp + gapVp;
+    const count: number = Math.floor((containerWidthVp + gapVp) / perItem);
+    return count < 1 ? 1 : count;
+  }
+
+  /** 容器宽驱动的两列判定：够两列则返回 48.5%，否则 100%（供 Flex wrap 卡片用）。 */
+  static twoUpWidth(containerWidthVp: number, minItemVp: number, gapVp: number = AppSpacing.MD): string {
+    return DesignToken.gridColumns(containerWidthVp, minItemVp, gapVp) >= 2 ? '48.5%' : '100%';
+  }
+
   /** 内容最大宽度（阅读类页面用，避免超宽屏文字过长）。 */
   static contentMaxWidth(breakpoint: string): number {
     if (breakpoint === 'xl') {

@@ -108,6 +108,8 @@ export struct ExamplesView {
   @Param onOpenTemplate: () => void = (): void => {
   };
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  /** 卡片区容器实际宽度（vp）：由 Flex 的 onAreaChange 回填，驱动两列判定。 */
+  @Local containerW: number = 0;
   @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
 
   private bp(): string {
@@ -225,9 +227,14 @@ export struct ExamplesView {
    * 数据表是 const（不能读 this），所以取色放在渲染期按 id 判定：这是 v3.44「静态色接入
    * 主题系统」的落地点 —— 页面装饰色走主题，语义/演示色保持固定。
    */
-  /** 入口卡宽度：宽屏（lg 及以上）两列，窄屏单列（v3.68 多设备适配）。 */
+  /**
+   * 入口卡宽度：按**容器实际宽度**决定两列还是单列（v3.71）。
+   *
+   * 原先按 `breakpoint.isWide()`（窗口断点）判定，分栏左栏只有 340–420vp 时仍排两列，
+   * 卡片被压到 ~165vp。改为容器宽驱动：单卡最小可读宽 320vp。
+   */
   private cardWidth(): string {
-    return this.breakpoint.isWide() ? '48.5%' : '100%';
+    return DesignToken.twoUpWidth(this.containerW > 0 ? this.containerW : this.breakpoint.windowWidthVp, 320);
   }
 
   private chipTint(section: ExampleSection): ResourceColor {
@@ -248,6 +255,9 @@ export struct ExamplesView {
           }, (section: ExampleSection): string => section.id)
         }
         .width('100%')
+        .onAreaChange((_old: Area, area: Area): void => {
+          this.containerW = Number(area.width);
+        })
       }
       .width('100%')
       .alignItems(HorizontalAlign.Start)
