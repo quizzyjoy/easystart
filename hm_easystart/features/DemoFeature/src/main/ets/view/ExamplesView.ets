@@ -11,7 +11,7 @@ class ExampleRow {
   readonly title: ResourceStr;
   readonly desc: ResourceStr;
 
-  constructor(id: string, title: string, desc: string) {
+  constructor(id: string, title: ResourceStr, desc: ResourceStr) {
     this.id = id;
     this.title = title;
     this.desc = desc;

@@ -7,12 +7,13 @@
  */
 export class GalleryGroupEntry {
   readonly id: string;
-  readonly title: string;
-  readonly desc: string;
+  /** 标题/描述走三语资源（v3.78）。 */
+  readonly title: ResourceStr;
+  readonly desc: ResourceStr;
   readonly symbol: Resource;
   readonly tint: Resource;
 
-  constructor(id: string, title: string, desc: string, symbol: Resource, tint: Resource) {
+  constructor(id: string, title: ResourceStr, desc: ResourceStr, symbol: Resource, tint: Resource) {
     this.id = id;
     this.title = title;
     this.desc = desc;
@@ -38,26 +39,26 @@ export class GalleryGroupEntry {
  * 一组一页一事；VitalUI 组件仍单独成区（见 `VITALUI_GROUPS`）。
  */
 export const GALLERY_GROUPS: GalleryGroupEntry[] = [
-  new GalleryGroupEntry('act', '操作与状态',
-    '按钮六形态（含加载 / 禁用）+ 标签五档语义（含可关闭）',
+  new GalleryGroupEntry('act', $r('app.string.gallery_group_act_title'),
+    $r('app.string.gallery_group_act_desc'),
     $r('sys.symbol.square_grid_2x2'), $r('app.color.qj_brand')),
-  new GalleryGroupEntry('input', '输入与检索',
-    '搜索栏受控 + 300ms 防抖，回车与取消分流回调',
+  new GalleryGroupEntry('input', $r('app.string.gallery_group_input_title'),
+    $r('app.string.gallery_group_input_desc'),
     $r('sys.symbol.ellipsis_circle'), $r('app.color.app_accent_teal')),
-  new GalleryGroupEntry('feedback', '反馈与容器',
-    '轻提示 / 失败提示 / 确认对话框 + ActionCard 卡片容器',
+  new GalleryGroupEntry('feedback', $r('app.string.gallery_group_feedback_title'),
+    $r('app.string.gallery_group_feedback_desc'),
     $r('sys.symbol.checkmark_circle'), $r('app.color.app_accent_pink')),
-  new GalleryGroupEntry('overlay', '弹层与选择器',
-    '日期 / 农历 / 时间 / 日历 / 文本轮播 + Sheet（统一走 UIContext）',
+  new GalleryGroupEntry('overlay', $r('app.string.gallery_group_overlay_title'),
+    $r('app.string.gallery_group_overlay_desc'),
     $r('sys.symbol.paintpalette'), $r('app.color.app_accent_purple')),
-  new GalleryGroupEntry('responsive', '响应式与令牌',
-    '响应式 DSL 规则求值 + 折叠态折痕 + 49 色彩令牌对照',
+  new GalleryGroupEntry('responsive', $r('app.string.gallery_group_responsive_title'),
+    $r('app.string.gallery_group_responsive_desc'),
     $r('sys.symbol.display'), $r('app.color.app_accent_teal')),
-  new GalleryGroupEntry('platform', '平台能力',
-    '沉浸式避让 / 系统分享 / 选图 / 剪贴板与安全组件',
+  new GalleryGroupEntry('platform', $r('app.string.gallery_group_platform_title'),
+    $r('app.string.gallery_group_platform_desc'),
     $r('sys.symbol.doc_text'), $r('app.color.qj_brand')),
-  new GalleryGroupEntry('app', '应用组件与动效',
-    'AppComponent 反馈族 / modifier 族 / 控件工厂 + 动效规范',
+  new GalleryGroupEntry('app', $r('app.string.gallery_group_app_title'),
+    $r('app.string.gallery_group_app_desc'),
     $r('sys.symbol.gearshape_fill'), $r('app.color.app_accent_purple'))
 ];
 
@@ -69,17 +70,17 @@ export const GALLERY_GROUPS: GalleryGroupEntry[] = [
  * 「库里的组件」与「应用怎么用库」。
  */
 export const VITALUI_GROUPS: GalleryGroupEntry[] = [
-  new GalleryGroupEntry('chart', '数据图表',
-    '四图表聚合：玫瑰 / 饼 / 季度玫瑰 / 雷达（Canvas 自绘，可点选）',
+  new GalleryGroupEntry('chart', $r('app.string.vitalui_group_chart_title'),
+    $r('app.string.vitalui_group_chart_desc'),
     $r('sys.symbol.paintpalette'), $r('app.color.app_accent_pink')),
-  new GalleryGroupEntry('loading', '加载与骨架',
-    'CommonLoading 四形态 + SkeletonBlock 骨架屏',
+  new GalleryGroupEntry('loading', $r('app.string.vitalui_group_loading_title'),
+    $r('app.string.vitalui_group_loading_desc'),
     $r('sys.symbol.arrow_clockwise'), $r('app.color.app_accent_teal')),
-  new GalleryGroupEntry('color', '颜色选择器',
-    'CommonColorPicker + ColorMath 色彩数学（Hex / RGB / HSL 互转）',
+  new GalleryGroupEntry('color', $r('app.string.vitalui_group_color_title'),
+    $r('app.string.vitalui_group_color_desc'),
     $r('sys.symbol.paintpalette'), $r('app.color.app_accent_purple')),
-  new GalleryGroupEntry('state', '状态与列表',
-    'StateContainer 四态 + RefreshList 下拉刷新状态机',
+  new GalleryGroupEntry('state', $r('app.string.vitalui_group_state_title'),
+    $r('app.string.vitalui_group_state_desc'),
     $r('sys.symbol.ellipsis_circle'), $r('app.color.qj_brand'))
 ];
 
@@ -87,8 +88,8 @@ export const VITALUI_GROUPS: GalleryGroupEntry[] = [
 export const ALL_GALLERY_GROUPS: GalleryGroupEntry[] = GALLERY_GROUPS.concat(VITALUI_GROUPS);
 
 /** 分组 id → 标题（入口 pageMap 的 titleBar 标题来源；未知 id 回落总标题）。 */
-export function galleryGroupTitle(groupId: string): string {
+export function galleryGroupTitle(groupId: string): ResourceStr {
   const hit: GalleryGroupEntry | undefined =
     ALL_GALLERY_GROUPS.find((entry: GalleryGroupEntry): boolean => entry.id === groupId);
-  return hit === undefined ? '组件示例' : hit.title;
+  return hit === undefined ? $r('app.string.examples_card_gallery_title') : hit.title;
 }

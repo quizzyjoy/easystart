@@ -12,10 +12,11 @@ import { GALLERY_GROUPS, GalleryGroupEntry, VITALUI_GROUPS } from './GalleryGrou
  */
 export class SectionNavRow {
   readonly id: string;
-  readonly title: string;
-  readonly desc: string;
+  /** 标题/描述走三语资源（v3.78）。 */
+  readonly title: ResourceStr;
+  readonly desc: ResourceStr;
 
-  constructor(id: string, title: string, desc: string) {
+  constructor(id: string, title: ResourceStr, desc: ResourceStr) {
     this.id = id;
     this.title = title;
     this.desc = desc;
@@ -24,12 +25,12 @@ export class SectionNavRow {
 
 /** 场景示例六行（与入口 `openSceneById` 的 switch 一一对应）。 */
 export const SCENE_NAV_ROWS: SectionNavRow[] = [
-  new SectionNavRow('feedback', '反馈流', '提交失败重试链路 / 危险确认 / 筛选 Sheet 多选回写'),
-  new SectionNavRow('charts', '数据看板', '四图表断点栅格 + 深浅色联动重绘 + 选中详情联动'),
-  new SectionNavRow('form', '表单范式', 'AppFormField 受控域 + 逐域校验红线 + 取色联动'),
-  new SectionNavRow('list', '列表四态', 'StateContainer 四态切换 + RefreshList 刷新与分页'),
-  new SectionNavRow('search', '搜索场景', 'CommonSearchBar 防抖受控 + 热词 / 结果 / 空态'),
-  new SectionNavRow('hover', '悬停态分屏', '折叠屏半折叠（帐篷态）真实折痕分屏示例')
+  new SectionNavRow('feedback', $r('app.string.scene_feedback_title'), $r('app.string.scene_feedback_desc')),
+  new SectionNavRow('charts', $r('app.string.scene_charts_title'), $r('app.string.scene_charts_desc')),
+  new SectionNavRow('form', $r('app.string.scene_form_title'), $r('app.string.scene_form_desc')),
+  new SectionNavRow('list', $r('app.string.scene_list_title'), $r('app.string.scene_list_desc')),
+  new SectionNavRow('search', $r('app.string.scene_search_title'), $r('app.string.scene_search_desc')),
+  new SectionNavRow('hover', $r('app.string.scene_hover_title'), $r('app.string.scene_hover_desc'))
 ];
 
 /** 二级页标题（未知 id 回落「示例」）。 */

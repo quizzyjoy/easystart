@@ -71,6 +71,142 @@
     {
       "name": "examples_card_about_desc",
       "value": "这是什么 / 怎么用 / 如何 fork：上手路径与目录约定"
+    },
+    {
+      "name": "gallery_group_act_title",
+      "value": "操作与状态"
+    },
+    {
+      "name": "gallery_group_act_desc",
+      "value": "按钮六形态（含加载 / 禁用）+ 标签五档语义（含可关闭）"
+    },
+    {
+      "name": "gallery_group_input_title",
+      "value": "输入与检索"
+    },
+    {
+      "name": "gallery_group_input_desc",
+      "value": "搜索栏受控 + 300ms 防抖，回车与取消分流回调"
+    },
+    {
+      "name": "gallery_group_feedback_title",
+      "value": "反馈与容器"
+    },
+    {
+      "name": "gallery_group_feedback_desc",
+      "value": "轻提示 / 失败提示 / 确认对话框 + ActionCard 卡片容器"
+    },
+    {
+      "name": "gallery_group_overlay_title",
+      "value": "弹层与选择器"
+    },
+    {
+      "name": "gallery_group_overlay_desc",
+      "value": "日期 / 农历 / 时间 / 日历 / 文本轮播 + Sheet，另含 Popup / Menu / ContextMenu / ContentCover"
+    },
+    {
+      "name": "gallery_group_responsive_title",
+      "value": "响应式与令牌"
+    },
+    {
+      "name": "gallery_group_responsive_desc",
+      "value": "响应式 DSL 规则求值 + 折叠态折痕 + 49 色彩令牌对照"
+    },
+    {
+      "name": "gallery_group_platform_title",
+      "value": "平台能力"
+    },
+    {
+      "name": "gallery_group_platform_desc",
+      "value": "沉浸式避让 / 系统分享 / 选图 / 剪贴板与安全组件"
+    },
+    {
+      "name": "gallery_group_app_title",
+      "value": "应用组件与动效"
+    },
+    {
+      "name": "gallery_group_app_desc",
+      "value": "AppComponent 反馈族 / modifier 族 / 控件工厂 + 动效规范"
+    },
+    {
+      "name": "vitalui_group_chart_title",
+      "value": "数据图表"
+    },
+    {
+      "name": "vitalui_group_chart_desc",
+      "value": "四图表聚合：玫瑰 / 饼 / 季度玫瑰 / 雷达（Canvas 自绘，可点选）"
+    },
+    {
+      "name": "vitalui_group_loading_title",
+      "value": "加载与骨架"
+    },
+    {
+      "name": "vitalui_group_loading_desc",
+      "value": "CommonLoading 四形态 + SkeletonBlock 骨架屏"
+    },
+    {
+      "name": "vitalui_group_color_title",
+      "value": "颜色选择器"
+    },
+    {
+      "name": "vitalui_group_color_desc",
+      "value": "CommonColorPicker + ColorMath 色彩数学（Hex / RGB / HSL 互转）"
+    },
+    {
+      "name": "vitalui_group_state_title",
+      "value": "状态与列表"
+    },
+    {
+      "name": "vitalui_group_state_desc",
+      "value": "StateContainer 四态 + RefreshList 下拉刷新状态机"
+    },
+    {
+      "name": "scene_feedback_title",
+      "value": "反馈流"
+    },
+    {
+      "name": "scene_feedback_desc",
+      "value": "提交失败重试链路 / 危险确认 / 筛选 Sheet 多选回写"
+    },
+    {
+      "name": "scene_charts_title",
+      "value": "数据看板"
+    },
+    {
+      "name": "scene_charts_desc",
+      "value": "四图表断点栅格 + 深浅色联动重绘 + 选中详情联动"
+    },
+    {
+      "name": "scene_form_title",
+      "value": "表单范式"
+    },
+    {
+      "name": "scene_form_desc",
+      "value": "AppFormField 受控域 + 逐域校验红线 + 提交确认闭环"
+    },
+    {
+      "name": "scene_list_title",
+      "value": "列表四态"
+    },
+    {
+      "name": "scene_list_desc",
+      "value": "StateContainer 四态切换 + RefreshList 刷新与分页"
+    },
+    {
+      "name": "scene_search_title",
+      "value": "搜索场景"
+    },
+    {
+      "name": "scene_search_desc",
+      "value": "CommonSearchBar 防抖受控 + 热词 / 结果 / 空态"
+    },
+    {
+      "name": "scene_hover_title",
+      "value": "悬停态分屏"
+    },
+    {
+      "name": "scene_hover_desc",
+      "value": "折叠屏半折叠（帐篷态）真实折痕分屏示例"
     }
   ]
 }
