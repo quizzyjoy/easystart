@@ -19,7 +19,7 @@ class TemplateAboutSection {
  * 关于模板（L3，v3.38 三级架构）。
  *
  * 只回答三个问题：这是什么 / 怎么用 / 如何 fork。
- * 放在入口层（product/entry）而非 DemoFeature：DemoFeature 的依赖方向里没有 AppRoutes，
+ * 本页位于 features/DemoFeature（示例包内），由 product/entry 与 entry_pc 的 pageMap 挂载：
  * 而本页是入口侧的说明页，不参与示例域（fork 时随示例包一起删掉也可）。
  */
 const ABOUT_SECTIONS: TemplateAboutSection[] = [
@@ -32,19 +32,20 @@ const ABOUT_SECTIONS: TemplateAboutSection[] = [
     ]),
   new TemplateAboutSection('怎么用', '示例 Tab 按「能力域 → 分组 → 单页」三级组织，学习 Tab 是配套教程——每章都对应仓库里真实存在的代码。',
     [
-      '组件示例：单组件一页式对照，四组分别覆盖基础、可视化、平台能力、应用组件与动效',
+      '组件示例：单组件一页式对照，按内容拆成七组（操作与状态 / 输入与检索 / 反馈与容器 / 弹层与选择器 / 响应式与令牌 / 平台能力 / 应用组件与动效）',
+        'VitalUI 组件：库内组件的独立专区（数据图表 / 加载与骨架 / 颜色选择器 / 状态与列表），与上一条分开成卡',
       '场景示例：可整页复制的页面范式（反馈流 / 数据看板 / 表单 / 列表四态 / 搜索 / 折叠屏分屏）',
-      '模板能力：设置中心、详情页范式、设备能力面板三块已装好的基础设施',
+      '模板能力：设置中心、详情页范式、账号登录页范式三块已装好的基础设施（设备能力已移到底部「开发工具」Tab）',
       '设计令牌：全量令牌对照页；换肤只改 AppScope 的颜色资源（qj_ 前缀品牌色）',
       '学习：ArkTS 状态管理 V1 → V2 等章节，边读边对照源码'
     ]),
   new TemplateAboutSection('如何 fork', '复制本仓后按顺序改这几处，其余结构照用；改动越少，后续跟模板升级越省力。',
     [
       'AppScope/app.json5 改 bundleName 与版本号；AppScope/resources 换 app_name 与品牌色',
-      '删除 @easystart/demo-feature（本演示包）与示例/学习两个 Tab，替换成自己的 feature',
+      '删除 @easystart/demo-feature（本演示包）与示例 / 学习 / 开发工具三个 Tab，替换成自己的 feature',
       '新业务照 features/HomeFeature 的 MVVM 结构新建：data（Repository）→ viewmodel → view',
       '签名配置不入库（本仓 build-profile.json5 走 skip-worktree），fork 后用 DevEco 自动签名',
-      '提交格式与版本号纪律见仓库 docs/git_constraints.md'
+      '提交格式与版本号纪律见仓库 plan/git_constraints.md'
     ])
 ];
 

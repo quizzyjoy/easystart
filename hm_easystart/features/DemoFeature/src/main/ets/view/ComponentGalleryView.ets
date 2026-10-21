@@ -176,8 +176,14 @@ export struct ComponentGalleryView {
     }
   }
 
+  /**
+   * v3.74：不再在此 attach/detach `HoverStore`。
+   *
+   * `HoverStore` 是窗口级单例，由 `AppBootstrap` 在窗口装载/销毁时管理；
+   * 页面级 detach 会把 `isFoldable` / 折痕数据清空并解绑监听，导致离开本页后
+   * `HoverSplitView`、`AppHoverSplit` 显示"非折叠设备、数据恒 0"（跨页损坏）。
+   */
   aboutToAppear(): void {
-    this.fold.attach();
   }
 
   aboutToDisappear(): void {
@@ -185,7 +191,6 @@ export struct ComponentGalleryView {
       clearTimeout(this.listTimer);
       this.listTimer = -1;
     }
-    this.fold.detach();
   }
 
   private bp(): string {
