@@ -40,7 +40,10 @@ import {
   SegmentButtonV2Items
 } from '@easystart/app-component';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, AppStroke, DesignToken, ResponsiveCase, ResponsiveOperator, ResponsiveRule, ResponsiveValueResolver } from '@quizzyjoy/foundation';
-import { AppFoldStatus, BreakpointManager, ColorModeManager, DeviceManager, DeviceType, HoverStore, ShareHelper, UiMetrics, WindowAdapter } from '@quizzyjoy/platform';
+import { AppFoldStatus, BreakpointManager, CapabilityManager, ColorModeManager, DeviceManager, DeviceType,
+  FeatureGate, HoverStore, PermissionHelper, ShareHelper, UiMetrics, WindowAdapter } from '@quizzyjoy/platform';
+import type { common } from '@kit.AbilityKit';
+import { abilityAccessCtrl } from '@kit.AbilityKit';
 import { ClipboardUtil } from '../util/ClipboardUtil';
 import { FileDemoUtil } from '../util/FileDemoUtil';
 import { PhotoPickUtil } from '../util/PhotoPickUtil';
@@ -116,6 +119,10 @@ export struct ComponentGalleryView {
   private share: ShareHelper = ShareHelper.getInstance();
   /** AppSheet 示例显隐（V2：单向绑定 + onDisappear/onClose 回写，不用 $$ 双向语法） */
   @Local sheetShow: boolean = false;
+  /** 运行时权限示例：授权状态文案。 */
+  @Local permStateText: string = '';
+  @Local permGranted: boolean = false;
+  @Local permBusy: boolean = false;
   /** 弹层页：bindPopup / bindContentCover 的可见性（Menu / ContextMenu 由系统接管，无需状态）。 */
   @Local popupVisible: boolean = false;
   @Local coverVisible: boolean = false;
@@ -176,6 +183,56 @@ export struct ComponentGalleryView {
     }
   }
 
+  /** 权限示例只在手机 / 平板 / 2in1 开放（仅这两类入口声明了该权限）。 */
+  private permissionSupported(): boolean {
+    return CapabilityManager.isUnifiedHandsetFamily();
+  }
+
+  private abilityContext(): common.UIAbilityContext {
+    return getContext(this) as common.UIAbilityContext;
+  }
+
+  /** 刷新授权状态（进页面 / 申请后各调一次）。 */
+  private async refreshPermissionState(): Promise<void> {
+    if (!this.permissionSupported()) {
+      this.permStateText = '本端未声明该权限（示例只在手机 / 2in1 生效）';
+      this.permGranted = false;
+      return;
+    }
+    const granted: boolean = await PermissionHelper.isGranted(this.abilityContext(),
+      PermissionHelper.PERMISSION_LOCATION);
+    this.permGranted = granted;
+    this.permStateText = granted ? '已授权：可读取近似位置' : '未授权：读取位置会被系统拦截';
+  }
+
+  /** 首次申请：走系统弹窗。 */
+  private async requestPermission(): Promise<void> {
+    if (this.permBusy || !this.permissionSupported()) {
+      return;
+    }
+    this.permBusy = true;
+    const denied: string[] = await PermissionHelper.request(this.abilityContext(),
+      [PermissionHelper.PERMISSION_LOCATION]);
+    this.permBusy = false;
+    await this.refreshPermissionState();
+    CommonToast.info(denied.length === 0 ? '已授权近似位置' : '用户拒绝了授权，可点「去设置」手动开启');
+  }
+
+  /** 被拒后的二次入口：拉起权限设置页（系统不会再弹窗）。 */
+  private async openPermissionSetting(): Promise<void> {
+    if (!this.permissionSupported()) {
+      return;
+    }
+    try {
+      const manager = abilityAccessCtrl.createAtManager();
+      await manager.requestPermissionOnSetting(this.abilityContext(),
+        [PermissionHelper.PERMISSION_LOCATION]);
+      await this.refreshPermissionState();
+    } catch (err) {
+      CommonToast.warn('拉起权限设置失败，请到 系统设置 → 应用 → 本应用 手动开启');
+    }
+  }
+
   /**
    * v3.74：不再在此 attach/detach `HoverStore`。
    *
@@ -184,6 +241,7 @@ export struct ComponentGalleryView {
    * `HoverSplitView`、`AppHoverSplit` 显示"非折叠设备、数据恒 0"（跨页损坏）。
    */
   aboutToAppear(): void {
+    this.refreshPermissionState();
   }
 
   aboutToDisappear(): void {
@@ -1266,6 +1324,86 @@ export struct ComponentGalleryView {
           .alignItems(HorizontalAlign.Start)
           .width('100%')
         }
+        this.permissionSection()
+  }
+
+
+  /**
+   * 运行时权限示例：申请 → 系统弹窗 → 拒绝 → 去设置。
+   *
+   * 补齐的是模板最容易被跳过的一步：用户拒绝一次后系统不再弹窗，
+   * 只能 `requestPermissionOnSetting` 拉起权限设置页。
+   */
+  @Builder
+  permissionSection() {
+    this.sectionTitle('运行时权限（申请 → 系统弹窗 → 拒绝 → 去设置）')
+    Text('PermissionHelper 已封装 checkAccessToken / requestPermissionsFromUser；这里补「拒绝之后」——系统不再弹窗，只能 requestPermissionOnSetting 拉起设置页。')
+      .fontSize(AppFontSize.CAPTION)
+      .fontColor($r('app.color.app_text_tertiary'))
+      .width('100%')
+      .margin({ bottom: AppSpacing.SM })
+
+    Column({ space: AppSpacing.SM }) {
+      Row({ space: AppSpacing.SM }) {
+        Text('近似位置')
+          .fontSize(AppFontSize.BODY_SM)
+          .fontColor($r('app.color.app_text_secondary'))
+        Blank()
+        Text(this.permGranted ? '已授权' : '未授权')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor(this.permGranted ? this.theme.brandColor() : $r('app.color.app_text_tertiary'))
+          .padding({ left: AppSpacing.SM, right: AppSpacing.SM, top: 2, bottom: 2 })
+          .borderRadius(AppRadius.FULL)
+          .backgroundColor($r('app.color.app_bg_card'))
+      }
+      .width('100%')
+      .alignItems(VerticalAlign.Center)
+
+      Text(this.permStateText.length > 0 ? this.permStateText : '状态检查中…')
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor($r('app.color.app_text_secondary'))
+        .width('100%')
+
+      Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
+        CommonButton({
+          text: this.permBusy ? '申请中…' : (this.permGranted ? '重新申请' : '申请近似位置'),
+          variant: ButtonVariant.PRIMARY,
+          accentColor: this.theme.accentColor,
+          disabled: this.permBusy || !this.permissionSupported(),
+          onAction: (): void => {
+            this.requestPermission();
+          }
+        })
+        CommonButton({
+          text: '去设置',
+          variant: ButtonVariant.SECONDARY,
+          accentColor: this.theme.accentColor,
+          disabled: !this.permissionSupported(),
+          onAction: (): void => {
+            this.openPermissionSetting();
+          }
+        })
+        CommonButton({
+          text: '刷新状态',
+          variant: ButtonVariant.SECONDARY,
+          accentColor: this.theme.accentColor,
+          disabled: !this.permissionSupported(),
+          onAction: (): void => {
+            this.refreshPermissionState();
+          }
+        })
+      }
+      .width('100%')
+
+      Text(this.permissionSupported()
+        ? '拒绝一次后系统不再弹窗属预期行为；「去设置」走 requestPermissionOnSetting。'
+        : '当前形态未在 module.json5 声明该权限，按钮已禁用（示例只在 entry / entry_pc 生效）。')
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor($r('app.color.app_text_quaternary'))
+        .width('100%')
+    }
+    .alignItems(HorizontalAlign.Start)
+    .width('100%')
   }
 
   /** 画廊分组区块：groupApp（v3.26 自 build() 抽出，内容等价） */

@@ -39,9 +39,19 @@ export class DevToolItem {
   group: DevToolGroup = DevToolGroup.ENV;
   /** 参考实现地址（调研出处；同时登记在开源备忘录 §6） */
   sourceUrl: string = '';
+  /**
+   * 最低 API 版本（0 = 不限制）。
+   *
+   * 门控判定在视图层统一走 `FeatureGate`（quizzyjoy/platform），
+   * 这里只存数据，不 import 平台层——保持 model 零依赖。
+   */
+  minApi: number = 0;
+  /** 必需的 syscap（空数组 = 不检查；全部满足才可用）。 */
+  syscaps: string[] = [];
 
   constructor(id: string, title: string, desc: string, symbol: DevToolSymbol, group: DevToolGroup,
-    status: DevToolStatus = DevToolStatus.READY, sourceUrl: string = '') {
+    status: DevToolStatus = DevToolStatus.READY, sourceUrl: string = '',
+    minApi: number = 0, syscaps: string[] = []) {
     this.id = id;
     this.title = title;
     this.desc = desc;
@@ -49,6 +59,8 @@ export class DevToolItem {
     this.group = group;
     this.status = status;
     this.sourceUrl = sourceUrl;
+    this.minApi = minApi;
+    this.syscaps = syscaps;
   }
 }
 
@@ -69,7 +81,8 @@ export function devTools(): DevToolItem[] {
     new DevToolItem('iconkit', '图标处理 Kit',
       'hdsDrawable 分层图标合成：size 控尺寸、hasBorder 加描边',
       DevToolSymbol.PALETTE, DevToolGroup.ENV, DevToolStatus.READY,
-      'https://gitcode.com/HarmonyOS_Samples/uidesign-kit_-sample-code_-arkts'),
+      'https://gitcode.com/HarmonyOS_Samples/uidesign-kit_-sample-code_-arkts',
+      12, ['SystemCapability.UIDesign.HDSPattern.Standard']),
     new DevToolItem('transitions', '转场动效合集',
       '元素进出 / 曲线对比 / 共享元素 / 形变位移 四种演示',
       DevToolSymbol.GRID, DevToolGroup.ENV, DevToolStatus.READY,

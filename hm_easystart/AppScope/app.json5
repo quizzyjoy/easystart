@@ -2,7 +2,7 @@
   "app": {
     "bundleName": "com.quizzyjoy.easystart",
     "vendor": "quizzyjoy",
-    "versionCode": 1000083,
+    "versionCode": 1000084,
     "versionName": "1.0.0",
     "buildVersion": "1",
     "icon": "$media:layered_image",

@@ -1,7 +1,7 @@
 import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { CommonToast } from '@easystart/app-component';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
+import { BreakpointManager, FeatureGate, GateResult, GateStatus, WindowAdapter } from '@quizzyjoy/platform';
 import {
   DevToolGroup,
   DevToolItem,
@@ -42,6 +42,15 @@ export struct ToolsView {
   @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
   @Local envTools: DevToolItem[] = devToolsOf(DevToolGroup.ENV);
   @Local dataTools: DevToolItem[] = devToolsOf(DevToolGroup.DATA);
+
+  /**
+   * 是否隐藏「当前系统跑不了」的条目。
+   *
+   * 两种策略都保留，因为模板要教的是取舍：
+   * - false（默认）：**置灰 + 角标**，用户知道能力存在、只差条件；
+   * - true：**整条隐藏**，适合面向存量设备的正式产品。
+   */
+  @Local hideUnavailable: boolean = false;
 
   private bp(): string {
     return `${this.breakpoint.breakpoint}`;
@@ -122,6 +131,30 @@ export struct ToolsView {
     return status === DevToolStatus.READY ? $r('app.color.app_text_on_brand') : $r('app.color.app_text_tertiary');
   }
 
+  /** 门控判定：版本 + syscap 统一走 FeatureGate，视图只负责呈现。 */
+  private gateOf(item: DevToolItem): GateResult {
+    return FeatureGate.checkInline(item.minApi, item.syscaps);
+  }
+
+  /** 按当前策略过滤：隐藏模式剔除不达标项，置灰模式原样返回。 */
+  private visibleOf(items: DevToolItem[]): DevToolItem[] {
+    if (!this.hideUnavailable) {
+      return items;
+    }
+    return items.filter((item: DevToolItem): boolean => this.gateOf(item).isAvailable());
+  }
+
+  /** 本组被隐藏的条目数（用于组标题右侧提示）。 */
+  private hiddenCountOf(items: DevToolItem[]): number {
+    let n: number = 0;
+    for (let i = 0; i < items.length; i++) {
+      if (!this.gateOf(items[i]).isAvailable()) {
+        n++;
+      }
+    }
+    return n;
+  }
+
   private onTap(item: DevToolItem): void {
     if (item.status === DevToolStatus.PLANNED) {
       // 待实现：明确告知去哪看参考实现，避免「点了没反应」。
@@ -130,12 +163,19 @@ export struct ToolsView {
       CommonToast.info(`${item.title} 待实现：参考实现见 docs/权威参考与开源项目盘点.md §6`);
       return;
     }
+    const gate: GateResult = this.gateOf(item);
+    if (!gate.isAvailable()) {
+      // 不达标时明确说「差什么」，而不是让用户点了没反应。
+      CommonToast.info(`${item.title} 不可用：${gate.reason}`);
+      return;
+    }
     this.onOpenTool(item.id);
   }
 
   build() {
     Scroll() {
       Column({ space: DesignToken.sectionSpacing() }) {
+        this.gateBar()
         this.groupBlock(devToolGroupTitle(DevToolGroup.ENV), this.envTools)
         this.groupBlock(devToolGroupTitle(DevToolGroup.DATA), this.dataTools)
       }
@@ -162,29 +202,72 @@ export struct ToolsView {
   @Builder
   groupBlock(title: string, items: DevToolItem[]) {
     Column({ space: AppSpacing.SM }) {
-      Text(title)
-        .fontSize(AppFontSize.BODY_SM)
-        .fontWeight(AppFontWeight.MEDIUM)
-        .fontColor($r('app.color.app_text_secondary'))
-        .width('100%')
-        .padding({ left: AppSpacing.SM })
-
-      Grid() {
-        ForEach(items, (item: DevToolItem) => {
-          GridItem() {
-            this.toolCard(item)
-          }
-        }, (item: DevToolItem): string => item.id)
+      Row() {
+        Text(title)
+          .fontSize(AppFontSize.BODY_SM)
+          .fontWeight(AppFontWeight.MEDIUM)
+          .fontColor($r('app.color.app_text_secondary'))
+        Blank()
+        if (this.hideUnavailable && this.hiddenCountOf(items) > 0) {
+          Text(`已隐藏 ${this.hiddenCountOf(items)} 项`)
+            .fontSize(AppFontSize.CAPTION)
+            .fontColor($r('app.color.app_text_tertiary'))
+        }
       }
-      .columnsTemplate(this.columnsTemplate())
-      .columnsGap(ToolsView.CARD_GAP)
-      .rowsGap(ToolsView.CARD_GAP)
-      .height(this.gridHeight(items.length))
       .width('100%')
-      .scrollBar(BarState.Off)
+      .padding({ left: AppSpacing.SM, right: AppSpacing.SM })
+
+      if (this.visibleOf(items).length === 0) {
+        Text('本组条目在当前系统均不达标，可关闭「隐藏不可用」查看原因')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
+          .padding({ left: AppSpacing.SM, top: AppSpacing.SM, bottom: AppSpacing.SM })
+      } else {
+        Grid() {
+          ForEach(this.visibleOf(items), (item: DevToolItem) => {
+            GridItem() {
+              this.toolCard(item)
+            }
+          }, (item: DevToolItem): string => item.id)
+        }
+        .columnsTemplate(this.columnsTemplate())
+        .columnsGap(ToolsView.CARD_GAP)
+        .rowsGap(ToolsView.CARD_GAP)
+        .height(this.gridHeight(this.visibleOf(items).length))
+        .width('100%')
+        .scrollBar(BarState.Off)
+      }
     }
     .width('100%')
     .alignItems(HorizontalAlign.Start)
+  }
+
+  /**
+   * 门控控制条：显示当前 API 版本 + 切换「隐藏不可用」。
+   *
+   * 把它放在工具页顶部，是为了让 fork 者一眼看到「入口可见性是有策略的」，
+   * 而不是自己去猜某个卡片为什么点不动。
+   */
+  @Builder
+  gateBar() {
+    Row({ space: AppSpacing.SM }) {
+      Text(`当前 API ${FeatureGate.currentApi()}`)
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor($r('app.color.app_text_tertiary'))
+      Blank()
+      Text(this.hideUnavailable ? '隐藏不可用：开' : '隐藏不可用：关')
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor(this.hideUnavailable ? this.theme.brandColor() : $r('app.color.app_text_secondary'))
+        .padding({ left: AppSpacing.SM, right: AppSpacing.SM, top: AppSpacing.XXS, bottom: AppSpacing.XXS })
+        .borderRadius(AppRadius.FULL)
+        .backgroundColor($r('app.color.app_bg_card'))
+        .onClick((): void => {
+          this.hideUnavailable = !this.hideUnavailable;
+        })
+    }
+    .width('100%')
+    .alignItems(VerticalAlign.Center)
   }
 
   /** 单张工具卡：图标 + 标题 + 两行描述 + （待实现角标）。 */
@@ -212,6 +295,16 @@ export struct ToolsView {
             .padding({ left: AppSpacing.XXS, right: AppSpacing.XXS, top: 1, bottom: 1 })
             .borderRadius(AppRadius.SM)
             .backgroundColor($r('app.color.app_bg_page'))
+        } else if (!this.gateOf(item).isAvailable()) {
+          // 门控角标：显示「差什么」，比单纯灰掉更有指导性
+          Text(this.gateOf(item).reason)
+            .fontSize(AppFontSize.CAPTION)
+            .fontColor($r('app.color.app_text_tertiary'))
+            .maxLines(1)
+            .textOverflow({ overflow: TextOverflow.Ellipsis })
+            .padding({ left: AppSpacing.XXS, right: AppSpacing.XXS, top: 1, bottom: 1 })
+            .borderRadius(AppRadius.SM)
+            .backgroundColor($r('app.color.app_bg_page'))
         }
       }
       .width('100%')
@@ -220,7 +313,7 @@ export struct ToolsView {
       Text(item.title)
         .fontSize(AppFontSize.BODY)
         .fontWeight(AppFontWeight.MEDIUM)
-        .fontColor(item.status === DevToolStatus.READY
+        .fontColor(item.status === DevToolStatus.READY && this.gateOf(item).isAvailable()
           ? $r('app.color.app_text_primary') : $r('app.color.app_text_secondary'))
         .width('100%')
         .maxLines(1)
@@ -239,6 +332,7 @@ export struct ToolsView {
     .padding(AppSpacing.MD)
     .borderRadius(AppRadius.LG)
     .backgroundColor($r('app.color.app_bg_card'))
+    .opacity(this.gateOf(item).isAvailable() ? 1 : 0.55)
     .onClick((): void => {
       this.onTap(item);
     })

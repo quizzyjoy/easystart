@@ -48,6 +48,7 @@ export { HapticManager } from './src/main/ets/haptic/HapticManager';
 export { ColorModeManager, AppColorMode } from './src/main/ets/theme/ColorModeManager';
 export { SystemAppearanceManager } from './src/main/ets/theme/SystemAppearanceManager';
 export { CapabilityManager } from './src/main/ets/capability/CapabilityManager';
+export { FeatureGate, FeatureRequirement, GateResult, GateStatus } from './src/main/ets/capability/FeatureGate';
 export { AppEnvManager, AppEnvSnapshot } from './src/main/ets/device/AppEnvManager';
 export { DeviceType, FormFactor, DeviceManager } from './src/main/ets/device/FormFactor';
 export { CompatManager } from './src/main/ets/compat/CompatManager';

@@ -19,6 +19,10 @@
     {
       "name": "WidgetCard_desc",
       "value": "偏好摘要卡片"
+    },
+    {
+      "name": "permission_location_reason",
+      "value": "用于演示运行时权限申请与拒绝后的降级引导"
     }
   ]
 }
