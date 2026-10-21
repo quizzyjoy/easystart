@@ -43,6 +43,7 @@ import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, AppStroke, 
 import { AppFoldStatus, BreakpointManager, CapabilityManager, ColorModeManager, DeviceManager, DeviceType,
   FeatureGate, HoverStore, PermissionHelper, ShareHelper, UiMetrics, WindowAdapter } from '@quizzyjoy/platform';
 import { NetOutcome, NetReport, NetRepository } from '../data/NetRepository';
+import { SimpleDataSource } from '../data/ListDataSource';
 import type { common } from '@kit.AbilityKit';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import { ClipboardUtil } from '../util/ClipboardUtil';
@@ -130,6 +131,18 @@ export struct ComponentGalleryView {
   @Local netSummary: string = '尚未请求';
   /** 网络示例：响应片段。 */
   @Local netBody: string = '';
+  /** 长列表演示：0 = 未渲染，1 = ForEach（一次性），2 = LazyForEach（按需） */
+  @Local perfMode: number = 0;
+  /** 长列表演示：数据条数 */
+  @Local perfCount: number = 200;
+  /** ForEach 实际创建过的行数（onAppear 累加，这是可验证的硬指标） */
+  @Local foreachCreated: number = 0;
+  /** LazyForEach 实际创建过的行数 */
+  @Local lazyCreated: number = 0;
+  /** LazyForEach 的数据源（必须真实现 IDataSource） */
+  private lazySource: SimpleDataSource = new SimpleDataSource();
+  /** ForEach 的普通数组 */
+  private foreachItems: string[] = [];
   /** 弹层页：bindPopup / bindContentCover 的可见性（Menu / ContextMenu 由系统接管，无需状态）。 */
   @Local popupVisible: boolean = false;
   @Local coverVisible: boolean = false;
@@ -188,6 +201,65 @@ export struct ComponentGalleryView {
     } else {
           AppSnackBar.info(uiContext, '趣开发 应用级组件示例');
     }
+  }
+
+  /**
+   * 准备长列表数据并切到指定模式。
+   *
+   * 计数归零放在这里而不是按钮里，保证"每次切换都是一次干净的测量"。
+   */
+  private startPerf(mode: number, count: number): void {
+    this.perfCount = count;
+    this.perfMode = mode;
+    this.foreachCreated = 0;
+    this.lazyCreated = 0;
+
+    const arr: string[] = [];
+    for (let i = 0; i < count; i++) {
+      arr.push(`第 ${i + 1} 条`);
+    }
+    this.foreachItems = arr;
+    this.lazySource.reset(count, '第');
+  }
+
+  /** ForEach 行 */
+  @Builder
+  perfForeachRow(text: string) {
+    Row() {
+      Text(text)
+        .fontSize(AppFontSize.BODY_SM)
+        .fontColor($r('app.color.app_text_primary'))
+      Blank()
+      Text('ForEach')
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor($r('app.color.app_text_quaternary'))
+    }
+    .width('100%')
+    .height(48)
+    .padding({ left: AppSpacing.MD, right: AppSpacing.MD })
+    .onAppear((): void => {
+      this.foreachCreated = this.foreachCreated + 1;
+    })
+  }
+
+  /** LazyForEach 行 */
+  @Builder
+  perfLazyRow(text: string) {
+    Row() {
+      Text(text)
+        .fontSize(AppFontSize.BODY_SM)
+        .fontColor($r('app.color.app_text_primary'))
+      Blank()
+      Text('LazyForEach')
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor($r('app.color.app_text_quaternary'))
+    }
+    .width('100%')
+    .height(48)
+    .padding({ left: AppSpacing.MD, right: AppSpacing.MD })
+    .onAppear((): void => {
+      this.lazyCreated = this.lazyCreated + 1;
+    })
   }
 
   /** 网络示例：按 URL 发一次请求，把四类收场都渲染出来。 */
@@ -1008,8 +1080,123 @@ export struct ComponentGalleryView {
         }
         .width('100%')
         .height(320)
+        // clip 必须有：RefreshList 内部 List 的高度不受外层约束，不裁剪会溢出容器，
+        // 并把它之后的兄弟节点（perfSection）挤出可视区、导致外层 Scroll 无法继续向下滚
+        .clip(true)
         .borderRadius(AppRadius.MD)
         .backgroundColor($r('app.color.app_bg_page_deep'))
+        this.perfSection()
+  }
+
+
+  /**
+   * 长列表性能示例（P0-3）：ForEach vs LazyForEach，比的是**实际创建的行数**。
+   *
+   * 为什么不比耗时：渲染耗时受设备/帧率影响大，同机两次测量都抖动；
+   * 而 `onAppear` 触发次数是确定性的——2000 条数据下 ForEach 会创建 2000 个节点，
+   * LazyForEach 只创建可视区那十几个。这个差异是"照抄哪个"的直接依据。
+   */
+  @Builder
+  perfSection() {
+    this.sectionTitle('长列表性能（ForEach vs LazyForEach · 比实际创建行数）')
+    Text('ForEach 放在 Scroll+Column（全量创建），LazyForEach 放在 List（按需创建）；计数来自每行 onAppear —— 可复现，不依赖设备性能。')
+      .fontSize(AppFontSize.CAPTION)
+      .fontColor($r('app.color.app_text_tertiary'))
+      .width('100%')
+      .margin({ bottom: AppSpacing.SM })
+
+    Column({ space: AppSpacing.SM }) {
+      Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.XS) }) {
+        CommonButton({
+          text: '200 条 · ForEach',
+          variant: this.perfMode === 1 && this.perfCount === 200 ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
+          accentColor: this.theme.accentColor,
+          onAction: (): void => {
+            this.startPerf(1, 200);
+          }
+        })
+        CommonButton({
+          text: '2000 条 · ForEach',
+          variant: this.perfMode === 1 && this.perfCount === 2000 ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
+          accentColor: this.theme.accentColor,
+          onAction: (): void => {
+            this.startPerf(1, 2000);
+          }
+        })
+        CommonButton({
+          text: '2000 条 · Lazy',
+          variant: this.perfMode === 2 ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
+          accentColor: this.theme.accentColor,
+          onAction: (): void => {
+            this.startPerf(2, 2000);
+          }
+        })
+      }
+      .width('100%')
+
+      Text(this.perfSummary())
+        .fontSize(AppFontSize.BODY_SM)
+        .fontColor(this.perfMode === 2 ? this.theme.brandColor() : $r('app.color.app_text_primary'))
+        .width('100%')
+
+      if (this.perfMode === 1) {
+        // 关键：ForEach 要放在**非虚拟化容器**里才能看出差异。
+        // 第一版用了 List + ForEach，实测只创建 12 行（List 自身也会虚拟化），
+        // 那样两种写法计数几乎一样、演示不出结论。
+        Scroll() {
+          Column() {
+            ForEach(this.foreachItems, (text: string) => {
+              this.perfForeachRow(text)
+            }, (text: string, index: number): string => `f-${index}`)
+          }
+          .width('100%')
+        }
+        .width('100%')
+        .height(260)
+        .borderRadius(AppRadius.MD)
+        .backgroundColor($r('app.color.app_bg_card'))
+        .scrollBar(BarState.Off)
+      } else if (this.perfMode === 2) {
+        List() {
+          LazyForEach(this.lazySource, (text: string) => {
+            ListItem() {
+              this.perfLazyRow(text)
+            }
+          }, (text: string, index: number): string => `l-${index}`)
+        }
+        .cachedCount(4)
+        .width('100%')
+        .height(260)
+        .borderRadius(AppRadius.MD)
+        .backgroundColor($r('app.color.app_bg_card'))
+        .scrollBar(BarState.Off)
+      } else {
+        Text('选一种写法开始测量：2000 条时差异最明显。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_quaternary'))
+          .width('100%')
+          .padding(AppSpacing.MD)
+          .borderRadius(AppRadius.MD)
+          .backgroundColor($r('app.color.app_bg_card'))
+      }
+
+      Text('结论：List 里的 ForEach 其实也会被虚拟化（实测同样只建十几行）；真正差异在「非虚拟化容器」——大量数据放进 Scroll+Column+ForEach 会一次性建满，务必改用 List/Grid + LazyForEach。')
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor($r('app.color.app_text_quaternary'))
+        .width('100%')
+    }
+    .alignItems(HorizontalAlign.Start)
+    .width('100%')
+  }
+
+  /** 一行结论：已创建多少行 / 一共多少条。 */
+  private perfSummary(): string {
+    if (this.perfMode === 0) {
+      return '尚未开始';
+    }
+    const created: number = this.perfMode === 1 ? this.foreachCreated : this.lazyCreated;
+    const mode: string = this.perfMode === 1 ? 'ForEach' : 'LazyForEach';
+    return `${mode}：已创建 ${created} / ${this.perfCount} 行`;
   }
 
   /** 状态页列表行（@Builder：itemBuilder 回调里不能直接写 UI 语法）。 */
