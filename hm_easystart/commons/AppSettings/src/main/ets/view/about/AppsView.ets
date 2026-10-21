@@ -49,6 +49,8 @@ export struct AppsView {
   @Local introQqNumber: string = '';
   @Local introQqUrl: string = '';
   @Local introQqHasQr: boolean = false;
+  /** 内测邀请链接（空串 = 该应用无内测入口）。 */
+  @Local introInviteUrl: string = '';
   /** 详情卡是否双列（按容器实际宽度断点，v3.63）。 */
   @Local detailWide: boolean = false;
 
@@ -105,6 +107,7 @@ export struct AppsView {
     this.introQqNumber = entry.qqGroupNumber;
     this.introQqUrl = entry.qqJoinUrl;
     this.introQqHasQr = entry.qqHasQr;
+    this.introInviteUrl = entry.inviteTestUrl;
     this.segIndex = 0;
     this.segItems = entry.qqGroupNumber.length > 0
       ? new SegmentButtonV2Items([
@@ -128,6 +131,35 @@ export struct AppsView {
     if (!opened) {
       CommonToast.info($r('app.string.apps_site_open_failed'));
     }
+  }
+
+  /**
+   * 参加内测：优先用浏览器打开 AppGallery 邀测页。
+   *
+   * 邀测页必须登录华为账号后点「参加」，应用内无法代劳，所以这里只负责把用户送到浏览器；
+   * 打不开浏览器时降级为复制链接，避免按钮变成"死键"。
+   */
+  private async joinInviteTest(): Promise<void> {
+    if (this.introInviteUrl.length === 0) {
+      return;
+    }
+    // 必须走浏览器：AppGallery 域名被应用市场接管，openUri 会落到市场首页
+    const opened: boolean = await MarketHelper.getInstance().openInBrowser(this.introInviteUrl);
+    if (opened) {
+      return;
+    }
+    await this.copyInviteLink();
+  }
+
+  /** 复制内测链接（浏览器打不开时的确定性退路）。 */
+  private async copyInviteLink(): Promise<void> {
+    if (this.introInviteUrl.length === 0) {
+      return;
+    }
+    const copied: boolean = await ClipboardUtil.copyText(this.introInviteUrl);
+    CommonToast.info(copied
+      ? $r('app.string.apps_intro_invite_test_copied')
+      : $r('app.string.apps_intro_invite_test_failed'));
   }
 
   /** 加群：有短链走 QQ 加群页；没有短链则复制群号（数易只有群号）。 */
@@ -219,6 +251,40 @@ export struct AppsView {
         .onClick((): void => {
           this.openSite();
         })
+
+      // 内测入口：只有配了 inviteTestUrl 的应用才出现（数易已正式上架，没有这一块）
+      if (this.introInviteUrl.length > 0) {
+        Row({ space: AppSpacing.SM }) {
+          Button($r('app.string.apps_intro_join_invite_test'))
+            .fontSize(AppFontSize.BODY_SM)
+            .fontColor($r('app.color.qj_brand'))
+            .backgroundColor(Color.Transparent)
+            .borderRadius(AppRadius.FULL)
+            .border({ width: 1, color: $r('app.color.qj_brand') })
+            .height(44)
+            .layoutWeight(2)
+            .onClick((): void => {
+              this.joinInviteTest();
+            })
+          Button($r('app.string.apps_intro_invite_test_copy'))
+            .fontSize(AppFontSize.BODY_SM)
+            .fontColor($r('app.color.app_text_secondary'))
+            .backgroundColor($r('app.color.app_bg_card'))
+            .borderRadius(AppRadius.FULL)
+            .height(44)
+            .layoutWeight(1)
+            .onClick((): void => {
+              this.copyInviteLink();
+            })
+        }
+        .width('100%')
+
+        Text($r('app.string.apps_intro_invite_test_tip'))
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .lineHeight(AppFontSize.CAPTION * 1.5)
+          .width('100%')
+      }
     }
     .width('100%')
     .alignItems(HorizontalAlign.Start)

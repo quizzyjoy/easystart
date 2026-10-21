@@ -695,6 +695,26 @@
     {
       "name": "apps_intro_detail_source",
       "value": "Content from the product page on the official site."
+    },
+    {
+      "name": "apps_intro_join_invite_test",
+      "value": "Join the Beta"
+    },
+    {
+      "name": "apps_intro_invite_test_tip",
+      "value": "Limited beta slots: the link opens in a browser, sign in to your Huawei ID and tap Join to install the beta."
+    },
+    {
+      "name": "apps_intro_invite_test_copied",
+      "value": "Beta link copied to clipboard"
+    },
+    {
+      "name": "apps_intro_invite_test_failed",
+      "value": "Could not open a browser; the link was copied for manual use"
+    },
+    {
+      "name": "apps_intro_invite_test_copy",
+      "value": "Copy link"
     }
   ]
 }

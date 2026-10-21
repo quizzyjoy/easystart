@@ -108,4 +108,55 @@ export class MarketHelper {
       return false;
     }
   }
+
+  /**
+   * 用**浏览器**打开链接（v3.81）。
+   *
+   * 为什么不用 `openUri`：`appgallery.huawei.com` 这类域名会被应用市场 App 接管，
+   * 隐式 Want 会把用户送到市场首页而不是目标页（实测：邀测链接点开落到市场「探索」页）。
+   * 内测邀测页只能在浏览器里登录华为账号后操作，因此这里显式指定浏览器。
+   *
+   * 策略：显式华为浏览器 → 系统任意浏览器（隐式）→ 全失败返回 false 由 UI 降级复制链接。
+   *
+   * @param uri 目标 URI
+   * @returns 是否成功拉起浏览器
+   */
+  async openInBrowser(uri: string): Promise<boolean> {
+    const context: common.UIAbilityContext | undefined = this.context;
+    if (context === undefined || uri.length === 0) {
+      Logger.warn(DOMAIN, TAG, 'openInBrowser ignored: no context or empty uri');
+      return false;
+    }
+    // ① 显式华为浏览器：绕开"AppGallery 域名被市场接管"
+    const explicit: Want = {
+      bundleName: 'com.huawei.hmos.browser',
+      abilityName: 'MainAbility',
+      action: 'ohos.want.action.viewData',
+      entities: ['entity.system.browsable'],
+      uri: uri
+    };
+    try {
+      await context.startAbility(explicit);
+      Logger.info(DOMAIN, TAG, `browser opened explicitly: ${uri}`);
+      return true;
+    } catch (err) {
+      const e: BusinessError = err as BusinessError;
+      Logger.warn(DOMAIN, TAG, `explicit browser failed: ${ErrorMapper.fromBusiness(e, DOMAIN, 'startAbility').toLog()}`);
+    }
+    // ② 隐式 browsable（系统默认浏览器）
+    const implicit: Want = {
+      action: 'ohos.want.action.viewData',
+      entities: ['entity.system.browsable'],
+      uri: uri
+    };
+    try {
+      await context.startAbility(implicit);
+      Logger.info(DOMAIN, TAG, `browser opened implicitly: ${uri}`);
+      return true;
+    } catch (err2) {
+      const e2: BusinessError = err2 as BusinessError;
+      Logger.warn(DOMAIN, TAG, `implicit browser failed: ${ErrorMapper.fromBusiness(e2, DOMAIN, 'startAbility').toLog()}`);
+      return false;
+    }
+  }
 }

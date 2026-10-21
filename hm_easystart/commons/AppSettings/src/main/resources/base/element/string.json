@@ -695,6 +695,26 @@
     {
       "name": "apps_intro_detail_source",
       "value": "以上内容取自产品官网的介绍卡片。"
+    },
+    {
+      "name": "apps_intro_join_invite_test",
+      "value": "参加内测"
+    },
+    {
+      "name": "apps_intro_invite_test_tip",
+      "value": "内测名额有限：链接会在浏览器打开，登录华为账号后点「参加」即可安装测试版。"
+    },
+    {
+      "name": "apps_intro_invite_test_copied",
+      "value": "已将内测链接复制到剪贴板"
+    },
+    {
+      "name": "apps_intro_invite_test_failed",
+      "value": "无法打开浏览器，已复制链接，请手动到浏览器打开"
+    },
+    {
+      "name": "apps_intro_invite_test_copy",
+      "value": "复制链接"
     }
   ]
 }

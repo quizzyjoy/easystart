@@ -58,6 +58,13 @@ export interface AppMatrixEntry {
   qqHasQr: boolean;
   /** 段 3：详情与特性（取自官网产品页介绍卡片）。 */
   featureLines: string[];
+  /**
+   * AppGallery 内测邀请链接（空串 = 无内测入口）。
+   *
+   * 邀测链接必须在**浏览器**里打开并登录华为账号后点「参加」，应用内无法代替这一步，
+   * 所以视图侧只做「打开浏览器」，失败才降级为复制链接（见 AppsView.joinInviteTest）。
+   */
+  inviteTestUrl: string;
 }
 
 /**
@@ -90,6 +97,7 @@ export class AppMatrix {
       qqGroupNumber: '',
       qqJoinUrl: '',
       qqHasQr: false,
+      inviteTestUrl: 'https://appgallery.huawei.com/link/invite-test-wap?taskId=bcac60cb4d546202fdaf9488186e9000&invitationCode=26ytUct6qgi',
       featureLines: [
         '四端一仓：product 下 entry（手机与平板折叠）、entry_pc（2in1）、entry_tv、entry_wearable 四个 HAP 入口，断点 xs/sm/md/lg 驱动响应式适配；手表入口纯原生原语控制体积。',
         '三大共享库：Foundation（日志、异常、Result、数值令牌，零依赖）· Platform（所有系统调用的唯一发生地）· VitalUI（通用组件、图表、取色器、动效与主题）。',
@@ -118,6 +126,8 @@ export class AppMatrix {
       qqGroupNumber: '823435665',
       qqJoinUrl: 'https://qun.qq.com/universal-share/share?ac=1&authKey=34vRPe2I1zFqlwqWzcobb6qLeIuYEdlCLHZs10CVk66yddzuwBuS0W8%2BpcrRHuNu&busi_data=eyJncm91cENvZGUiOiI4MjM0MzU2NjUiLCJ0b2tlbiI6InQ5VGxGRkhlSzFDTUNCOS90VitFVUJwcW9KVXloYzhTMXJ1ZExUMU1IYVIwdzBHL2JkVERjOG1pNURuWFdFZmIiLCJ1aW4iOiIzMDE0NTUxMzI5In0%3D&data=mtaiah60J05b9jEsEOUCRkzbJC77f-z45bFZQNPBU2R4eo932VzKUGYCZvVLoT4eLU-LRMwMmyNebg4YObTfFA&svctype=4&tempid=h5_group_info',
       qqHasQr: false,
+      // 已正式上架，无需内测入口
+      inviteTestUrl: '',
       featureLines: [
         '函数空间：2D 多曲线叠加、缩放平移，公式输入 / 表格粘贴 / 手动打点 / 随机样本四种数据来源，线性、多项式、高斯拟合，网格、散点、置信区间、残差图层独立开关；3D 曲面随手势旋转缩放，附等高线视图。',
         '参数动画：输入含参表达式 y = a·sin(bx + c)，勾选参数即出现滑块面板，图像随参数平滑变化——函数族不再靠背，一遍动画建立直觉。',
@@ -147,6 +157,7 @@ export class AppMatrix {
       qqGroupNumber: '650941843',
       qqJoinUrl: 'https://qun.qq.com/universal-share/share?ac=1&authKey=yUqxmTK4inoxzae56voDLI0YhrO8dVe5r6t3Lw3lMfu0G2xP47Rm2Z%2FkMyFwCeWh&busi_data=eyJncm91cENvZGUiOiI2NTA5NDE4NDMiLCJ0b2tlbiI6IjNPRUpaaHg1a2VESm56RmxDWGtEUHRQN3ZER1RxdFk0M3J3Zy9LK1dZc3BGOENIeHBKMjZmNmZpUExiUDBGaloiLCJ1aW4iOiIzMDE0NTUxMzI5In0%3D&data=f8IANPw1YSaA_0JCky5IiRBudvwkFcq5YCGMk1FofnRuyDO0CckE5tLa3cYhiVLJx44ks2gq8SbyHVtRKRmJjQ&svctype=4&tempid=h5_group_info',
       qqHasQr: true,
+      inviteTestUrl: 'https://appgallery.huawei.com/link/invite-test-wap?taskId=1101c3ea46f5a39d28e3006c914ec67f&invitationCode=84w2KO3o2IR',
       featureLines: [
         '克拉德尼波场：声学经典实验的数字化重现——薄板上的沙粒随频率在共振图案间流动重组，每一个频段都有自己的几何指纹。',
         '粒子海浪：数万粒子组成的能量场，随节拍涨落、随频段分层，预算分档保证长时间播放依旧满帧。',
@@ -176,6 +187,7 @@ export class AppMatrix {
       qqGroupNumber: '',
       qqJoinUrl: '',
       qqHasQr: false,
+      inviteTestUrl: 'https://appgallery.huawei.com/link/invite-test-wap?taskId=f543287125d84579f04a3e3d85b8236d&invitationCode=3FHSl1fSvwk',
       featureLines: [
         '随机决策 9 项（首波迁移）：抛硬币、掷骰子、随机数、吃什么、颜色搭配、随机旅行、ABCD 选择器、随机名字、每日一句，从日常小纠结到课堂抽查一把抓。',
         '计算转换 13 项规划：进制转换、密码生成、文字计数，以及计算、编码、文本方向的扩展工具，覆盖学习与工作中的高频换算。',
