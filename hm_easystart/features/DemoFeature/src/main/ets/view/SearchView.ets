@@ -2,7 +2,7 @@ import { FeedbackText, StateContainer, ViewState } from '@quizzyjoy/vitalui';
 import { ActionCard, CommonTag, TagTone } from '@easystart/app-component';
 import { AppSection, AppTextDisplayModifier, CommonSearchBar, CommonToast } from '@easystart/app-component';
 import { AppFontSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { BreakpointManager, UiMetrics } from '@quizzyjoy/platform';
+import { BreakpointManager, UiMetrics, WindowAdapter } from '@quizzyjoy/platform';
 
 /**
  * 样例子页 ⑥：搜索场景（v3.10）。
@@ -54,6 +54,7 @@ const HOT_WORDS: string[] = ['狼人杀', '剧本杀', '工具', '破冰'];
 @ComponentV2
 export struct SearchView {
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
   /** 受控搜索词（CommonSearchBar @Param value 同源）。 */
   @Local keyword: string = '';
   /** 当前命中集（空查询时恒为空数组）。 */
@@ -77,11 +78,8 @@ export struct SearchView {
   @Builder
   pageHeader() {
     Column({ space: AppSpacing.XS }) {
-      Text('搜索场景')
-        .attributeModifier(new AppTextDisplayModifier())
-        .width('100%')
       Text('CommonSearchBar 防抖受控输入 + 热词/结果/无匹配三态流转。')
-        .fontSize(AppFontSize.CAPTION)
+        .fontSize(AppFontSize.BODY_SM)
         .fontColor($r('app.color.app_text_secondary'))
         .width('100%')
     }
@@ -175,7 +173,7 @@ export struct SearchView {
         left: DesignToken.pagePadding(this.bp()),
         right: DesignToken.pagePadding(this.bp()),
         top: AppSpacing.LG,
-        bottom: AppSpacing.LG
+        bottom: DesignToken.tabPageBottomPadding(this.bp(), this.windowAdapter.bottomAvoidVp)
       })
     }
     .width('100%')

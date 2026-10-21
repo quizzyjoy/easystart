@@ -2,7 +2,7 @@ import { ChartEntry, ChartSeries, PieChart, QuarterRoseChart, RadarChart, RoseCh
 import { ButtonVariant, CommonButton } from '@easystart/app-component';
 import { AppSection, AppTextDisplayModifier } from '@easystart/app-component';
 import { AppFontSize, AppRadius, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { BreakpointManager, ColorModeManager } from '@quizzyjoy/platform';
+import { BreakpointManager, ColorModeManager, WindowAdapter } from '@quizzyjoy/platform';
 
 /**
  * 样例子页 ③：数据看板（v3.9）。
@@ -43,6 +43,7 @@ const PALETTE_DATA: ChartSeries = new ChartSeries('色卡全量取色', [
 @ComponentV2
 export struct ChartsDashboardView {
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
   /** 深浅色单例（@ObservedV2 + @Trace：toggle 后 isDarkNow() 读取点自动重绘）。 */
   @Local colorMode: ColorModeManager = ColorModeManager.getInstance();
   /** 选中详情联动行（图表 onSelect 回写）。 */
@@ -55,11 +56,8 @@ export struct ChartsDashboardView {
   @Builder
   pageHeader() {
     Column({ space: AppSpacing.XS }) {
-      Text('数据看板')
-        .attributeModifier(new AppTextDisplayModifier())
-        .width('100%')
       Text('Canvas 自绘图表 + 深浅色联动重绘 + 选中详情联动（点击扇区/顶点）。')
-        .fontSize(AppFontSize.CAPTION)
+        .fontSize(AppFontSize.BODY_SM)
         .fontColor($r('app.color.app_text_secondary'))
         .width('100%')
     }
@@ -186,7 +184,7 @@ export struct ChartsDashboardView {
           left: DesignToken.pagePadding(this.bp()),
           right: DesignToken.pagePadding(this.bp()),
           top: AppSpacing.LG,
-          bottom: AppSpacing.XXXL
+          bottom: DesignToken.tabPageBottomPadding(this.bp(), this.windowAdapter.bottomAvoidVp)
         })
       }
       .width('100%')

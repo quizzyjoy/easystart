@@ -1,7 +1,7 @@
 import { ButtonVariant, CommonButton, CommonTag, TagTone } from '@easystart/app-component';
 import { AppSnackBar, AppDialog, AppSection, AppSheetContainer, AppSheetOptions, AppTextDisplayModifier, CommonToast, DialogSemantic } from '@easystart/app-component';
 import { AppFontSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { BreakpointManager, UiMetrics } from '@quizzyjoy/platform';
+import { BreakpointManager, UiMetrics, WindowAdapter } from '@quizzyjoy/platform';
 
 /**
  * 样例子页 ②：反馈流（v3.9）。
@@ -23,6 +23,7 @@ const FILTER_OPTIONS: string[] = ['进行中', '已完成', '已收藏', '高优
 @ComponentV2
 export struct FeedbackFlowView {
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
   /** 提交中（按钮 loading 态）。 */
   @Local submitting: boolean = false;
   /** 首次提交已失败（显示重试按钮）。 */
@@ -108,11 +109,8 @@ export struct FeedbackFlowView {
   @Builder
   pageHeader() {
     Column({ space: AppSpacing.XS }) {
-      Text('反馈流')
-        .attributeModifier(new AppTextDisplayModifier())
-        .width('100%')
       Text('真实业务编排的反馈链路：SnackBar 语义时长 / Dialog 危险确认 / Sheet 筛选回写。')
-        .fontSize(AppFontSize.CAPTION)
+        .fontSize(AppFontSize.BODY_SM)
         .fontColor($r('app.color.app_text_secondary'))
         .width('100%')
     }
@@ -210,7 +208,7 @@ export struct FeedbackFlowView {
           left: DesignToken.pagePadding(this.bp()),
           right: DesignToken.pagePadding(this.bp()),
           top: AppSpacing.LG,
-          bottom: AppSpacing.XXXL
+          bottom: DesignToken.tabPageBottomPadding(this.bp(), this.windowAdapter.bottomAvoidVp)
         })
         .bindSheet(this.sheetShow, this.filterSheetBuilder(), AppSheetOptions.bind({
           onDisappear: () => {

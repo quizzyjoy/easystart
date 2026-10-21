@@ -2,7 +2,7 @@ import { CommonLoading, FeedbackText, ListStatus, LoadingVariant, RefreshList, S
 import { ActionCard, ButtonVariant, CommonButton } from '@easystart/app-component';
 import { AppSection, AppTextDisplayModifier, CommonToast } from '@easystart/app-component';
 import { AppFontSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { BreakpointManager, UiMetrics } from '@quizzyjoy/platform';
+import { BreakpointManager, UiMetrics, WindowAdapter } from '@quizzyjoy/platform';
 
 /**
  * 样例子页 ⑤：列表四态（v3.9）。
@@ -34,6 +34,7 @@ class DemoListItem {
 @ComponentV2
 export struct ListStateView {
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
   /** StateContainer 四态（态切换行驱动）。 */
   @Local viewState: ViewState = ViewState.LOADING;
   /** RefreshList 状态机（刷新/加载更多流转）。 */
@@ -108,11 +109,8 @@ export struct ListStateView {
   @Builder
   pageHeader() {
     Column({ space: AppSpacing.XS }) {
-      Text('列表四态')
-        .attributeModifier(new AppTextDisplayModifier())
-        .width('100%')
       Text('StateContainer 加载/空/错误/内容 + RefreshList 刷新与分页状态机。')
-        .fontSize(AppFontSize.CAPTION)
+        .fontSize(AppFontSize.BODY_SM)
         .fontColor($r('app.color.app_text_secondary'))
         .width('100%')
     }
@@ -220,7 +218,7 @@ export struct ListStateView {
         left: DesignToken.pagePadding(this.bp()),
         right: DesignToken.pagePadding(this.bp()),
         top: AppSpacing.LG,
-        bottom: AppSpacing.LG
+        bottom: DesignToken.tabPageBottomPadding(this.bp(), this.windowAdapter.bottomAvoidVp)
       })
     }
     .width('100%')

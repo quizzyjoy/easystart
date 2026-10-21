@@ -209,11 +209,8 @@ export struct DesignTokensView {
   @Builder
   pageHeader() {
     Column({ space: AppSpacing.XS }) {
-      Text('令牌总览')
-        .attributeModifier(new AppTextDisplayModifier())
-        .width('100%')
       Text('设计令牌真相源可视化——页面即代码真相，可直接用于设计走查。')
-        .fontSize(AppFontSize.CAPTION)
+        .fontSize(AppFontSize.BODY_SM)
         .fontColor($r('app.color.app_text_secondary'))
         .width('100%')
     }

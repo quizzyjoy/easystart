@@ -9,7 +9,7 @@ import {
   AppTextArea
 } from '@easystart/app-component';
 import { AppFontSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
-import { BreakpointManager } from '@quizzyjoy/platform';
+import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
 
 /**
  * 样例子页 ④：表单范式（v3.9）。
@@ -27,6 +27,7 @@ const MOCK_SUBMIT_MS: number = 800;
 @ComponentV2
 export struct FormSampleView {
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
+  @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
   /** 表单域受控值（父持有回写）。 */
   @Local nameValue: string = '';
   @Local emailValue: string = '';
@@ -85,11 +86,8 @@ export struct FormSampleView {
   @Builder
   pageHeader() {
     Column({ space: AppSpacing.XS }) {
-      Text('表单范式')
-        .attributeModifier(new AppTextDisplayModifier())
-        .width('100%')
       Text('AppFormField 受控域 + 逐域校验红线 + 搜索防抖 + 提交确认闭环。')
-        .fontSize(AppFontSize.CAPTION)
+        .fontSize(AppFontSize.BODY_SM)
         .fontColor($r('app.color.app_text_secondary'))
         .width('100%')
     }
@@ -242,7 +240,7 @@ export struct FormSampleView {
           left: DesignToken.pagePadding(this.bp()),
           right: DesignToken.pagePadding(this.bp()),
           top: AppSpacing.LG,
-          bottom: AppSpacing.XXXL
+          bottom: DesignToken.tabPageBottomPadding(this.bp(), this.windowAdapter.bottomAvoidVp)
         })
       }
       .width('100%')
