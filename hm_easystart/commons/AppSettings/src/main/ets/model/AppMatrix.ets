@@ -116,7 +116,7 @@ export class AppMatrix {
       ],
       introImage: $r('app.media.intro_easymath'),
       qqGroupNumber: '823435665',
-      qqJoinUrl: '',
+      qqJoinUrl: 'https://qun.qq.com/universal-share/share?ac=1&authKey=34vRPe2I1zFqlwqWzcobb6qLeIuYEdlCLHZs10CVk66yddzuwBuS0W8%2BpcrRHuNu&busi_data=eyJncm91cENvZGUiOiI4MjM0MzU2NjUiLCJ0b2tlbiI6InQ5VGxGRkhlSzFDTUNCOS90VitFVUJwcW9KVXloYzhTMXJ1ZExUMU1IYVIwdzBHL2JkVERjOG1pNURuWFdFZmIiLCJ1aW4iOiIzMDE0NTUxMzI5In0%3D&data=mtaiah60J05b9jEsEOUCRkzbJC77f-z45bFZQNPBU2R4eo932VzKUGYCZvVLoT4eLU-LRMwMmyNebg4YObTfFA&svctype=4&tempid=h5_group_info',
       qqHasQr: false,
       featureLines: [
         '函数空间：2D 多曲线叠加、缩放平移，公式输入 / 表格粘贴 / 手动打点 / 随机样本四种数据来源，线性、多项式、高斯拟合，网格、散点、置信区间、残差图层独立开关；3D 曲面随手势旋转缩放，附等高线视图。',
@@ -145,7 +145,7 @@ export class AppMatrix {
       ],
       introImage: $r('app.media.intro_vibestereo'),
       qqGroupNumber: '650941843',
-      qqJoinUrl: 'https://qm.qq.com/q/cvI2ZxU81O',
+      qqJoinUrl: 'https://qun.qq.com/universal-share/share?ac=1&authKey=yUqxmTK4inoxzae56voDLI0YhrO8dVe5r6t3Lw3lMfu0G2xP47Rm2Z%2FkMyFwCeWh&busi_data=eyJncm91cENvZGUiOiI2NTA5NDE4NDMiLCJ0b2tlbiI6IjNPRUpaaHg1a2VESm56RmxDWGtEUHRQN3ZER1RxdFk0M3J3Zy9LK1dZc3BGOENIeHBKMjZmNmZpUExiUDBGaloiLCJ1aW4iOiIzMDE0NTUxMzI5In0%3D&data=f8IANPw1YSaA_0JCky5IiRBudvwkFcq5YCGMk1FofnRuyDO0CckE5tLa3cYhiVLJx44ks2gq8SbyHVtRKRmJjQ&svctype=4&tempid=h5_group_info',
       qqHasQr: true,
       featureLines: [
         '克拉德尼波场：声学经典实验的数字化重现——薄板上的沙粒随频率在共振图案间流动重组，每一个频段都有自己的几何指纹。',

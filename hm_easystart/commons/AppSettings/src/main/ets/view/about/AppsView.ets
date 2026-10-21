@@ -213,6 +213,7 @@ export struct AppsView {
         .borderRadius(AppRadius.FULL)
         .height(44)
         .width('100%')
+        .margin({ top: AppSpacing.XS })
         .onClick((): void => {
           this.openSite();
         })
@@ -279,24 +280,38 @@ export struct AppsView {
   /** 段 3：详情与特性（条目来自产品官网的介绍卡片）。 */
   @Builder
   segDetail() {
-    Column({ space: AppSpacing.MD }) {
+    Column({ space: AppSpacing.SM }) {
       ForEach(this.introFeatureLines, (line: string, index: number) => {
-        Text(line)
-          .fontSize(AppFontSize.BODY_SM)
-          .fontColor($r('app.color.app_text_secondary'))
-          .lineHeight(AppFontSize.BODY_SM * 1.65)
-          .width('100%')
+        Column() {
+          Text(line)
+            .fontSize(AppFontSize.BODY_SM)
+            .fontColor($r('app.color.app_text_secondary'))
+            .lineHeight(AppFontSize.BODY_SM * 1.65)
+            .width('100%')
+        }
+        .width('100%')
+        .padding(AppSpacing.MD)
+        .borderRadius(AppRadius.MD)
+        .backgroundColor($r('app.color.app_bg_card'))
       }, (line: string, index: number): string => `${index}`)
 
       Text($r('app.string.apps_intro_detail_source'))
         .fontSize(AppFontSize.CAPTION)
         .fontColor($r('app.color.app_text_tertiary'))
         .width('100%')
+        .padding({ top: AppSpacing.XS })
     }
     .width('100%')
     .alignItems(HorizontalAlign.Start)
   }
 
+  /**
+   * 固定底栏主操作（v3.62）。
+   *
+   * 之前按钮放在 Scroll 内容末尾，长内容滚到底时会被 sheet 底部圆角 / 系统手势区盖住；
+   * 现在固定在 Scroll 之外，三段共用一条底栏，按当前段切换动作：
+   * 交流群段 → 一键加群（或复制群号），其余段 → 打开产品官网。
+   */
   /** 半模态内容：分段条 + 可滚动段内容。 */
   @Builder
   introSheet() {
@@ -309,6 +324,7 @@ export struct AppsView {
         }
       })
         .margin({ top: AppSpacing.XS, bottom: AppSpacing.MD })
+        .padding({ left: AppSpacing.LG, right: AppSpacing.LG })
 
       Scroll() {
         Column() {
@@ -321,17 +337,17 @@ export struct AppsView {
           }
         }
         .width('100%')
-        .padding({ bottom: AppSpacing.XXXL })
+        .padding({ left: AppSpacing.LG, right: AppSpacing.LG, bottom: AppSpacing.XXXL + 32 })
       }
       .width('100%')
       .layoutWeight(1)
       .align(Alignment.Top)
       .scrollBar(BarState.Off)
       .edgeEffect(EdgeEffect.Spring)
+
     }
     .width('100%')
     .height('100%')
-    .padding({ left: AppSpacing.LG, right: AppSpacing.LG })
     .alignItems(HorizontalAlign.Start)
   }
 
