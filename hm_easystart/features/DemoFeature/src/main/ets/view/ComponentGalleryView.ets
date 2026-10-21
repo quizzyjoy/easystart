@@ -1,4 +1,4 @@
-import { ChartEntry, ChartSeries, ColorMath, CommonColorPicker, CommonLoading, LoadingVariant, MotionEffects, MotionSpec, PieChart, QuarterRoseChart, RadarChart, RoseChart, SkeletonBlock, SizeLevel, UiThemeManager } from '@quizzyjoy/vitalui';
+import { ChartEntry, ChartSeries, ColorMath, CommonColorPicker, CommonLoading, FeedbackText, ListStatus, LoadingVariant, MotionEffects, MotionSpec, PieChart, QuarterRoseChart, RadarChart, RoseChart, SkeletonBlock, SizeLevel, StateContainer, UiThemeManager, ViewState } from '@quizzyjoy/vitalui';
 import { ActionCard, ButtonVariant, CommonButton, CommonTag, TagTone } from '@easystart/app-component';
 import {
   AppBadge,
@@ -46,6 +46,33 @@ import { FileDemoUtil } from '../util/FileDemoUtil';
 import { PhotoPickUtil } from '../util/PhotoPickUtil';
 
 /** 画廊 DSL 示例规则：first-match-wins（EQ / BETWEEN_CLOSED / IN 三种运算符各一）。 */
+/** 状态与列表示例用：StateContainer 的四态（v3.64）。 */
+class GalleryStateCase {
+  readonly label: string;
+  readonly state: ViewState;
+
+  constructor(label: string, state: ViewState) {
+    this.label = label;
+    this.state = state;
+  }
+}
+
+const GALLERY_STATE_CASES: GalleryStateCase[] = [
+  new GalleryStateCase('content 内容', ViewState.CONTENT),
+  new GalleryStateCase('loading 加载中', ViewState.LOADING),
+  new GalleryStateCase('empty 空态', ViewState.EMPTY),
+  new GalleryStateCase('error 错误态', ViewState.ERROR)
+];
+
+/** ListStatus 五态文案（RefreshList 状态机取值）。 */
+const GALLERY_LIST_STATUSES: string[] = [
+  ListStatus.IDLE,
+  ListStatus.LOADING,
+  ListStatus.SUCCESS,
+  ListStatus.EMPTY,
+  ListStatus.ERROR
+];
+
 const GALLERY_DSL_CASES: ResponsiveCase<string>[] = [
   new ResponsiveCase<string>(
     [new ResponsiveRule('isWide', ResponsiveOperator.EQ, true)],
@@ -438,14 +465,6 @@ export struct ComponentGalleryView {
         }
         .width('100%')
 
-        this.sectionTitle('骨架屏')
-        Column({ space: AppSpacing.MD }) {
-          SkeletonBlock({ heightValue: 24 })
-          SkeletonBlock({ heightValue: 24 })
-          SkeletonBlock({ widthValue: '55%', heightValue: 24 })
-        }
-        .width('100%')
-
         this.sectionTitle('卡片')
         ActionCard({
           title: 'ActionCard',
@@ -493,10 +512,17 @@ export struct ComponentGalleryView {
         .width('100%')
   }
 
-  /** 画廊分组区块：groupVisual（v3.26 自 build() 抽出，内容等价） */
+  /** 画廊分组区块：groupChart（v3.64 从 groupVisual 拆出，VitalUI 数据图表聚合页） */
   @Builder
-  groupVisual() {
-        this.sectionTitle('图表（Canvas 自绘，点击扇区/顶点）')
+  groupChart() {
+        this.sectionTitle('ChartSeries / ChartEntry / ChartPalette / ChartStyle')
+        Text('四个图表共用同一套数据模型：ChartSeries 带一组 ChartEntry，点击扇区/顶点回调 onSelect。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
+          .margin({ bottom: AppSpacing.SM })
+
+        this.sectionTitle('玫瑰 / 饼 / 季度玫瑰 / 雷达（Canvas 自绘，点击扇区/顶点）')
         Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
           Column() {
             RoseChart({
@@ -556,26 +582,101 @@ export struct ComponentGalleryView {
           .width('48%')
         }
         .width('100%')
+  }
 
-        this.sectionTitle('取色器（HdsColorPicker 的 API 23 复刻）')
+  /** 画廊分组区块：groupLoading（v3.64 从 groupVisual + groupBasic 合并，加载与骨架独立页） */
+  @Builder
+  groupLoading() {
+        this.sectionTitle('Loading（四形态 · LoadingVariant）')
+        Flex({ wrap: FlexWrap.Wrap, alignItems: ItemAlign.Center, space: UiMetrics.uniformFlexSpace(AppSpacing.LG) }) {
+          CommonLoading({ variant: LoadingVariant.SPINNER })
+          CommonLoading({ variant: LoadingVariant.DOTS })
+          CommonLoading({ variant: LoadingVariant.BAR })
+          CommonLoading({ variant: LoadingVariant.SPINNER, sizeLevel: SizeLevel.SMALL, text: '加载中…' })
+        }
+        .width('100%')
+
+        this.sectionTitle('骨架屏 SkeletonBlock（尺寸可调，占位不跳动）')
+        Column({ space: AppSpacing.MD }) {
+          SkeletonBlock({ heightValue: 24 })
+          SkeletonBlock({ heightValue: 24 })
+          SkeletonBlock({ widthValue: '55%', heightValue: 24 })
+        }
+        .width('100%')
+  }
+
+  /** 画廊分组区块：groupColor（v3.64 从 groupVisual 拆出，颜色选择器独立页） */
+  @Builder
+  groupColor() {
+        this.sectionTitle('CommonColorPicker（HdsColorPicker 的 API 23 复刻）')
         CommonColorPicker({
           initialColor: this.demoColor,
           onColorSelected: (color: string): void => {
             this.demoColor = color;
           }
         })
+        Text('选中色会实时下发到下面两个组件的 accentColor，用于验证「运行时换肤」链路。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
         Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
           CommonButton({ text: '当前色', variant: ButtonVariant.PRIMARY, accentColor: this.demoColor })
           CommonTag({ text: '实时联动', tone: TagTone.BRAND, accentColor: this.demoColor })
         }
         .width('100%')
 
-        this.sectionTitle('Loading（三形态）')
-        Flex({ wrap: FlexWrap.Wrap, alignItems: ItemAlign.Center, space: UiMetrics.uniformFlexSpace(AppSpacing.LG) }) {
-          CommonLoading({ variant: LoadingVariant.SPINNER })
-          CommonLoading({ variant: LoadingVariant.DOTS })
-          CommonLoading({ variant: LoadingVariant.BAR })
-          CommonLoading({ variant: LoadingVariant.SPINNER, sizeLevel: SizeLevel.SMALL, text: '加载中…' })
+        this.colorMathBlock()
+  }
+
+  /** 画廊分组区块：groupState（v3.64 新增，VitalUI 状态与列表独立页） */
+  @Builder
+  groupState() {
+        this.sectionTitle('StateContainer（四态容器）')
+        Text('content 渲染子内容，loading / empty / error 由组件接管，error 态提供重试回调。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
+          .margin({ bottom: AppSpacing.SM })
+
+        Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
+          ForEach(GALLERY_STATE_CASES, (item: GalleryStateCase) => {
+            Column({ space: AppSpacing.XS }) {
+              Text(item.label)
+                .fontSize(AppFontSize.CAPTION)
+                .fontColor($r('app.color.app_text_secondary'))
+              Column() {
+                StateContainer({
+                  state: item.state,
+                  emptyText: new FeedbackText('暂无数据', '换个条件试试', ''),
+                  errorText: new FeedbackText('加载失败', '请检查网络后重试', '重试'),
+                  onRetry: (): void => {
+                    CommonToast.info('error 态：onRetry 已触发');
+                  }
+                }) {
+                  Text('content 态：这里是业务内容')
+                    .fontSize(AppFontSize.BODY_SM)
+                    .fontColor($r('app.color.app_text_primary'))
+                }
+              }
+              .width('100%')
+              .height(140)
+              .borderRadius(AppRadius.MD)
+              .backgroundColor($r('app.color.app_bg_page_deep'))
+            }
+            .width('48%')
+          }, (item: GalleryStateCase): string => item.label)
+        }
+        .width('100%')
+
+        this.sectionTitle('RefreshList（下拉刷新 / 上拉加载状态机）')
+        Text('ListStatus 五态：IDLE / LOADING / SUCCESS / EMPTY / ERROR；LOADING 且无数据时自动显示骨架，终态收起刷新指示器。完整交互示例见「模板能力 → 列表状态」。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
+        Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
+          ForEach(GALLERY_LIST_STATUSES, (status: string) => {
+            CommonTag({ text: status, tone: TagTone.NEUTRAL })
+          }, (status: string): string => status)
         }
         .width('100%')
   }
@@ -1419,16 +1520,21 @@ export struct ComponentGalleryView {
   /** 四组按序全渲染（TV / PC 入口；手机端走 L2 单组页，不经此处）。 */
   @Builder
   allGroups() {
-    this.groupSectionHeader('入口与基础', '按钮 / 标签 / 搜索 / 轻提示与对话框 / 骨架屏 / 卡片 / 选择器弹窗')
+    this.groupSectionHeader('入口与基础', '按钮 / 标签 / 搜索 / 轻提示与对话框 / 卡片 / 选择器弹窗')
     this.groupBasic()
-    this.groupSectionHeader('数据可视化', '四图表（玫瑰 / 饼 / 季度玫瑰 / 雷达）+ 取色器 + Loading 三形态')
-    this.groupVisual()
+    this.groupSectionHeader('数据图表', 'VitalUI 四图表聚合：玫瑰 / 饼 / 季度玫瑰 / 雷达')
+    this.groupChart()
+    this.groupSectionHeader('加载与骨架', 'VitalUI CommonLoading 四形态 + SkeletonBlock 骨架屏')
+    this.groupLoading()
+    this.groupSectionHeader('颜色选择器', 'VitalUI CommonColorPicker + ColorMath 色彩数学')
+    this.groupColor()
+    this.groupSectionHeader('状态与列表', 'VitalUI StateContainer 四态 + RefreshList 状态机')
+    this.groupState()
     this.groupSectionHeader('平台能力与令牌', '响应式 DSL / 折叠态折痕 / 色彩令牌 / 沉浸避让 / 分享 / 选图 / 剪贴板')
     this.groupPlatformToken()
-    this.groupSectionHeader('应用组件与动效', 'AppComponent 反馈族 / modifier 族 / 控件工厂 / 容器 / 动效规范 / 色彩数学')
+    this.groupSectionHeader('应用组件与动效', 'AppComponent 反馈族 / modifier 族 / 控件工厂 / 容器 / 动效规范')
     this.groupApp()
     this.motionBlock()
-    this.colorMathBlock()
   }
 
   /**
@@ -1437,14 +1543,19 @@ export struct ComponentGalleryView {
    */
   @Builder
   groupBody() {
-    if (this.groupId === 'visual') {
-      this.groupVisual()
+    if (this.groupId === 'chart') {
+      this.groupChart()
+    } else if (this.groupId === 'loading') {
+      this.groupLoading()
+    } else if (this.groupId === 'color') {
+      this.groupColor()
+    } else if (this.groupId === 'state') {
+      this.groupState()
     } else if (this.groupId === 'platform') {
       this.groupPlatformToken()
     } else if (this.groupId === 'app') {
       this.groupApp()
       this.motionBlock()
-      this.colorMathBlock()
     } else if (this.groupId === '') {
       this.allGroups()
     } else {

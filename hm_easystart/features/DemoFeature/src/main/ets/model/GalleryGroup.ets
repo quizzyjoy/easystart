@@ -28,16 +28,25 @@ export class GalleryGroupEntry {
  */
 export const GALLERY_GROUPS: GalleryGroupEntry[] = [
   new GalleryGroupEntry('basic', '入口与基础',
-    '按钮 / 标签 / 搜索 / 轻提示与对话框 / 骨架屏 / 卡片 / 选择器弹窗',
+    '按钮 / 标签 / 搜索 / 轻提示与对话框 / 卡片 / 选择器弹窗',
     $r('sys.symbol.square_grid_2x2'), $r('app.color.qj_brand')),
-  new GalleryGroupEntry('visual', '数据可视化',
-    '四图表（玫瑰 / 饼 / 季度玫瑰 / 雷达）+ 取色器 + Loading 三形态',
+  new GalleryGroupEntry('chart', '数据图表',
+    'VitalUI 四图表聚合：玫瑰 / 饼 / 季度玫瑰 / 雷达（Canvas 自绘，可点选）',
     $r('sys.symbol.paintpalette'), $r('app.color.app_accent_pink')),
+  new GalleryGroupEntry('loading', '加载与骨架',
+    'VitalUI CommonLoading 四形态 + SkeletonBlock 骨架屏',
+    $r('sys.symbol.arrow_clockwise'), $r('app.color.app_accent_teal')),
+  new GalleryGroupEntry('color', '颜色选择器',
+    'VitalUI CommonColorPicker + ColorMath 色彩数学（Hex / RGB / HSL 互转）',
+    $r('sys.symbol.paintpalette'), $r('app.color.app_accent_purple')),
+  new GalleryGroupEntry('state', '状态与列表',
+    'VitalUI StateContainer 四态 + RefreshList 下拉刷新状态机',
+    $r('sys.symbol.ellipsis_circle'), $r('app.color.qj_brand')),
   new GalleryGroupEntry('platform', '平台能力与令牌',
     '响应式 DSL / 折叠态折痕 / 色彩令牌 / 沉浸避让 / 分享 / 选图 / 剪贴板',
     $r('sys.symbol.display'), $r('app.color.app_accent_teal')),
   new GalleryGroupEntry('app', '应用组件与动效',
-    'AppComponent 反馈族 / modifier 族 / 控件工厂 / 容器 / 动效规范 / 色彩数学',
+    'AppComponent 反馈族 / modifier 族 / 控件工厂 / 容器 / 动效规范',
     $r('sys.symbol.gearshape_fill'), $r('app.color.app_accent_purple'))
 ];
 
