@@ -44,6 +44,16 @@ export struct RadarChart {
     this.draw();
   }
 
+  /**
+   * 数据变更重绘（v3.71）：
+   * 原实现只监听 isDark，`data` 传入后不会重绘——示例里把数据内联写在 build() 中
+   * 恰好绕过了该缺陷，接真实 Repository / 刷新 / 筛选时会停在首帧。
+   */
+  @Monitor('data')
+  onDataChange(): void {
+    this.draw();
+  }
+
   /** 数据多边形填充色：显式注入优先，否则按模式取默认（同 C1 品牌蓝族）。 */
   private resolvedFill(): string {
     if (this.fillColor.length > 0) {
@@ -201,7 +211,14 @@ export struct RadarChart {
         this.startEntry();
       })
       .onAreaChange((_: Area, newArea: Area) => {
-        this.areaW = Number(newArea.width);
+        const nextW: number = Number(newArea.width);
+        const resized: boolean = Math.abs(nextW - this.areaW) > 0.5;
+        this.areaW = nextW;
+        // 尺寸变化必须重绘（v3.71）：折叠展开 / 2in1 分栏拖拽 / 横竖屏时，
+        // 画布位图不会自动重排，圆心与半径按旧宽算会整体错位。
+        if (resized && this.context.width > 0) {
+          this.draw();
+        }
       })
       .onClick((event: ClickEvent) => {
         if (this.areaW <= 0 || this.context.width <= 0) {

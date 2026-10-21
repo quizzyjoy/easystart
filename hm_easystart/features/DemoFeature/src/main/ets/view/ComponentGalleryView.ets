@@ -417,14 +417,26 @@ export struct ComponentGalleryView {
           .fontColor($r('app.color.app_text_tertiary'))
           .width('100%')
         Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
-          CommonButton({ text: '主操作', variant: ButtonVariant.PRIMARY, accentColor: this.theme.accentColor })
-          CommonButton({ text: '次操作', variant: ButtonVariant.SECONDARY, accentColor: this.theme.accentColor })
-          CommonButton({ text: '文字', variant: ButtonVariant.TEXT })
-          CommonButton({ text: '危险', variant: ButtonVariant.DANGER })
+          CommonButton({ text: '主操作', variant: ButtonVariant.PRIMARY, accentColor: this.theme.accentColor, onAction: () => {
+            CommonToast.info('主操作');
+          } })
+          CommonButton({ text: '次操作', variant: ButtonVariant.SECONDARY, accentColor: this.theme.accentColor, onAction: () => {
+            CommonToast.info('次操作');
+          } })
+          CommonButton({ text: '文字', variant: ButtonVariant.TEXT, onAction: () => {
+            CommonToast.info('文字按钮');
+          } })
+          CommonButton({ text: '危险', variant: ButtonVariant.DANGER, onAction: () => {
+            this.showToastWarn();
+          } })
           CommonButton({ text: '加载中', variant: ButtonVariant.PRIMARY, loading: true, accentColor: this.theme.accentColor })
           CommonButton({ text: '已禁用', variant: ButtonVariant.PRIMARY, disabled: true })
         }
         .width('100%')
+        Text('说明：「加载中」「已禁用」两态点击无回调是设计如此，用于演示不可交互态。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_quaternary'))
+          .width('100%')
 
         this.sectionTitle('2 · 状态 · 标签 TagTone')
         Text('五档语义色 + 可关闭态；品牌档跟随运行时强调色。')
@@ -468,6 +480,11 @@ export struct ComponentGalleryView {
           }
         })
 
+  }
+
+  /** 反馈与容器（v3.69）：轻提示 / 失败提示 / 确认对话框 + ActionCard。 */
+  @Builder
+  groupFeedback() {
         this.sectionTitle('4 · 反馈 · 轻提示与确认')
         Text('语义由触发方式决定：info 用于结果告知、warning 用于失败提示、对话框用于需要用户决策的确认。')
           .fontSize(AppFontSize.CAPTION)
@@ -486,11 +503,6 @@ export struct ComponentGalleryView {
         }
         .width('100%')
 
-  }
-
-  /** 反馈与容器（v3.69）：轻提示 / 失败提示 / 确认对话框 + ActionCard。 */
-  @Builder
-  groupFeedback() {
         this.sectionTitle('5 · 容器 · 卡片 ActionCard')
         Text('按压缩放反馈，标题/副标题两行排版，强调色跟随主题；列表与看板的通用容器。')
           .fontSize(AppFontSize.CAPTION)
@@ -1206,8 +1218,14 @@ export struct ComponentGalleryView {
           AppEmptyState({
             title: 'AppEmptyState 空态',
             description: '图标 + 标题 + 说明 + 可选主操作',
-            actionText: '刷新'
+            actionText: '刷新',
+            onAction: () => {
+              CommonToast.info('空态主操作：刷新');
+            }
           })
+          Text('另有「无操作空态」：不传 actionText 时只渲染图标 + 文案。')
+            .fontSize(AppFontSize.CAPTION)
+            .fontColor($r('app.color.app_text_quaternary'))
 
           Text('modifier 新增（AppInputModifier / AppIconButtonModifier，v3.21）')
             .fontSize(AppFontSize.CAPTION)
