@@ -2,25 +2,30 @@ import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { CommonToast } from '@easystart/app-component';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
-import { DevToolItem, DevToolStatus, DevToolSymbol, devTools } from '../model/DevToolItem';
+import {
+  DevToolGroup,
+  DevToolItem,
+  DevToolStatus,
+  DevToolSymbol,
+  devToolGroupTitle,
+  devToolsOf
+} from '../model/DevToolItem';
 
 /**
- * 开发工具 Tab（v3.41：单列表 → 网格卡片）。
+ * 开发工具 Tab（v3.46：按组渲染两个网格）。
  *
- * 结构：分组标题 + `Grid` 卡片网格（列数随断点变化：sm 2 列 / md 3 列 / lg·xl 4 列）。
- * 卡片承载「工具入口」，已实现的点击进面板，待实现的灰显并给提示——避免点了没反应。
+ * 结构：组标题 + `Grid` 卡片网格；列数按**实际容器宽度**分档（sm 2 / md 3 / lg·xl 4），
+ * 分栏宿主传 `paneWidthVp` 避免宽屏算出 4 列把卡片挤窄。
  *
- * 【为什么 Grid 要显式高度】Grid 放在 Scroll 里高度无上界，会塌成 0；这里按
+ * 【为什么 Grid 要显式高度】Grid 放在 Scroll 里高度无上界，会塌成 0；这里按每组
  * 「行数 × 行高 + 行间距」算出固定高度，卡片内容用 maxLines 收口，不做内部滚动。
+ *
+ * 【分发约定】点击只上抛 id（`onOpenTool`），路由名映射唯一留在入口装配层。
  */
 @ComponentV2
 export struct ToolsView {
   @Local theme: UiThemeManager = UiThemeManager.getInstance();
 
-  @Param onOpenDeviceCapability: () => void = (): void => {
-  };
-  @Param onOpenIconKit: () => void = (): void => {
-  };
   /**
    * 宿主分栏时左栏的可用宽度（vp）。0 = 不分栏，按窗口断点取列数。
    *
@@ -29,11 +34,14 @@ export struct ToolsView {
    */
   @Param paneWidthVp: number = 0;
 
-  @Param onOpenTransitions: () => void = (): void => {
+  /** 点击某张工具卡：参数是 `DevToolItem.id`。 */
+  @Param onOpenTool: (id: string) => void = (_id: string): void => {
   };
+
   @Local breakpoint: BreakpointManager = BreakpointManager.getInstance();
   @Local windowAdapter: WindowAdapter = WindowAdapter.getInstance();
-  @Local tools: DevToolItem[] = devTools();
+  @Local envTools: DevToolItem[] = devToolsOf(DevToolGroup.ENV);
+  @Local dataTools: DevToolItem[] = devToolsOf(DevToolGroup.DATA);
 
   private bp(): string {
     return `${this.breakpoint.breakpoint}`;
@@ -63,8 +71,8 @@ export struct ToolsView {
   }
 
   /** 网格高度 = 行数 × 行高 + 行间距（行高与卡片一致，见 CARD_HEIGHT）。 */
-  private gridHeight(): number {
-    const rows: number = Math.ceil(this.tools.length / this.columns());
+  private gridHeight(count: number): number {
+    const rows: number = Math.ceil(count / this.columns());
     return rows * ToolsView.CARD_HEIGHT + (rows - 1) * ToolsView.CARD_GAP;
   }
 
@@ -85,6 +93,21 @@ export struct ToolsView {
     if (symbol === DevToolSymbol.GRID) {
       return $r('sys.symbol.square_grid_2x2');
     }
+    if (symbol === DevToolSymbol.HASH) {
+      return $r('sys.symbol.hash');
+    }
+    if (symbol === DevToolSymbol.CODEC) {
+      return $r('sys.symbol.arrow_left_arrow_right');
+    }
+    if (symbol === DevToolSymbol.KEY) {
+      return $r('sys.symbol.key_fill');
+    }
+    if (symbol === DevToolSymbol.WRENCH) {
+      return $r('sys.symbol.wrench_and_screwdriver_fill');
+    }
+    if (symbol === DevToolSymbol.DOC) {
+      return $r('sys.symbol.doc_plaintext');
+    }
     return $r('sys.symbol.display');
   }
 
@@ -104,43 +127,14 @@ export struct ToolsView {
       CommonToast.info(`${item.title} 待实现：参考实现见 docs/权威参考与开源项目盘点.md §6`);
       return;
     }
-    // 已实现：按 id 分发（路由名映射唯一留在入口装配层，feature 只上抛语义）
-    if (item.id === 'iconkit') {
-      this.onOpenIconKit();
-    } else if (item.id === 'transitions') {
-      this.onOpenTransitions();
-    } else {
-      this.onOpenDeviceCapability();
-    }
+    this.onOpenTool(item.id);
   }
 
   build() {
     Scroll() {
       Column({ space: DesignToken.sectionSpacing() }) {
-        Column({ space: AppSpacing.SM }) {
-          Text('开发工具')
-            .fontSize(AppFontSize.BODY_SM)
-            .fontWeight(AppFontWeight.MEDIUM)
-            .fontColor($r('app.color.app_text_secondary'))
-            .width('100%')
-            .padding({ left: AppSpacing.SM })
-
-          Grid() {
-            ForEach(this.tools, (item: DevToolItem) => {
-              GridItem() {
-                this.toolCard(item)
-              }
-            }, (item: DevToolItem): string => item.id)
-          }
-          .columnsTemplate(this.columnsTemplate())
-          .columnsGap(ToolsView.CARD_GAP)
-          .rowsGap(ToolsView.CARD_GAP)
-          .height(this.gridHeight())
-          .width('100%')
-          .scrollBar(BarState.Off)
-        }
-        .width('100%')
-        .alignItems(HorizontalAlign.Start)
+        this.groupBlock(devToolGroupTitle(DevToolGroup.ENV), this.envTools)
+        this.groupBlock(devToolGroupTitle(DevToolGroup.DATA), this.dataTools)
       }
       .width('100%')
       .alignItems(HorizontalAlign.Start)
@@ -159,6 +153,35 @@ export struct ToolsView {
     .backgroundColor($r('app.color.app_bg_page'))
     .scrollBar(BarState.Off)
     .edgeEffect(EdgeEffect.Spring)
+  }
+
+  /** 一个分组：标题 + 该组网格。 */
+  @Builder
+  groupBlock(title: string, items: DevToolItem[]) {
+    Column({ space: AppSpacing.SM }) {
+      Text(title)
+        .fontSize(AppFontSize.BODY_SM)
+        .fontWeight(AppFontWeight.MEDIUM)
+        .fontColor($r('app.color.app_text_secondary'))
+        .width('100%')
+        .padding({ left: AppSpacing.SM })
+
+      Grid() {
+        ForEach(items, (item: DevToolItem) => {
+          GridItem() {
+            this.toolCard(item)
+          }
+        }, (item: DevToolItem): string => item.id)
+      }
+      .columnsTemplate(this.columnsTemplate())
+      .columnsGap(ToolsView.CARD_GAP)
+      .rowsGap(ToolsView.CARD_GAP)
+      .height(this.gridHeight(items.length))
+      .width('100%')
+      .scrollBar(BarState.Off)
+    }
+    .width('100%')
+    .alignItems(HorizontalAlign.Start)
   }
 
   /** 单张工具卡：图标 + 标题 + 两行描述 + （待实现角标）。 */

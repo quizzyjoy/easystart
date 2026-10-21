@@ -3,7 +3,12 @@ import { AppRoute } from '@easystart/app-routes';
 import { isSettingsRoute, SettingsDestination } from '@easystart/app-settings';
 import {
   AccountSampleView,
+  CodecToolView,
+  HashToolView,
   IconKitView,
+  IdToolView,
+  JsonToolView,
+  RegexToolView,
   TransitionDetailView,
   TransitionsView,
   ChartsDashboardView,
@@ -248,6 +253,38 @@ struct Index {
    * 路由名映射唯一出处在入口。设置 / 详情 / 账号范式走 push（详情传 HomeItem **对象**，
    * pageMap 侧 instanceof 收窄）；设备能力切换到底部「开发工具」Tab（不 push 子页）。
    */
+  /**
+   * 开发工具分发（v3.46）：ToolsView 只上抛 DevToolItem.id，路由名映射唯一在本层。
+   * 新增工具时在这里加一行 switch 分支即可，feature 侧不用改。
+   */
+  private openDevTool(id: string): void {
+    switch (id) {
+      case 'iconkit':
+        RouterManager.getInstance().push(AppRoute.ICON_KIT);
+        break;
+      case 'transitions':
+        RouterManager.getInstance().push(AppRoute.TRANSITIONS);
+        break;
+      case 'hash':
+        RouterManager.getInstance().push(AppRoute.HASH_TOOL);
+        break;
+      case 'codec':
+        RouterManager.getInstance().push(AppRoute.CODEC_TOOL);
+        break;
+      case 'idtool':
+        RouterManager.getInstance().push(AppRoute.ID_TOOL);
+        break;
+      case 'regex':
+        RouterManager.getInstance().push(AppRoute.REGEX_TOOL);
+        break;
+      case 'jsontool':
+        RouterManager.getInstance().push(AppRoute.JSON_TOOL);
+        break;
+      default:
+        RouterManager.getInstance().push(AppRoute.DEVICE_CAPABILITY);
+        break;
+    }
+  }
   private openHomeTarget(item: HomeItem): void {
     switch (item.target) {
       case HomeTarget.SETTINGS:
@@ -607,6 +644,86 @@ struct Index {
         enableComponentSafeArea: true
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+        } else if (name === AppRoute.HASH_TOOL) {
+      HdsNavDestination() {
+        HashToolView()
+      }
+      .titleBar({
+        content: { title: { mainTitle: '哈希校验', subTitle: 'cryptoFramework 本地摘要' } },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.CODEC_TOOL) {
+      HdsNavDestination() {
+        CodecToolView()
+      }
+      .titleBar({
+        content: { title: { mainTitle: '编码工作台', subTitle: 'Base64 / URL / HTML 实体 / JSON 转义' } },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.ID_TOOL) {
+      HdsNavDestination() {
+        IdToolView()
+      }
+      .titleBar({
+        content: { title: { mainTitle: 'ID 生成', subTitle: 'UUID v4 / ULID' } },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.REGEX_TOOL) {
+      HdsNavDestination() {
+        RegexToolView()
+      }
+      .titleBar({
+        content: { title: { mainTitle: '正则测试器', subTitle: '命中 / 捕获组 / 替换预览' } },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.JSON_TOOL) {
+      HdsNavDestination() {
+        JsonToolView()
+      }
+      .titleBar({
+        content: { title: { mainTitle: 'JSON 工具台', subTitle: '格式化 / 压缩 / 排序 / 路径' } },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
     } else if (name === AppRoute.TEMPLATE_ABOUT) {
       // L3 关于模板（v3.38）：这是什么 / 怎么用 / 如何 fork
       HdsNavDestination() {
@@ -762,14 +879,8 @@ struct Index {
       TabContent() {
         ToolsView({
           paneWidthVp: this.navPaneWidthVp(),
-          onOpenDeviceCapability: (): void => {
-            RouterManager.getInstance().push(AppRoute.DEVICE_CAPABILITY);
-          },
-          onOpenIconKit: (): void => {
-            RouterManager.getInstance().push(AppRoute.ICON_KIT);
-          },
-          onOpenTransitions: (): void => {
-            RouterManager.getInstance().push(AppRoute.TRANSITIONS);
+          onOpenTool: (id: string): void => {
+            this.openDevTool(id);
           }
         })
       }

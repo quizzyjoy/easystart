@@ -51,6 +51,16 @@ export class AppRoute {
   static readonly LICENSE: string = 'license';
   /** 开发工具·UI Design Kit 图标处理（v3.42，pageMap 注册名） */
   static readonly ICON_KIT: string = 'iconKit';
+  /** 开发工具·哈希校验（v3.46） */
+  static readonly HASH_TOOL: string = 'hashTool';
+  /** 开发工具·编码工作台（v3.46） */
+  static readonly CODEC_TOOL: string = 'codecTool';
+  /** 开发工具·ID 生成（v3.46） */
+  static readonly ID_TOOL: string = 'idTool';
+  /** 开发工具·正则测试器（v3.46） */
+  static readonly REGEX_TOOL: string = 'regexTool';
+  /** 开发工具·JSON 工具台（v3.46） */
+  static readonly JSON_TOOL: string = 'jsonTool';
   /** 开发工具·转场动效合集（v3.42，pageMap 注册名） */
   static readonly TRANSITIONS: string = 'transitions';
   /** 开发工具·共享元素转场详情（v3.42，param = 卡片 id） */
