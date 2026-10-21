@@ -615,6 +615,34 @@
     {
       "name": "settings_privacy_query_link",
       "value": "查询隐私链接"
+    },
+    {
+      "name": "apps_site_open_failed",
+      "value": "无法打开官网，请检查网络或稍后再试"
+    },
+    {
+      "name": "apps_intro_sheet_title",
+      "value": "应用介绍"
+    },
+    {
+      "name": "apps_intro_shot_caption",
+      "value": "产品截图"
+    },
+    {
+      "name": "apps_intro_open_site",
+      "value": "打开产品官网"
+    },
+    {
+      "name": "apps_intro_site_tip",
+      "value": "应用尚未上架或本机未安装，可先到产品官网了解功能与进展。"
+    },
+    {
+      "name": "apps_intro_open_app",
+      "value": "打开应用"
+    },
+    {
+      "name": "apps_intro_app_missing",
+      "value": "本机未安装该应用"
     }
   ]
 }

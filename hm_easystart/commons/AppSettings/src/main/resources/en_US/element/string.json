@@ -615,6 +615,34 @@
     {
       "name": "settings_privacy_query_link",
       "value": "Query privacy links"
+    },
+    {
+      "name": "apps_site_open_failed",
+      "value": "Cannot open the product site. Check your network and try again."
+    },
+    {
+      "name": "apps_intro_sheet_title",
+      "value": "App introduction"
+    },
+    {
+      "name": "apps_intro_shot_caption",
+      "value": "Screenshot"
+    },
+    {
+      "name": "apps_intro_open_site",
+      "value": "Open product site"
+    },
+    {
+      "name": "apps_intro_site_tip",
+      "value": "The app is not published yet or not installed. Visit the product site for details."
+    },
+    {
+      "name": "apps_intro_open_app",
+      "value": "Open app"
+    },
+    {
+      "name": "apps_intro_app_missing",
+      "value": "App is not installed on this device"
     }
   ]
 }
