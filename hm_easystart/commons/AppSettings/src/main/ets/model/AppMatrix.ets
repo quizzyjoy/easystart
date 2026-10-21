@@ -49,6 +49,12 @@ export interface AppMatrixEntry {
   introLines: string[];
   /** 介绍弹窗里的产品截图（本域 media）。 */
   introImage: Resource;
+  /** QQ 交流群号（空串 = 不展示群区块；数易 / 临境声场有）。 */
+  qqGroupNumber: string;
+  /** 一键加群链接（qm.qq.com 短链）。 */
+  qqJoinUrl: string;
+  /** 是否有可展示的群二维码（仅临境声场有对应素材；没有时不渲染图，避免标题不匹配）。 */
+  qqHasQr: boolean;
 }
 
 /**
@@ -77,7 +83,10 @@ export class AppMatrix {
         '示例 Tab 展示组件与场景，学习 Tab 内置开发教程（ArkTS、主题、依赖、文档同步），开发工具 Tab 提供图标合成、Symbol 能力等实用工具。',
         '分层为 quizzyjoy 三库（Foundation / Platform / VitalUI）→ commons 应用域 → features 业务域 → product 四端装配。'
       ],
-      introImage: $r('app.media.app_easystart')
+      introImage: $r('app.media.app_easystart'),
+      qqGroupNumber: '',
+      qqJoinUrl: '',
+      qqHasQr: false
     },
     {
       id: 'easymath',
@@ -93,7 +102,10 @@ export class AppMatrix {
         '覆盖求导、积分、矩阵运算、公式手册与函数图像拟合，结果附带求解步骤；二元空间曲面可视化让抽象概念可看可转。',
         '内置题库与每日一题，做题进度与积分体系联动；服务卡片可在桌面直接查看闯关进度。'
       ],
-      introImage: $r('app.media.intro_easymath')
+      introImage: $r('app.media.intro_easymath'),
+      qqGroupNumber: '650941843',
+      qqJoinUrl: 'https://qm.qq.com/q/cvI2ZxU81O',
+      qqHasQr: false
     },
     {
       id: 'vibestereo',
@@ -109,7 +121,10 @@ export class AppMatrix {
         '读取本地曲库播放，实时频谱与项目 M（projectM）风格的可视化预设，随节拍起伏；支持横屏沉浸与多端适配。',
         '当前处于内测阶段，尚未在应用市场正式上架；可先通过产品官网了解进展并获取内测入口。'
       ],
-      introImage: $r('app.media.intro_vibestereo')
+      introImage: $r('app.media.intro_vibestereo'),
+      qqGroupNumber: '650941843',
+      qqJoinUrl: 'https://qm.qq.com/q/cvI2ZxU81O',
+      qqHasQr: true
     },
     {
       id: 'easytools',
@@ -125,7 +140,10 @@ export class AppMatrix {
         '覆盖哈希与摘要、编码解码（Base64 / URL / Hex）、ID 生成（UUID / 雪花）、正则测试与 JSON 格式化等常用工具。',
         '首页按「推荐 / 我的收藏」组织，常用工具可收藏置顶；当前尚未正式上架，可先通过产品官网了解功能清单。'
       ],
-      introImage: $r('app.media.intro_easytools')
+      introImage: $r('app.media.intro_easytools'),
+      qqGroupNumber: '',
+      qqJoinUrl: '',
+      qqHasQr: false
     }
   ];
 

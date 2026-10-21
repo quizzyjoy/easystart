@@ -31,6 +31,10 @@ export struct AppsView {
   @Local introLines: string[] = [];
   @Local introSite: string = '';
   @Local introBundle: string = '';
+  /** QQ 群（数易 / 临境声场有；空串不渲染群区块）。 */
+  @Local introQqNumber: string = '';
+  @Local introQqUrl: string = '';
+  @Local introQqHasQr: boolean = false;
   /** 是否显示「打开应用」按钮（未上架应用：装了内测包就能打开）。 */
   @Local introLaunchable: boolean = false;
 
@@ -90,6 +94,9 @@ export struct AppsView {
     this.introLines = entry.introLines;
     this.introSite = entry.siteUrl;
     this.introBundle = entry.bundleName;
+    this.introQqNumber = entry.qqGroupNumber;
+    this.introQqUrl = entry.qqJoinUrl;
+    this.introQqHasQr = entry.qqHasQr;
     this.showIntroSheet = true;
   }
 
@@ -100,6 +107,17 @@ export struct AppsView {
     const opened: boolean = await AppLauncher.openApp(context, this.introBundle);
     if (!opened) {
       CommonToast.info($r('app.string.apps_intro_app_missing'));
+    }
+  }
+
+  /** 打开 QQ 加群页（qm.qq.com 短链，由 QQ 客户端或浏览器承接）。 */
+  private async joinQqGroup(): Promise<void> {
+    if (this.introQqUrl.length === 0) {
+      return;
+    }
+    const opened: boolean = await MarketHelper.getInstance().openUri(this.introQqUrl);
+    if (!opened) {
+      CommonToast.info($r('app.string.apps_intro_qq_failed'));
     }
   }
 
@@ -198,6 +216,51 @@ export struct AppsView {
               this.openSite();
             })
 
+          if (this.introQqNumber.length > 0) {
+            Column({ space: AppSpacing.SM }) {
+              Row({ space: AppSpacing.XS }) {
+                SymbolGlyph($r('sys.symbol.person_2'))
+                  .fontSize(AppFontSize.CAPTION)
+                  .fontColor([$r('app.color.app_text_secondary')])
+                Text($r('app.string.apps_intro_qq_title'))
+                  .fontSize(AppFontSize.BODY_SM)
+                  .fontWeight(AppFontWeight.MEDIUM)
+                  .fontColor($r('app.color.app_text_primary'))
+                Text(` ${this.introQqNumber}`)
+                  .fontSize(AppFontSize.BODY_SM)
+                  .fontColor($r('app.color.qj_brand'))
+                  .fontFamily(AppsView.MONO_FONT)
+                  .layoutWeight(1)
+                Button($r('app.string.apps_intro_qq_join'))
+                  .fontSize(AppFontSize.CAPTION)
+                  .fontColor($r('app.color.qj_brand'))
+                  .backgroundColor($r('app.color.app_bg_card'))
+                  .borderRadius(AppRadius.FULL)
+                  .height(32)
+                  .padding({ left: 14, right: 14 })
+                  .onClick((): void => {
+                    this.joinQqGroup();
+                  })
+              }
+              .width('100%')
+
+              // 群二维码只在该群确实有对应素材时展示（临境声场），避免二维码标题与应用不符
+              if (this.introQqHasQr) {
+                Image($r('app.media.qq_group_vibestereo'))
+                  .width(168)
+                  .height(168)
+                  .objectFit(ImageFit.Contain)
+                  .borderRadius(AppRadius.MD)
+                  .backgroundColor($r('app.color.app_bg_card'))
+              }
+            }
+            .width('100%')
+            .alignItems(HorizontalAlign.Start)
+            .padding(AppSpacing.MD)
+            .borderRadius(AppRadius.LG)
+            .backgroundColor($r('app.color.app_bg_page_deep'))
+          }
+
           Text($r('app.string.apps_intro_site_tip'))
             .fontSize(AppFontSize.CAPTION)
             .fontColor($r('app.color.app_text_tertiary'))
@@ -278,27 +341,27 @@ export struct AppsView {
   @Builder
   introShot() {
     Column() {
-      // 三个 Image 各占一个分支：Resource 必须在编译期确定，不能存进状态字段再传。
-      // 高度显式给定，否则 width('100%') + Contain 在未约束的父容器里会塌成 0。
+      // 排版照搬数易项目 DeveloperPage 的临境声场介绍图：只给宽与 Contain，
+      // 高度让图片按自身比例撑开（在 Scroll 内可滚动）。定死高度 + Cover 会裁掉内容。
       if (this.introBundle === 'com.quizzyjoy.easymath') {
         Image($r('app.media.intro_easymath'))
           .width('100%')
-          .height(230)
-          .objectFit(ImageFit.Cover)
+          .height(300)
+          .objectFit(ImageFit.Contain)
           .borderRadius(AppRadius.MD)
           .backgroundColor($r('app.color.app_bg_page_deep'))
       } else if (this.introBundle === 'com.quizzyjoy.vibestereo') {
         Image($r('app.media.intro_vibestereo'))
           .width('100%')
-          .height(230)
-          .objectFit(ImageFit.Cover)
+          .height(300)
+          .objectFit(ImageFit.Contain)
           .borderRadius(AppRadius.MD)
           .backgroundColor($r('app.color.app_bg_page_deep'))
       } else if (this.introBundle === 'com.quizzyjoy.easytools') {
         Image($r('app.media.intro_easytools'))
           .width('100%')
-          .height(230)
-          .objectFit(ImageFit.Cover)
+          .height(300)
+          .objectFit(ImageFit.Contain)
           .borderRadius(AppRadius.MD)
           .backgroundColor($r('app.color.app_bg_page_deep'))
       }

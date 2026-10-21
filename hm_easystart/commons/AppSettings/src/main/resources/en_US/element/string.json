@@ -643,6 +643,18 @@
     {
       "name": "apps_intro_app_missing",
       "value": "App is not installed on this device"
+    },
+    {
+      "name": "apps_intro_qq_title",
+      "value": "Community group"
+    },
+    {
+      "name": "apps_intro_qq_join",
+      "value": "Join group"
+    },
+    {
+      "name": "apps_intro_qq_failed",
+      "value": "Cannot open the QQ group link. Check whether QQ is installed."
     }
   ]
 }

@@ -643,6 +643,18 @@
     {
       "name": "apps_intro_app_missing",
       "value": "本机未安装该应用"
+    },
+    {
+      "name": "apps_intro_qq_title",
+      "value": "交流群"
+    },
+    {
+      "name": "apps_intro_qq_join",
+      "value": "一键加群"
+    },
+    {
+      "name": "apps_intro_qq_failed",
+      "value": "无法打开 QQ 群链接，请检查是否安装 QQ"
     }
   ]
 }
