@@ -42,6 +42,7 @@ import {
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, AppStroke, DesignToken, ResponsiveCase, ResponsiveOperator, ResponsiveRule, ResponsiveValueResolver } from '@quizzyjoy/foundation';
 import { AppFoldStatus, BreakpointManager, CapabilityManager, ColorModeManager, DeviceManager, DeviceType,
   FeatureGate, HoverStore, PermissionHelper, ShareHelper, UiMetrics, WindowAdapter } from '@quizzyjoy/platform';
+import { NetOutcome, NetReport, NetRepository } from '../data/NetRepository';
 import type { common } from '@kit.AbilityKit';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import { ClipboardUtil } from '../util/ClipboardUtil';
@@ -123,6 +124,12 @@ export struct ComponentGalleryView {
   @Local permStateText: string = '';
   @Local permGranted: boolean = false;
   @Local permBusy: boolean = false;
+  /** 网络示例：请求进行中（防连点）。 */
+  @Local netBusy: boolean = false;
+  /** 网络示例：最近一次结果的结论文案。 */
+  @Local netSummary: string = '尚未请求';
+  /** 网络示例：响应片段。 */
+  @Local netBody: string = '';
   /** 弹层页：bindPopup / bindContentCover 的可见性（Menu / ContextMenu 由系统接管，无需状态）。 */
   @Local popupVisible: boolean = false;
   @Local coverVisible: boolean = false;
@@ -181,6 +188,20 @@ export struct ComponentGalleryView {
     } else {
           AppSnackBar.info(uiContext, '趣开发 应用级组件示例');
     }
+  }
+
+  /** 网络示例：按 URL 发一次请求，把四类收场都渲染出来。 */
+  private async runNet(url: string, timeoutMs: number): Promise<void> {
+    if (this.netBusy) {
+      return;
+    }
+    this.netBusy = true;
+    this.netSummary = `请求中…（timeout ${timeoutMs}ms）`;
+    this.netBody = '';
+    const report: NetReport = await NetRepository.get(url, timeoutMs);
+    this.netBusy = false;
+    this.netSummary = report.summary();
+    this.netBody = report.bodyPreview;
   }
 
   /** 权限示例只在手机 / 平板 / 2in1 开放（仅这两类入口声明了该权限）。 */
@@ -1324,9 +1345,81 @@ export struct ComponentGalleryView {
           .alignItems(HorizontalAlign.Start)
           .width('100%')
         }
+        this.netSection()
         this.permissionSection()
   }
 
+
+  /**
+   * 网络请求示例（P0-2）：正常 / 非 2xx / 超时 三类收场。
+   *
+   * 模板原本有 NetworkMonitor（只看连通性）、ErrorMapper、Result，却没有"发请求"这一步。
+   * 这里补的是**失败分类**：HTTP 状态码错、超时、传输异常，三者处置完全不同。
+   */
+  @Builder
+  netSection() {
+    this.sectionTitle('网络请求（真实 HTTP · 四类收场分型）')
+    Text('NetRepository.get(url, timeoutMs)：内部 http.createHttp() + finally destroy；把「HTTP 非 2xx / 超时 / 传输异常」分成三种收场，而不是一个 success=false。')
+      .fontSize(AppFontSize.CAPTION)
+      .fontColor($r('app.color.app_text_tertiary'))
+      .width('100%')
+      .margin({ bottom: AppSpacing.SM })
+
+    Column({ space: AppSpacing.SM }) {
+      Text(this.netSummary)
+        .fontSize(AppFontSize.BODY_SM)
+        .fontColor($r('app.color.app_text_primary'))
+        .width('100%')
+      if (this.netBody.length > 0) {
+        Text(this.netBody)
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
+          .maxLines(4)
+          .textOverflow({ overflow: TextOverflow.Ellipsis })
+          .padding(AppSpacing.SM)
+          .borderRadius(AppRadius.SM)
+          .backgroundColor($r('app.color.app_bg_card'))
+      }
+      Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
+        CommonButton({
+          text: '正常请求',
+          variant: ButtonVariant.PRIMARY,
+          accentColor: this.theme.accentColor,
+          disabled: this.netBusy,
+          onAction: (): void => {
+            this.runNet(NetRepository.URL_OK, 8000);
+          }
+        })
+        CommonButton({
+          text: '404',
+          variant: ButtonVariant.SECONDARY,
+          accentColor: this.theme.accentColor,
+          disabled: this.netBusy,
+          onAction: (): void => {
+            this.runNet(NetRepository.URL_404, 8000);
+          }
+        })
+        CommonButton({
+          text: '超时（2s）',
+          variant: ButtonVariant.SECONDARY,
+          accentColor: this.theme.accentColor,
+          disabled: this.netBusy,
+          onAction: (): void => {
+            this.runNet(NetRepository.URL_SLOW, 2000);
+          }
+        })
+      }
+      .width('100%')
+
+      Text('需要 ohos.permission.INTERNET（system_grant，装包即得）；断网时走 TRANSPORT_ERROR 分支并打出 code。')
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor($r('app.color.app_text_quaternary'))
+        .width('100%')
+    }
+    .alignItems(HorizontalAlign.Start)
+    .width('100%')
+  }
 
   /**
    * 运行时权限示例：申请 → 系统弹窗 → 拒绝 → 去设置。
