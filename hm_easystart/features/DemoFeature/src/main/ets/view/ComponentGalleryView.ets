@@ -1522,19 +1522,21 @@ export struct ComponentGalleryView {
   allGroups() {
     this.groupSectionHeader('入口与基础', '按钮 / 标签 / 搜索 / 轻提示与对话框 / 卡片 / 选择器弹窗')
     this.groupBasic()
-    this.groupSectionHeader('数据图表', 'VitalUI 四图表聚合：玫瑰 / 饼 / 季度玫瑰 / 雷达')
-    this.groupChart()
-    this.groupSectionHeader('加载与骨架', 'VitalUI CommonLoading 四形态 + SkeletonBlock 骨架屏')
-    this.groupLoading()
-    this.groupSectionHeader('颜色选择器', 'VitalUI CommonColorPicker + ColorMath 色彩数学')
-    this.groupColor()
-    this.groupSectionHeader('状态与列表', 'VitalUI StateContainer 四态 + RefreshList 状态机')
-    this.groupState()
     this.groupSectionHeader('平台能力与令牌', '响应式 DSL / 折叠态折痕 / 色彩令牌 / 沉浸避让 / 分享 / 选图 / 剪贴板')
     this.groupPlatformToken()
     this.groupSectionHeader('应用组件与动效', 'AppComponent 反馈族 / modifier 族 / 控件工厂 / 容器 / 动效规范')
     this.groupApp()
     this.motionBlock()
+
+    // v3.65：VitalUI（@quizzyjoy/vitalui 库内组件）单独成区，与上面的应用级示例分区展示
+    this.groupSectionHeader('VitalUI 组件 · 数据图表', '四图表聚合：玫瑰 / 饼 / 季度玫瑰 / 雷达（Canvas 自绘）')
+    this.groupChart()
+    this.groupSectionHeader('VitalUI 组件 · 加载与骨架', 'CommonLoading 四形态 + SkeletonBlock')
+    this.groupLoading()
+    this.groupSectionHeader('VitalUI 组件 · 颜色选择器', 'CommonColorPicker + ColorMath 色彩数学')
+    this.groupColor()
+    this.groupSectionHeader('VitalUI 组件 · 状态与列表', 'StateContainer 四态 + RefreshList 状态机')
+    this.groupState()
   }
 
   /**

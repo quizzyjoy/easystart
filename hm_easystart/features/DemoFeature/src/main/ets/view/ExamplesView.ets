@@ -1,7 +1,7 @@
 import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, AppStroke, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
-import { GALLERY_GROUPS, GalleryGroupEntry } from '../model/GalleryGroup';
+import { GALLERY_GROUPS, GalleryGroupEntry, VITALUI_GROUPS } from '../model/GalleryGroup';
 
 /** 大卡内的一个子入口行（只承载文案与去向 id）。 */
 class ExampleRow {
@@ -44,8 +44,12 @@ class ExampleSection {
   }
 }
 
-/** 组件示例四行（元数据唯一出处在 model/GalleryGroup）。 */
+/** 组件示例的行（元数据唯一出处在 model/GalleryGroup）：通用组件三行。 */
 const GALLERY_ROWS: ExampleRow[] = GALLERY_GROUPS.map((group: GalleryGroupEntry): ExampleRow =>
+  new ExampleRow(group.id, group.title, group.desc));
+
+/** VitalUI 组件区四行（v3.65 从「组件示例」分出，独立成一张卡）。 */
+const VITALUI_ROWS: ExampleRow[] = VITALUI_GROUPS.map((group: GalleryGroupEntry): ExampleRow =>
   new ExampleRow(group.id, group.title, group.desc));
 
 /**
@@ -68,8 +72,10 @@ const SCENE_ROWS: ExampleRow[] = [
  * 对比度不足（v3.38 真机走查），故按域取不同饱和色区分，深浅色都不失可读性。
  */
 const EXAMPLE_SECTIONS: ExampleSection[] = [
-  new ExampleSection('gallery', '组件示例', '单组件一页式对照：按钮 / 图表 / 控件 / 容器 / 平台能力 / 动效',
+  new ExampleSection('gallery', '组件示例', '应用级单组件对照：按钮 / 标签 / 平台能力 / 控件工厂 / 动效',
     $r('sys.symbol.square_grid_2x2'), $r('app.color.qj_brand'), 'gallery', GALLERY_ROWS),
+  new ExampleSection('vitalui', 'VitalUI 组件', '@quizzyjoy/vitalui 库内组件：图表 / 加载 / 取色器 / 状态容器',
+    $r('sys.symbol.paintpalette'), $r('app.color.app_accent_pink'), 'gallery', VITALUI_ROWS),
   new ExampleSection('scene', '场景示例', '可整体复制的页面范式：反馈 / 看板 / 表单 / 列表 / 搜索 / 分屏',
     $r('sys.symbol.doc_text_badge_clock'), $r('app.color.app_accent_purple'), 'scene', SCENE_ROWS),
   new ExampleSection('capability', '模板能力', '设置中心 / 详情页范式 / 账号登录页 / 设备能力：模板已装好的四块基础设施',
