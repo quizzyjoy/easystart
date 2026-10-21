@@ -9,11 +9,13 @@
  * 顶部保留「信息」按钮提示 fork 后替换。
  */
 import { RawFileTextView } from '../../component/RawFileTextView';
-import { AppGalleryHelper, StorePrivacyKind } from '@quizzyjoy/platform';
+import { AppGalleryHelper, StorePrivacyKind, StorePrivacyRecord } from '@quizzyjoy/platform';
 
 @ComponentV2
 export struct PolicyView {
   @Param kind: string = 'privacy';
+  /** 隐私签署状态文案（空串 = 不展示该行；v3.54 来自 getAppPrivacyResult）。 */
+  @Local privacyState: string = '';
 
   private static readonly SDK_INFO_TIP: string =
     '本页是模板自带的真实 SDK 清单：实际的四个第三方依赖 + 系统 SDK，并标注均不收集个人信息。\n' +
@@ -28,6 +30,45 @@ export struct PolicyView {
       return 'sdk_list.txt';
     }
     return 'policy_privacy.txt';
+  }
+
+  aboutToAppear(): void {
+    this.refreshPrivacyState();
+  }
+
+  /**
+   * 查询隐私签署结果（AppGallery Kit `privacyManager.getAppPrivacyResult`，v3.54）。
+   *
+   * 只在隐私政策 / 用户协议页展示；未上架或未接入隐私托管服务时返回空数组，
+   * 此时显示「状态未知」，不把"查不到"说成"没同意"。
+   */
+  private refreshPrivacyState(): void {
+    if (this.kind === 'sdk') {
+      this.privacyState = '';
+      return;
+    }
+    const records: StorePrivacyRecord[] = AppGalleryHelper.getInstance().getPrivacyResults();
+    if (records.length === 0) {
+      this.privacyState = '隐私状态：未知（未接入应用市场隐私托管服务）';
+      return;
+    }
+    const agreed: StorePrivacyRecord | undefined =
+      records.find((r: StorePrivacyRecord): boolean => r.agreed);
+    if (agreed === undefined) {
+      this.privacyState = '隐私状态：未同意';
+      return;
+    }
+    if (agreed.signingTimestamp > 0) {
+      const d: Date = new Date(agreed.signingTimestamp);
+      const day: string = `${d.getFullYear()}-${this.pad(d.getMonth() + 1)}-${this.pad(d.getDate())}`;
+      this.privacyState = `隐私状态：已同意 · 版本 ${agreed.versionCode} · ${day}`;
+    } else {
+      this.privacyState = `隐私状态：已同意 · 版本 ${agreed.versionCode}`;
+    }
+  }
+
+  private pad(v: number): string {
+    return v < 10 ? `0${v}` : `${v}`;
   }
 
   /**
@@ -47,10 +88,29 @@ export struct PolicyView {
   }
 
   build() {
-    RawFileTextView({
-      fileName: this.policyFileName(),
-      infoTip: this.kind === 'sdk' ? PolicyView.SDK_INFO_TIP : '',
-      onlineUrl: this.onlineUrl()
-    })
+    Column() {
+      if (this.privacyState.length > 0) {
+        Row({ space: 6 }) {
+          SymbolGlyph($r('sys.symbol.info_circle'))
+            .fontSize(12)
+            .fontColor([$r('app.color.app_text_secondary')])
+          Text(this.privacyState)
+            .fontSize(12)
+            .fontColor($r('app.color.app_text_secondary'))
+            .layoutWeight(1)
+        }
+        .width('100%')
+        .padding({ left: 16, right: 16, top: 8 })
+        .backgroundColor($r('app.color.app_bg_page_deep'))
+      }
+      RawFileTextView({
+        fileName: this.policyFileName(),
+        infoTip: this.kind === 'sdk' ? PolicyView.SDK_INFO_TIP : '',
+        onlineUrl: this.onlineUrl()
+      })
+        .layoutWeight(1)
+    }
+    .width('100%')
+    .height('100%')
   }
 }

@@ -75,6 +75,31 @@ export class StorePrivacyLink {
   }
 }
 
+/**
+ * 隐私签署记录（v3.54，来自 `privacyManager.getAppPrivacyResult()`）。
+ *
+ * 与 `StorePrivacyLink` 的区别：Link 是"协议地址"，本类记录是"用户签没签、何时签"。
+ * 用于设置页展示隐私状态，避免用户不知道自己是否同意过。
+ */
+export class StorePrivacyRecord {
+  /** 协议标识（`AppPrivacyResult.id`）。 */
+  readonly id: string;
+  /** 协议版本号。 */
+  readonly versionCode: number;
+  /** 是否已同意（`AppPrivacyResultType.FULL_MODE_AGREED`）。 */
+  readonly agreed: boolean;
+  /** 签署时间戳（毫秒；未签署时为 0）。 */
+  readonly signingTimestamp: number;
+
+  constructor(id: string, versionCode: number, agreed: boolean, signingTimestamp: number) {
+    this.id = id;
+    this.versionCode = versionCode;
+    this.agreed = agreed;
+    this.signingTimestamp = signingTimestamp;
+  }
+}
+
+
 /** 动态图标条目。 */
 export class StoreDynamicIcon {
   readonly iconId: string;
@@ -329,6 +354,34 @@ export class AppGalleryHelper {
       }
     }
     return PrivacyLinks.hostedUrl(kind);
+  }
+
+  /**
+   * 查询隐私政策签署结果（v3.54）。
+   *
+   * 未接入隐私托管服务时抛 1006700003，这里吞掉返回空数组（调用方按"未知"展示）。
+   */
+  getPrivacyResults(): StorePrivacyRecord[] {
+    const records: StorePrivacyRecord[] = [];
+    if (!this.usable(StoreSkill.PRIVACY)) {
+      return records;
+    }
+    try {
+      const results: privacyManager.AppPrivacyResult[] = privacyManager.getAppPrivacyResult();
+      for (const item of results) {
+        records.push(new StorePrivacyRecord(
+          item.id,
+          item.versionCode,
+          item.result === privacyManager.AppPrivacyResultType.FULL_MODE_AGREED,
+          item.signingTimestamp !== undefined ? item.signingTimestamp : 0
+        ));
+      }
+    } catch (err) {
+      const e: BusinessError = err as BusinessError;
+      Logger.warn(DOMAIN, TAG,
+        `getAppPrivacyResult failed: ${ErrorMapper.fromBusiness(e, DOMAIN, 'privacyResult').toLog()}`);
+    }
+    return records;
   }
 
   /**

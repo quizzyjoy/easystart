@@ -1,5 +1,5 @@
 import { common } from '@quizzyjoy/platform';
-import { AppLauncher, LaunchResult } from '@quizzyjoy/platform';
+import { AppLauncher, LaunchResult, StoreProductView } from '@quizzyjoy/platform';
 import { AppDialog, CommonTag, DialogSemantic, TagTone } from '@easystart/app-component';
 import { AppFontSize, AppRadius, AppSpacing } from '@quizzyjoy/foundation';
 import { AppMatrix, AppMatrixEntry, AppEntryStatus } from '../../model/AppMatrix';
@@ -34,6 +34,14 @@ export struct AppsView {
     }
     const context: common.UIAbilityContext =
       this.getUIContext().getHostContext() as common.UIAbilityContext;
+    // 未安装：优先在应用内拉起「应用详情页」（用户可当场下载，不用离开当前应用）
+    if (StoreProductView.usable()) {
+      const shown: boolean = await StoreProductView.loadProductDetail(context, entry.bundleName);
+      if (shown) {
+        return;
+      }
+    }
+    // 详情页不可用 → 跳应用市场 → 仍失败 → 介绍弹窗
     const result: LaunchResult = await AppLauncher.open(context, entry.bundleName);
     if (result === LaunchResult.UNAVAILABLE) {
       this.showIntro(entry);
