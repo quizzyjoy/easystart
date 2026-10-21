@@ -19,6 +19,58 @@
     {
       "name": "tab_device",
       "value": "开发工具"
+    },
+    {
+      "name": "examples_intro",
+      "value": "一次开发、四端部署的鸿蒙模板骨架：点开任一卡片进入下一级。"
+    },
+    {
+      "name": "examples_card_gallery_title",
+      "value": "组件示例"
+    },
+    {
+      "name": "examples_card_gallery_desc",
+      "value": "应用级单组件对照：按钮 / 标签 / 平台能力 / 控件工厂 / 动效"
+    },
+    {
+      "name": "examples_card_vitalui_title",
+      "value": "VitalUI 组件"
+    },
+    {
+      "name": "examples_card_vitalui_desc",
+      "value": "@quizzyjoy/vitalui 库内组件：图表 / 加载 / 取色器 / 状态容器"
+    },
+    {
+      "name": "examples_card_scene_title",
+      "value": "场景示例"
+    },
+    {
+      "name": "examples_card_scene_desc",
+      "value": "可整体复制的页面范式：反馈 / 看板 / 表单 / 列表 / 搜索 / 分屏"
+    },
+    {
+      "name": "examples_card_capability_title",
+      "value": "模板能力"
+    },
+    {
+      "name": "examples_card_capability_desc",
+      "value": "设置中心 / 详情页范式 / 账号登录页：模板已装好的三块基础设施"
+    },
+    {
+      "name": "examples_card_tokens_title",
+      "value": "设计令牌"
+    },
+    {
+      "name": "examples_card_tokens_desc",
+      "value": "字阶 / 圆角 / 间距 / 描边 / 阴影 / 触摸目标 / 色彩全量对照"
+    },
+    {
+      "name": "examples_card_about_title",
+      "value": "关于模板"
+    },
+    {
+      "name": "examples_card_about_desc",
+      "value": "这是什么 / 怎么用 / 如何 fork：上手路径与目录约定"
     }
   ]
 }

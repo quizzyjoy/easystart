@@ -1,0 +1,76 @@
+{
+  "string": [
+    {
+      "name": "app_name",
+      "value": "趣開發"
+    },
+    {
+      "name": "tab_home",
+      "value": "範例"
+    },
+    {
+      "name": "tab_gallery",
+      "value": "學習"
+    },
+    {
+      "name": "tab_demo",
+      "value": "範例"
+    },
+    {
+      "name": "tab_device",
+      "value": "開發工具"
+    },
+    {
+      "name": "examples_intro",
+      "value": "一次開發、四端部署的鴻蒙模板骨架：點開任一卡片進入下一級。"
+    },
+    {
+      "name": "examples_card_gallery_title",
+      "value": "元件範例"
+    },
+    {
+      "name": "examples_card_gallery_desc",
+      "value": "應用級單元件對照：按鈕 / 標籤 / 平台能力 / 控件工廠 / 動效"
+    },
+    {
+      "name": "examples_card_vitalui_title",
+      "value": "VitalUI 元件"
+    },
+    {
+      "name": "examples_card_vitalui_desc",
+      "value": "@quizzyjoy/vitalui 庫內元件：圖表 / 載入 / 取色器 / 狀態容器"
+    },
+    {
+      "name": "examples_card_scene_title",
+      "value": "場景範例"
+    },
+    {
+      "name": "examples_card_scene_desc",
+      "value": "可整體複製的頁面範式：回饋 / 看板 / 表單 / 列表 / 搜尋 / 分屏"
+    },
+    {
+      "name": "examples_card_capability_title",
+      "value": "模板能力"
+    },
+    {
+      "name": "examples_card_capability_desc",
+      "value": "設定中心 / 詳情頁範式 / 帳號登入頁：模板已裝好的三塊基礎設施"
+    },
+    {
+      "name": "examples_card_tokens_title",
+      "value": "設計權杖"
+    },
+    {
+      "name": "examples_card_tokens_desc",
+      "value": "字階 / 圓角 / 間距 / 描邊 / 陰影 / 觸控目標 / 色彩全量對照"
+    },
+    {
+      "name": "examples_card_about_title",
+      "value": "關於模板"
+    },
+    {
+      "name": "examples_card_about_desc",
+      "value": "這是什麼 / 怎麼用 / 如何 fork：上手路徑與目錄約定"
+    }
+  ]
+}

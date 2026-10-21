@@ -19,6 +19,58 @@
     {
       "name": "tab_device",
       "value": "Dev Tools"
+    },
+    {
+      "name": "examples_intro",
+      "value": "A HarmonyOS template skeleton: one codebase, four device families. Tap a card to drill down."
+    },
+    {
+      "name": "examples_card_gallery_title",
+      "value": "Components"
+    },
+    {
+      "name": "examples_card_gallery_desc",
+      "value": "App-level component reference: buttons, tags, platform capabilities, control factory, motion"
+    },
+    {
+      "name": "examples_card_vitalui_title",
+      "value": "VitalUI Components"
+    },
+    {
+      "name": "examples_card_vitalui_desc",
+      "value": "Components from @quizzyjoy/vitalui: charts, loading, color picker, state container"
+    },
+    {
+      "name": "examples_card_scene_title",
+      "value": "Page Patterns"
+    },
+    {
+      "name": "examples_card_scene_desc",
+      "value": "Copy-paste page patterns: feedback, dashboard, form, list, search, split"
+    },
+    {
+      "name": "examples_card_capability_title",
+      "value": "Template Features"
+    },
+    {
+      "name": "examples_card_capability_desc",
+      "value": "Settings center, detail-page pattern, sign-in page: three ready-made building blocks"
+    },
+    {
+      "name": "examples_card_tokens_title",
+      "value": "Design Tokens"
+    },
+    {
+      "name": "examples_card_tokens_desc",
+      "value": "Full reference: type scale, radius, spacing, stroke, shadow, touch targets, colors"
+    },
+    {
+      "name": "examples_card_about_title",
+      "value": "About Template"
+    },
+    {
+      "name": "examples_card_about_desc",
+      "value": "What this is, how to use it, how to fork: onboarding path and directory conventions"
     }
   ]
 }

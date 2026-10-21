@@ -7,8 +7,9 @@ import { SCENE_NAV_ROWS, SectionNavRow } from '../model/SectionNav';
 /** 大卡内的一个子入口行（只承载文案与去向 id）。 */
 class ExampleRow {
   readonly id: string;
-  readonly title: string;
-  readonly desc: string;
+  /** 标题/描述走三语资源（v3.77）：ResourceStr 让 Text 直接渲染当前语言。 */
+  readonly title: ResourceStr;
+  readonly desc: ResourceStr;
 
   constructor(id: string, title: string, desc: string) {
     this.id = id;
@@ -26,15 +27,16 @@ class ExampleRow {
  */
 class ExampleSection {
   readonly id: string;
-  readonly title: string;
-  readonly desc: string;
+  /** 标题/描述走三语资源（v3.77）：写成 ResourceStr，Text 会按当前语言渲染。 */
+  readonly title: ResourceStr;
+  readonly desc: ResourceStr;
   readonly symbol: Resource;
   readonly tint: Resource;
   readonly target: string;
   readonly rows: ExampleRow[];
 
-  constructor(id: string, title: string, desc: string, symbol: Resource, tint: Resource, target: string,
-    rows: ExampleRow[]) {
+  constructor(id: string, title: ResourceStr, desc: ResourceStr, symbol: Resource, tint: Resource,
+    target: string, rows: ExampleRow[]) {
     this.id = id;
     this.title = title;
     this.desc = desc;
@@ -64,17 +66,23 @@ const SCENE_ROWS: ExampleRow[] = SCENE_NAV_ROWS.map((row: SectionNavRow): Exampl
  * 对比度不足（v3.38 真机走查），故按域取不同饱和色区分，深浅色都不失可读性。
  */
 const EXAMPLE_SECTIONS: ExampleSection[] = [
-  new ExampleSection('gallery', '组件示例', '应用级单组件对照：按钮 / 标签 / 平台能力 / 控件工厂 / 动效',
+  new ExampleSection('gallery', $r('app.string.examples_card_gallery_title'),
+    $r('app.string.examples_card_gallery_desc'),
     $r('sys.symbol.square_grid_2x2'), $r('app.color.qj_brand'), 'gallery', GALLERY_ROWS),
-  new ExampleSection('vitalui', 'VitalUI 组件', '@quizzyjoy/vitalui 库内组件：图表 / 加载 / 取色器 / 状态容器',
+  new ExampleSection('vitalui', $r('app.string.examples_card_vitalui_title'),
+    $r('app.string.examples_card_vitalui_desc'),
     $r('sys.symbol.paintpalette'), $r('app.color.app_accent_pink'), 'gallery', VITALUI_ROWS),
-  new ExampleSection('scene', '场景示例', '可整体复制的页面范式：反馈 / 看板 / 表单 / 列表 / 搜索 / 分屏',
+  new ExampleSection('scene', $r('app.string.examples_card_scene_title'),
+    $r('app.string.examples_card_scene_desc'),
     $r('sys.symbol.doc_text_badge_clock'), $r('app.color.app_accent_purple'), 'scene', SCENE_ROWS),
-  new ExampleSection('capability', '模板能力', '设置中心 / 详情页范式 / 账号登录页：模板已装好的三块基础设施',
+  new ExampleSection('capability', $r('app.string.examples_card_capability_title'),
+    $r('app.string.examples_card_capability_desc'),
     $r('sys.symbol.gearshape_fill'), $r('app.color.app_accent_teal'), 'catalog', []),
-  new ExampleSection('tokens', '设计令牌', '字阶 / 圆角 / 间距 / 描边 / 阴影 / 触摸目标 / 色彩全量对照',
+  new ExampleSection('tokens', $r('app.string.examples_card_tokens_title'),
+    $r('app.string.examples_card_tokens_desc'),
     $r('sys.symbol.paintpalette'), $r('app.color.app_accent_pink'), 'tokens', []),
-  new ExampleSection('about', '关于模板', '这是什么 / 怎么用 / 如何 fork：上手路径与目录约定',
+  new ExampleSection('about', $r('app.string.examples_card_about_title'),
+    $r('app.string.examples_card_about_desc'),
     $r('sys.symbol.info_circle'), $r('app.color.qj_brand'), 'template', [])
 ];
 
@@ -244,7 +252,7 @@ export struct ExamplesView {
   build() {
     Scroll() {
       Column({ space: DesignToken.sectionSpacing() }) {
-        Text('一次开发、四端部署的鸿蒙模板骨架：点开任一卡片进入下一级。')
+        Text($r('app.string.examples_intro'))
           .fontSize(AppFontSize.CAPTION)
           .fontColor($r('app.color.app_text_tertiary'))
           .width('100%')
