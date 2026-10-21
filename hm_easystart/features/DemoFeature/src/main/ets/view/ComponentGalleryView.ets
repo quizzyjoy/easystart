@@ -1335,11 +1335,6 @@ export struct ComponentGalleryView {
         }
         .alignItems(HorizontalAlign.Start)
         .width('100%')
-        .bindSheet(this.sheetShow, this.demoSheetBuilder(), AppSheetOptions.bind({
-          onDisappear: () => {
-            this.sheetShow = false;
-          }
-        }))
   }
 
   /**
@@ -1720,5 +1715,12 @@ export struct ComponentGalleryView {
     .backgroundColor($r('app.color.app_bg_page'))
     .scrollBar(BarState.Off)
     .edgeEffect(EdgeEffect.Spring)
+    // v3.70：Sheet 改挂页面根节点。原先挂在 groupApp 末尾，拆成七页后
+    // 只有「应用组件与动效」页能弹，弹层页点 Sheet 无反应（sheet 链断）。
+    .bindSheet(this.sheetShow, this.demoSheetBuilder(), AppSheetOptions.bind({
+      onDisappear: () => {
+        this.sheetShow = false;
+      }
+    }))
   }
 }
