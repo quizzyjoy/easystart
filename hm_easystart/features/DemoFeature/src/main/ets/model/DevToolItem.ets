@@ -26,7 +26,8 @@ export enum DevToolSymbol {
   CODEC,
   KEY,
   WRENCH,
-  DOC
+  DOC,
+  STAR
 }
 
 export class DevToolItem {
@@ -72,7 +73,10 @@ export function devTools(): DevToolItem[] {
     new DevToolItem('transitions', '转场动效合集',
       '元素进出 / 曲线对比 / 共享元素 / 形变位移 四种演示',
       DevToolSymbol.GRID, DevToolGroup.ENV, DevToolStatus.READY,
-      'https://gitcode.com/HarmonyOS_Samples/transitions-collection')
+      'https://gitcode.com/HarmonyOS_Samples/transitions-collection'),
+    new DevToolItem('symbol', 'Symbol 能力',
+      '渲染策略 / 多色分层 / 六类动效 / 字重尺寸 / 阴影',
+      DevToolSymbol.STAR, DevToolGroup.ENV)
   ];
   const data: DevToolItem[] = [
     new DevToolItem('hash', '哈希校验', 'SHA-256 / SHA-512 / SHA-1 / MD5，可与期望值核对',

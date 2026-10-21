@@ -9,6 +9,7 @@ import {
   IdToolView,
   JsonToolView,
   RegexToolView,
+  SymbolView,
   TransitionDetailView,
   TransitionsView,
   ChartsDashboardView,
@@ -279,6 +280,9 @@ struct Index {
         break;
       case 'jsontool':
         RouterManager.getInstance().push(AppRoute.JSON_TOOL);
+        break;
+      case 'symbol':
+        RouterManager.getInstance().push(AppRoute.SYMBOL_TOOL);
         break;
       default:
         RouterManager.getInstance().push(AppRoute.DEVICE_CAPABILITY);
@@ -644,7 +648,23 @@ struct Index {
         enableComponentSafeArea: true
       })
       .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
-        } else if (name === AppRoute.HASH_TOOL) {
+        } else if (name === AppRoute.SYMBOL_TOOL) {
+      HdsNavDestination() {
+        SymbolView()
+      }
+      .titleBar({
+        content: { title: { mainTitle: 'Symbol 能力', subTitle: '渲染策略 / 多色 / 动效 / 阴影' } },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.HASH_TOOL) {
       HdsNavDestination() {
         HashToolView()
       }

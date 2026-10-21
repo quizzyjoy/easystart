@@ -9,6 +9,7 @@ import {
   IdToolView,
   JsonToolView,
   RegexToolView,
+  SymbolView,
   ComponentGroupView,
   DemoSample,
   DesignTokensView,
@@ -244,6 +245,9 @@ struct PcIndex {
         break;
       case 'regex':
         RouterManager.getInstance().push(AppRoute.REGEX_TOOL);
+        break;
+      case 'symbol':
+        RouterManager.getInstance().push(AppRoute.SYMBOL_TOOL);
         break;
       case 'jsontool':
         RouterManager.getInstance().push(AppRoute.JSON_TOOL);
@@ -532,6 +536,22 @@ struct PcIndex {
             mainTitle: '账号登录页范式'
           }
         },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.SYMBOL_TOOL) {
+      HdsNavDestination() {
+        SymbolView()
+      }
+      .titleBar({
+        content: { title: { mainTitle: 'Symbol 能力', subTitle: '渲染策略 / 多色 / 动效 / 阴影' } },
         style: {
           systemMaterialEffect: {
             materialType: hdsMaterial.MaterialType.ADAPTIVE,

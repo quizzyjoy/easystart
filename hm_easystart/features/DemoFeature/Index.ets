@@ -19,6 +19,7 @@ export { SearchView } from './src/main/ets/view/SearchView';
 export { HoverSplitView } from './src/main/ets/view/HoverSplitView';
 export { ToolsView } from './src/main/ets/view/ToolsView';
 export { AccountSampleView } from './src/main/ets/view/AccountSampleView';
+export { SymbolView } from './src/main/ets/view/SymbolView';
 export { CodecToolView } from './src/main/ets/view/CodecToolView';
 export { HashToolView } from './src/main/ets/view/HashToolView';
 export { IdToolView } from './src/main/ets/view/IdToolView';

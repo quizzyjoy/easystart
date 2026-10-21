@@ -108,6 +108,9 @@ export struct ToolsView {
     if (symbol === DevToolSymbol.DOC) {
       return $r('sys.symbol.doc_plaintext');
     }
+    if (symbol === DevToolSymbol.STAR) {
+      return $r('sys.symbol.star_fill');
+    }
     return $r('sys.symbol.display');
   }
 

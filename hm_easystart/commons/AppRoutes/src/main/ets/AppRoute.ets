@@ -51,6 +51,8 @@ export class AppRoute {
   static readonly LICENSE: string = 'license';
   /** 开发工具·UI Design Kit 图标处理（v3.42，pageMap 注册名） */
   static readonly ICON_KIT: string = 'iconKit';
+  /** 开发工具·Symbol 能力一览（v3.47） */
+  static readonly SYMBOL_TOOL: string = 'symbolTool';
   /** 开发工具·哈希校验（v3.46） */
   static readonly HASH_TOOL: string = 'hashTool';
   /** 开发工具·编码工作台（v3.46） */
