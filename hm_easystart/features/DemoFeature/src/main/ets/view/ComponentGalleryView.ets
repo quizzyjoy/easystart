@@ -1,4 +1,4 @@
-import { ChartEntry, ChartSeries, ColorMath, CommonColorPicker, CommonLoading, FeedbackText, ListStatus, LoadingVariant, MotionEffects, MotionSpec, PieChart, QuarterRoseChart, RadarChart, RoseChart, SkeletonBlock, SizeLevel, StateContainer, UiThemeManager, ViewState } from '@quizzyjoy/vitalui';
+import { ChartEntry, ChartSeries, ColorMath, CommonColorPicker, CommonLoading, FeedbackText, ListStatus, LoadingVariant, RefreshList, MotionEffects, MotionSpec, PieChart, QuarterRoseChart, RadarChart, RoseChart, SkeletonBlock, SizeLevel, StateContainer, UiThemeManager, ViewState } from '@quizzyjoy/vitalui';
 import { ActionCard, ButtonVariant, CommonButton, CommonTag, TagTone } from '@easystart/app-component';
 import {
   AppBadge,
@@ -116,6 +116,13 @@ export struct ComponentGalleryView {
   private share: ShareHelper = ShareHelper.getInstance();
   /** AppSheet 示例显隐（V2：单向绑定 + onDisappear/onClose 回写，不用 $$ 双向语法） */
   @Local sheetShow: boolean = false;
+  /** 状态页：单实例 StateContainer 的当前态（v3.71 可切换，替代四个静态实例）。 */
+  @Local galleryState: ViewState = ViewState.CONTENT;
+  /** 状态页：RefreshList 实例的数据与状态机。 */
+  @Local listItems: Object[] = [];
+  @Local listStatus: ListStatus = ListStatus.IDLE;
+  @Local listHasMore: boolean = true;
+  private listTimer: number = -1;
 
   /** 主题化控件工厂示例态（选中/激活态随 theme.accentColor 彻底换肤）。 */
   @Local ctlSwitch: boolean = true;
@@ -171,6 +178,10 @@ export struct ComponentGalleryView {
   }
 
   aboutToDisappear(): void {
+    if (this.listTimer !== -1) {
+      clearTimeout(this.listTimer);
+      this.listTimer = -1;
+    }
     this.fold.detach();
   }
 
@@ -683,54 +694,144 @@ export struct ComponentGalleryView {
   /** 画廊分组区块：groupState（v3.64 新增，VitalUI 状态与列表独立页） */
   @Builder
   groupState() {
-        this.sectionTitle('StateContainer（四态容器）')
-        Text('content 渲染子内容，loading / empty / error 由组件接管，error 态提供重试回调。')
+        this.sectionTitle('StateContainer（四态容器 · 可切换）')
+        Text('content 渲染子内容，loading / empty / error 由组件接管；error 态提供重试回调。点下方切换看同一容器的态流转。')
           .fontSize(AppFontSize.CAPTION)
           .fontColor($r('app.color.app_text_tertiary'))
           .width('100%')
           .margin({ bottom: AppSpacing.SM })
 
-        Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
+        Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.XS) }) {
           ForEach(GALLERY_STATE_CASES, (item: GalleryStateCase) => {
-            Column({ space: AppSpacing.XS }) {
-              Text(item.label)
-                .fontSize(AppFontSize.CAPTION)
-                .fontColor($r('app.color.app_text_secondary'))
-              Column() {
-                StateContainer({
-                  state: item.state,
-                  emptyText: new FeedbackText('暂无数据', '换个条件试试', ''),
-                  errorText: new FeedbackText('加载失败', '请检查网络后重试', '重试'),
-                  onRetry: (): void => {
-                    CommonToast.info('error 态：onRetry 已触发');
-                  }
-                }) {
-                  Text('content 态：这里是业务内容')
-                    .fontSize(AppFontSize.BODY_SM)
-                    .fontColor($r('app.color.app_text_primary'))
-                }
+            CommonButton({
+              text: item.label,
+              variant: this.galleryState === item.state ? ButtonVariant.PRIMARY : ButtonVariant.SECONDARY,
+              accentColor: this.theme.accentColor,
+              onAction: (): void => {
+                this.galleryState = item.state;
               }
-              .width('100%')
-              .height(140)
-              .borderRadius(AppRadius.MD)
-              .backgroundColor($r('app.color.app_bg_page_deep'))
-            }
-            .width('48%')
+            })
           }, (item: GalleryStateCase): string => item.label)
         }
         .width('100%')
+        .margin({ bottom: AppSpacing.SM })
 
-        this.sectionTitle('RefreshList（下拉刷新 / 上拉加载状态机）')
-        Text('ListStatus 五态：IDLE / LOADING / SUCCESS / EMPTY / ERROR；LOADING 且无数据时自动显示骨架，终态收起刷新指示器。完整交互示例见「模板能力 → 列表状态」。')
+        Column() {
+          StateContainer({
+            state: this.galleryState,
+            emptyText: new FeedbackText('暂无数据', '换个条件试试', ''),
+            errorText: new FeedbackText('加载失败', '请检查网络后重试', '重试'),
+            onRetry: (): void => {
+              // 重试后回到 loading 再回 content，演示完整闭环
+              this.galleryState = ViewState.LOADING;
+              setTimeout((): void => {
+                this.galleryState = ViewState.CONTENT;
+              }, 600);
+            }
+          }) {
+            Text('content 态：这里是业务内容。切到 loading / empty / error 会由容器接管这片区域。')
+              .fontSize(AppFontSize.BODY_SM)
+              .fontColor($r('app.color.app_text_primary'))
+              .width('100%')
+          }
+        }
+        .width('100%')
+        .constraintSize({ minHeight: 160 })
+        .padding(AppSpacing.MD)
+        .borderRadius(AppRadius.MD)
+        .backgroundColor($r('app.color.app_bg_page_deep'))
+
+        this.sectionTitle('RefreshList（下拉刷新 / 上拉加载 · 真交互）')
+        Text('ListStatus 五态：IDLE / LOADING / SUCCESS / EMPTY / ERROR。下拉与「加载更多」都接到本页 mock 数据，可点下方按钮直接切态。')
           .fontSize(AppFontSize.CAPTION)
           .fontColor($r('app.color.app_text_tertiary'))
           .width('100%')
-        Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
-          ForEach(GALLERY_LIST_STATUSES, (status: string) => {
-            CommonTag({ text: status, tone: TagTone.NEUTRAL })
-          }, (status: string): string => status)
+          .margin({ bottom: AppSpacing.SM })
+
+        Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.XS) }) {
+          CommonButton({ text: '加载中', variant: ButtonVariant.SECONDARY, onAction: (): void => {
+            this.listStatus = ListStatus.LOADING;
+          } })
+          CommonButton({ text: '空', variant: ButtonVariant.SECONDARY, onAction: (): void => {
+            this.listItems = [];
+            this.listStatus = ListStatus.EMPTY;
+          } })
+          CommonButton({ text: '错误', variant: ButtonVariant.SECONDARY, onAction: (): void => {
+            this.listItems = [];
+            this.listStatus = ListStatus.ERROR;
+          } })
+          CommonButton({ text: '成功', variant: ButtonVariant.SECONDARY, onAction: (): void => {
+            this.mockListLoad(true);
+          } })
+          CommonButton({ text: '重置', variant: ButtonVariant.TEXT, onAction: (): void => {
+            this.listItems = [];
+            this.listHasMore = true;
+            this.listStatus = ListStatus.IDLE;
+          } })
         }
         .width('100%')
+
+        Column() {
+          RefreshList({
+            items: this.listItems,
+            status: this.listStatus,
+            hasMore: this.listHasMore,
+            onRefresh: (): void => {
+              this.mockListLoad(true);
+            },
+            onLoadMore: (): void => {
+              this.mockListLoad(false);
+            },
+            onRetry: (): void => {
+              this.mockListLoad(true);
+            },
+            itemBuilder: (item: Object, index: number) => {
+              this.listRow(item, index)
+            }
+          })
+        }
+        .width('100%')
+        .height(320)
+        .borderRadius(AppRadius.MD)
+        .backgroundColor($r('app.color.app_bg_page_deep'))
+  }
+
+  /** 状态页列表行（@Builder：itemBuilder 回调里不能直接写 UI 语法）。 */
+  @Builder
+  listRow(item: Object, index: number) {
+    Row({ space: AppSpacing.SM }) {
+      Text(`${item}`)
+        .fontSize(AppFontSize.BODY_SM)
+        .fontColor($r('app.color.app_text_primary'))
+        .layoutWeight(1)
+      Text(`#${index + 1}`)
+        .fontSize(AppFontSize.CAPTION)
+        .fontColor($r('app.color.app_text_tertiary'))
+    }
+    .width('100%')
+    .padding({ top: AppSpacing.SM, bottom: AppSpacing.SM })
+  }
+
+  /** 状态页 mock 数据：reset=true 从空开始加载首页，否则追加下一页。 */
+  private mockListLoad(reset: boolean): void {
+    if (this.listTimer !== -1) {
+      clearTimeout(this.listTimer);
+      this.listTimer = -1;
+    }
+    this.listStatus = ListStatus.LOADING;
+    const base: Object[] = reset ? [] : this.listItems;
+    this.listTimer = setTimeout((): void => {
+      const next: Object[] = base.slice();
+      const pageSize: number = 6;
+      const start: number = next.length;
+      for (let i = 0; i < pageSize; i++) {
+        next.push(`列表示例行 ${start + i + 1}`);
+      }
+      this.listItems = next;
+      this.listHasMore = next.length < 18;
+      this.listStatus = next.length === 0 ? ListStatus.EMPTY : ListStatus.SUCCESS;
+      this.listTimer = -1;
+    }, 500);
   }
 
   /** 响应式与令牌（v3.69：原「平台能力与令牌」拆成两页）。 */
