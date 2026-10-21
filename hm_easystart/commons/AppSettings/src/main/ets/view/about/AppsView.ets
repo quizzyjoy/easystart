@@ -1,5 +1,5 @@
 import { common } from '@quizzyjoy/platform';
-import { AppLauncher, LaunchResult, StoreProductView } from '@quizzyjoy/platform';
+import { AppLauncher, StoreProductView } from '@quizzyjoy/platform';
 import { AppDialog, CommonTag, DialogSemantic, TagTone } from '@easystart/app-component';
 import { AppFontSize, AppRadius, AppSpacing } from '@quizzyjoy/foundation';
 import { AppMatrix, AppMatrixEntry, AppEntryStatus } from '../../model/AppMatrix';
@@ -23,29 +23,41 @@ export struct AppsView {
   /** 包名等宽展示用等宽字体族（不引外部字体，靠 CSS 等宽回退）。 */
   private static readonly MONO_FONT: string = 'HarmonyOS Sans Mono, monospace';
 
+  /**
+   * 打开矩阵里的一条。
+   *
+   * 顺序（v3.56 修正）：**先试着打开已安装应用，再按状态降级**。
+   * 状态（SELF / PUBLISHED / UNPUBLISHED）只决定"打不开时去哪"，不阻止"能打开就打开"——
+   * 早期版本把 UNPUBLISHED 放在最前面，导致真机上明明装了目标应用却弹介绍弹窗。
+   */
   private async handleOpen(entry: AppMatrixEntry): Promise<void> {
     if (entry.status === AppEntryStatus.SELF) {
       this.onOpenSelf();
       return;
     }
+    const context: common.UIAbilityContext =
+      this.getUIContext().getHostContext() as common.UIAbilityContext;
+    // ① 已安装 → 直接打开（与上架状态无关）
+    if (await AppLauncher.openApp(context, entry.bundleName)) {
+      return;
+    }
+    // ② 未上架 → 只能看介绍
     if (entry.status === AppEntryStatus.UNPUBLISHED) {
       this.showIntro(entry);
       return;
     }
-    const context: common.UIAbilityContext =
-      this.getUIContext().getHostContext() as common.UIAbilityContext;
-    // 未安装：优先在应用内拉起「应用详情页」（用户可当场下载，不用离开当前应用）
+    // ③ 已上架但未安装 → 应用内详情页（可当场下载）
     if (StoreProductView.usable()) {
       const shown: boolean = await StoreProductView.loadProductDetail(context, entry.bundleName);
       if (shown) {
         return;
       }
     }
-    // 详情页不可用 → 跳应用市场 → 仍失败 → 介绍弹窗
-    const result: LaunchResult = await AppLauncher.open(context, entry.bundleName);
-    if (result === LaunchResult.UNAVAILABLE) {
-      this.showIntro(entry);
+    // ④ 详情页不可用 → 跳应用市场 → 仍失败 → 介绍弹窗
+    if (await AppLauncher.openMarket(context, entry.bundleName)) {
+      return;
     }
+    this.showIntro(entry);
   }
 
   /** 未上架 / 无法跳转时的介绍弹窗（内容占位，下轮补真实介绍）。 */

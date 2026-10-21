@@ -68,6 +68,25 @@ export class AppLauncher {
   }
 
   /**
+   * 仅尝试**直接拉起已安装应用**（不降级）。
+   *
+   * v3.55：调用方需要「先判断已安装」再决定走详情页还是市场，故把这一步单独暴露。
+   */
+  static async openApp(context: common.UIAbilityContext, bundleName: string): Promise<boolean> {
+    return AppLauncher.tryStartApp(context, bundleName);
+  }
+
+  /**
+   * 仅尝试**打开应用市场详情页**（不降级）。
+   */
+  static async openMarket(context: common.UIAbilityContext, bundleName: string): Promise<boolean> {
+    if (!AppLauncher.isMarketAvailable()) {
+      return false;
+    }
+    return AppLauncher.tryOpenMarketDetail(context, bundleName);
+  }
+
+  /**
    * 应用市场是否可用（能否响应 `appmarket://` 深链）。
    *
    * 依赖 `module.json5` 的 `querySchemes` 声明 `appmarket`；未声明或系统不支持时
