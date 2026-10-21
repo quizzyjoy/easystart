@@ -116,6 +116,9 @@ export struct ComponentGalleryView {
   private share: ShareHelper = ShareHelper.getInstance();
   /** AppSheet 示例显隐（V2：单向绑定 + onDisappear/onClose 回写，不用 $$ 双向语法） */
   @Local sheetShow: boolean = false;
+  /** 弹层页：bindPopup / bindContentCover 的可见性（Menu / ContextMenu 由系统接管，无需状态）。 */
+  @Local popupVisible: boolean = false;
+  @Local coverVisible: boolean = false;
   /** 状态页：单实例 StateContainer 的当前态（v3.71 可切换，替代四个静态实例）。 */
   @Local galleryState: ViewState = ViewState.CONTENT;
   /** 状态页：RefreshList 实例的数据与状态机。 */
@@ -573,6 +576,135 @@ export struct ComponentGalleryView {
         }
         .alignItems(HorizontalAlign.Start)
         .width('100%')
+
+        this.sectionTitle('其余四类弹层（Popup / Menu / ContextMenu / ContentCover）')
+        Text('这四类都由状态驱动、挂在触发节点上：bindPopup 轻气泡、bindMenu 下拉、bindContextMenu 长按/右键、bindContentCover 全屏。')
+          .fontSize(AppFontSize.CAPTION)
+          .fontColor($r('app.color.app_text_tertiary'))
+          .width('100%')
+          .margin({ bottom: AppSpacing.SM })
+
+        Flex({ wrap: FlexWrap.Wrap, space: UiMetrics.uniformFlexSpace(AppSpacing.SM) }) {
+          Column() {
+            Button('Popup 气泡')
+              .fontSize(AppFontSize.BODY_SM)
+              .fontColor($r('app.color.app_text_primary'))
+              .backgroundColor($r('app.color.app_bg_card'))
+              .borderRadius(AppRadius.FULL)
+              .height(40)
+              .onClick(() => {
+                this.popupVisible = !this.popupVisible;
+              })
+          }
+          .bindPopup(this.popupVisible, {
+            message: 'bindPopup：贴在触发节点上的轻量气泡，适合一次性提示。',
+            placement: Placement.Bottom,
+            popupColor: $r('app.color.app_bg_card'),
+            onStateChange: (e) => {
+              if (!e.isVisible) {
+                this.popupVisible = false;
+              }
+            }
+          })
+
+          Column() {
+            Button('Menu 下拉')
+              .fontSize(AppFontSize.BODY_SM)
+              .fontColor($r('app.color.app_text_primary'))
+              .backgroundColor($r('app.color.app_bg_card'))
+              .borderRadius(AppRadius.FULL)
+              .height(40)
+          }
+          .bindMenu([
+            {
+              value: '菜单项 A',
+              action: () => {
+                CommonToast.info('选中菜单项 A');
+              }
+            },
+            {
+              value: '菜单项 B',
+              action: () => {
+                CommonToast.info('选中菜单项 B');
+              }
+            }
+          ])
+
+          Column() {
+            Button('长按 ContextMenu')
+              .fontSize(AppFontSize.BODY_SM)
+              .fontColor($r('app.color.app_text_primary'))
+              .backgroundColor($r('app.color.app_bg_card'))
+              .borderRadius(AppRadius.FULL)
+              .height(40)
+          }
+          .bindContextMenu(this.contextMenuBuilder(), ResponseType.LongPress)
+
+          Column() {
+            Button('ContentCover 全屏')
+              .fontSize(AppFontSize.BODY_SM)
+              .fontColor($r('app.color.app_text_primary'))
+              .backgroundColor($r('app.color.app_bg_card'))
+              .borderRadius(AppRadius.FULL)
+              .height(40)
+              .onClick(() => {
+                this.coverVisible = true;
+              })
+          }
+          .bindContentCover(this.coverVisible, this.contentCoverBuilder(), {
+            modalTransition: ModalTransition.NONE,
+            onDisappear: () => {
+              this.coverVisible = false;
+            }
+          })
+        }
+        .width('100%')
+  }
+
+  /** 长按菜单内容（bindContextMenu 的 builder）。 */
+  @Builder
+  contextMenuBuilder() {
+    Menu() {
+      MenuItem({ content: '复制' })
+        .onClick(() => {
+          CommonToast.info('ContextMenu：复制');
+        })
+      MenuItem({ content: '重命名' })
+        .onClick(() => {
+          CommonToast.info('ContextMenu：重命名');
+        })
+      MenuItem({ content: '删除' })
+        .onClick(() => {
+          CommonToast.warn('ContextMenu：删除');
+        })
+    }
+  }
+
+  /** 全屏覆盖内容（bindContentCover 的 builder）。 */
+  @Builder
+  contentCoverBuilder() {
+    Column({ space: AppSpacing.MD }) {
+      Text('ContentCover 全屏覆盖')
+        .fontSize(AppFontSize.TITLE_SM)
+        .fontColor($r('app.color.app_text_primary'))
+      Text('用于图片预览、编辑面板这类"整页接管"场景；关闭时由 onDisappear 复位状态。')
+        .fontSize(AppFontSize.BODY_SM)
+        .fontColor($r('app.color.app_text_secondary'))
+        .textAlign(TextAlign.Center)
+      CommonButton({
+        text: '关闭',
+        variant: ButtonVariant.PRIMARY,
+        accentColor: this.theme.accentColor,
+        onAction: (): void => {
+          this.coverVisible = false;
+        }
+      })
+    }
+    .width('100%')
+    .height('100%')
+    .justifyContent(FlexAlign.Center)
+    .padding(AppSpacing.XXXL)
+    .backgroundColor($r('app.color.app_bg_page'))
   }
 
   /** 画廊分组区块：groupChart（v3.64 从 groupVisual 拆出，VitalUI 数据图表聚合页） */
