@@ -29,6 +29,7 @@ export { MarketHelper } from './src/main/ets/market/MarketHelper';
 export { AppLauncher, LaunchResult } from './src/main/ets/market/AppLauncher';
 export { PrivacyLinks } from './src/main/ets/market/PrivacyLinks';
 export { StoreProductView } from './src/main/ets/market/StoreProductView';
+export { SelfSignature, SelfSignatureReader } from './src/main/ets/market/SelfSignature';
 export {
   AppGalleryHelper,
   StoreCapabilityResult,

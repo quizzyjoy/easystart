@@ -10,6 +10,7 @@
  */
 import { RawFileTextView } from '../../component/RawFileTextView';
 import { AppDialog, DialogSemantic } from '@easystart/app-component';
+import { SelfSignature, SelfSignatureReader } from '@quizzyjoy/platform';
 import { StorePrivacyLink, StorePrivacyLinkSnapshot } from '@quizzyjoy/platform';
 import {
   AppGalleryHelper,
@@ -111,6 +112,16 @@ export struct PolicyView {
     }
     if (snapshot.errorCode === 0 && snapshot.links.length === 0) {
       lines.push('说明：接口可调用但未返回任何链接，同样会回退内置地址。');
+    }
+    // 签名信息（v3.59）：隐私托管按 bundleName + 签名证书指纹与 AGC 登记匹配，
+    // 调试证书与发布证书不一致时同样查不到链接，这里把本机指纹摆出来便于对比。
+    const sig: SelfSignature = SelfSignatureReader.read();
+    lines.push('———');
+    lines.push(`签名类型：${sig.debugSignature ? '调试签名（debug）' : '正式签名'}`);
+    lines.push(`分发类型：${sig.distributionType}`);
+    if (sig.fingerprintColon.length > 0) {
+      lines.push(`证书指纹（SHA-256）：${sig.fingerprintColon}`);
+      lines.push('请与 AGC「应用信息 → 签名证书指纹」比对；不一致就会查不到托管数据。');
     }
     AppDialog.open(this.getUIContext(), DialogSemantic.CONFIRM,
       '隐私链接信息', lines.join('\n'), (): void => {
