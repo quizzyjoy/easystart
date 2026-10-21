@@ -949,7 +949,7 @@ export struct ComponentGalleryView {
         .width('100%')
         .height(320)
         // clip 必须有：RefreshList 内部 List 的高度不受外层约束，不裁剪会溢出容器，
-        // 并把它之后的兄弟节点（perfSection）挤出可视区、导致外层 Scroll 无法继续向下滚
+        // 并把它之后的兄弟节点挤出可视区、导致外层 Scroll 无法继续向下滚
         .clip(true)
         .borderRadius(AppRadius.MD)
         .backgroundColor($r('app.color.app_bg_page_deep'))
