@@ -54,7 +54,12 @@ export struct ListStateView {
     }
   }
 
-  /** 模拟首屏/刷新加载（LOADING → CONTENT）。 */
+  /**
+   * 首屏加载（LOADING → CONTENT）。
+   *
+   * 只有**首屏**才让整页壳走 LOADING；下拉刷新走 `mockRefresh()`，
+   * 否则刷新瞬间 `RefreshList` 会被卸载、指示器状态一起丢失（v3.73 修复）。
+   */
   private mockLoad(): void {
     this.viewState = ViewState.LOADING;
     this.mockTimer = setTimeout(() => {
@@ -66,6 +71,27 @@ export struct ListStateView {
       this.items = first;
       this.viewState = ViewState.CONTENT;
       this.listStatus = ListStatus.SUCCESS;
+    }, MOCK_LOAD_MS);
+  }
+
+  /** 下拉刷新：只动列表态与数据，不卸载 RefreshList（v3.73）。 */
+  private mockRefresh(): void {
+    if (this.mockTimer !== -1) {
+      clearTimeout(this.mockTimer);
+    }
+    this.listStatus = ListStatus.LOADING;
+    this.mockTimer = setTimeout(() => {
+      this.mockTimer = -1;
+      const first: Object[] = [];
+      for (let i = 0; i < PAGE_SIZE; i++) {
+        first.push(new DemoListItem(`条目 ${i + 1}`, '刷新后重建的第一页'));
+      }
+      this.items = first;
+      this.listStatus = ListStatus.SUCCESS;
+      // 刷新后若壳停在 EMPTY/ERROR，一并回到 CONTENT
+      if (this.viewState !== ViewState.CONTENT) {
+        this.viewState = ViewState.CONTENT;
+      }
     }, MOCK_LOAD_MS);
   }
 
@@ -174,11 +200,6 @@ export struct ListStateView {
             .margin({ top: AppSpacing.SM })
         }
 
-        if (this.viewState === ViewState.LOADING) {
-          CommonLoading({ variant: LoadingVariant.DOTS, text: '加载中…' })
-            .margin({ top: AppSpacing.LG })
-        }
-
         Column() {
           StateContainer({
             state: this.viewState,
@@ -193,7 +214,7 @@ export struct ListStateView {
               status: this.listStatus,
               hasMore: this.items.length < 18,
               onRefresh: () => {
-                this.mockLoad();
+                this.mockRefresh();
               },
               onLoadMore: () => {
                 this.mockLoadMore();

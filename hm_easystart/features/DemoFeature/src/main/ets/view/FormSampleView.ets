@@ -63,6 +63,25 @@ export struct FormSampleView {
     return this.nameError.length === 0 && this.emailError.length === 0;
   }
 
+  /**
+   * 性别选择：走官方 TextPickerDialog（v3.73）。
+   *
+   * 原实现是"点击在男/女之间翻转文本"的假交互，而本页其余控件都是真交互，
+   * fork 方照抄会得到"点了不弹选择器"的坑。
+   */
+  private openGenderPicker(): void {
+    const options: string[] = ['男', '女', '不便透露'];
+    const selected: number = Math.max(0, options.indexOf(this.genderLabel));
+    this.getUIContext().showTextPickerDialog({
+      range: options,
+      selected: selected,
+      onAccept: (result: TextPickerResult): void => {
+        const idx: number = result.index as number;
+        this.genderLabel = options[idx];
+      }
+    });
+  }
+
   private submit(): void {
     if (!this.validate()) {
       AppSnackBar.error(this.getUIContext(), '请检查表单填写', '错误');
@@ -155,7 +174,7 @@ export struct FormSampleView {
                 value: this.genderLabel,
                 placeholder: '点击选择',
                 onSelect: (): void => {
-                  this.genderLabel = this.genderLabel === '男' ? '女' : '男';
+                  this.openGenderPicker();
                 }
               })
               AppSwitchRow({
