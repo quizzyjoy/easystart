@@ -50,6 +50,19 @@ export const ENGINEERING_NAV_ROWS: SectionNavRow[] = [
     $r('app.string.engineering_a11y_desc'))
 ];
 
+/**
+ * 布局示例四行（v3.80）。
+ *
+ * 对应官方「一多」四类响应式里的「重复布局」与「组件响应式」：
+ * 瀑布流（重复）/ 列表分组多列（重复）/ 网格跨格（重复）/ 自适应七能力（连续变化）。
+ */
+export const LAYOUT_NAV_ROWS: SectionNavRow[] = [
+  new SectionNavRow('waterflow', $r('app.string.layout_waterflow_title'), $r('app.string.layout_waterflow_desc')),
+  new SectionNavRow('list', $r('app.string.layout_list_title'), $r('app.string.layout_list_desc')),
+  new SectionNavRow('grid', $r('app.string.layout_grid_title'), $r('app.string.layout_grid_desc')),
+  new SectionNavRow('adaptive', $r('app.string.layout_adaptive_title'), $r('app.string.layout_adaptive_desc'))
+];
+
 /** 二级页标题（未知 id 回落「示例」）。 */
 export function sectionNavTitle(sectionId: string): string {
   if (sectionId === 'gallery') {
@@ -63,6 +76,9 @@ export function sectionNavTitle(sectionId: string): string {
   }
   if (sectionId === 'engineering') {
     return '工程能力';
+  }
+  if (sectionId === 'layout') {
+    return '布局示例';
   }
   return '示例';
 }
@@ -81,6 +97,9 @@ export function sectionNavDesc(sectionId: string): string {
   if (sectionId === 'engineering') {
     return '工程横切能力：权限 / 网络 / 长列表 / 无障碍，每项一个独立页，含真实设备实测结论。';
   }
+  if (sectionId === 'layout') {
+    return '一多布局范式：瀑布流 / 列表分组 / 网格跨格 / 自适应七能力，每项一个独立页。';
+  }
   return '';
 }
 
@@ -91,6 +110,9 @@ export function sectionNavRows(sectionId: string): SectionNavRow[] {
   }
   if (sectionId === 'engineering') {
     return ENGINEERING_NAV_ROWS;
+  }
+  if (sectionId === 'layout') {
+    return LAYOUT_NAV_ROWS;
   }
   const source: GalleryGroupEntry[] = sectionId === 'vitalui' ? VITALUI_GROUPS : GALLERY_GROUPS;
   return source.map((group: GalleryGroupEntry): SectionNavRow =>

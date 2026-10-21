@@ -2,7 +2,7 @@ import { UiThemeManager } from '@quizzyjoy/vitalui';
 import { AppFontSize, AppFontWeight, AppRadius, AppSize, AppSpacing, AppStroke, DesignToken } from '@quizzyjoy/foundation';
 import { BreakpointManager, WindowAdapter } from '@quizzyjoy/platform';
 import { GALLERY_GROUPS, GalleryGroupEntry, VITALUI_GROUPS } from '../model/GalleryGroup';
-import { ENGINEERING_NAV_ROWS, SCENE_NAV_ROWS, SectionNavRow } from '../model/SectionNav';
+import {ENGINEERING_NAV_ROWS, SCENE_NAV_ROWS, SectionNavRow, LAYOUT_NAV_ROWS } from '../model/SectionNav';
 
 /** 大卡内的一个子入口行（只承载文案与去向 id）。 */
 class ExampleRow {
@@ -69,6 +69,10 @@ const SCENE_ROWS: ExampleRow[] = SCENE_NAV_ROWS.map((row: SectionNavRow): Exampl
 const ENGINEERING_ROWS: ExampleRow[] = ENGINEERING_NAV_ROWS.map((row: SectionNavRow): ExampleRow =>
   new ExampleRow(row.id, row.title, row.desc));
 
+/** 布局示例四行，供 L1 卡显示行数。 */
+const LAYOUT_ROWS: ExampleRow[] = LAYOUT_NAV_ROWS.map((row: SectionNavRow): ExampleRow =>
+  new ExampleRow(row.id, row.title, row.desc));
+
 const EXAMPLE_SECTIONS: ExampleSection[] = [
   new ExampleSection('gallery', $r('app.string.examples_card_gallery_title'),
     $r('app.string.examples_card_gallery_desc'),
@@ -83,6 +87,9 @@ const EXAMPLE_SECTIONS: ExampleSection[] = [
     $r('app.string.examples_card_engineering_desc'),
     $r('sys.symbol.wrench_and_screwdriver_fill'), $r('app.color.app_accent_teal'), 'engineering',
     ENGINEERING_ROWS),
+  new ExampleSection('layout', $r('app.string.examples_card_layout_title'),
+    $r('app.string.examples_card_layout_desc'),
+    $r('sys.symbol.square_grid_2x2'), $r('app.color.app_accent_pink'), 'layout', LAYOUT_ROWS),
   new ExampleSection('capability', $r('app.string.examples_card_capability_title'),
     $r('app.string.examples_card_capability_desc'),
     $r('sys.symbol.gearshape_fill'), $r('app.color.app_accent_teal'), 'catalog', []),

@@ -18,6 +18,10 @@ import {
   NetworkSampleView,
   ListPerfSampleView,
   A11ySampleView,
+  LayoutWaterFlowView,
+  LayoutListView,
+  LayoutGridView,
+  LayoutAdaptiveView,
   SectionNavView,
   DemoSample,
   DesignTokensView,
@@ -238,6 +242,18 @@ struct Index {
       case DemoSample.A11Y:
         RouterManager.getInstance().push(AppRoute.DEMO_A11Y);
         break;
+      case DemoSample.LAYOUT_WATERFLOW:
+        RouterManager.getInstance().push(AppRoute.DEMO_LAYOUT_WATERFLOW);
+        break;
+      case DemoSample.LAYOUT_LIST:
+        RouterManager.getInstance().push(AppRoute.DEMO_LAYOUT_LIST);
+        break;
+      case DemoSample.LAYOUT_GRID:
+        RouterManager.getInstance().push(AppRoute.DEMO_LAYOUT_GRID);
+        break;
+      case DemoSample.LAYOUT_ADAPTIVE:
+        RouterManager.getInstance().push(AppRoute.DEMO_LAYOUT_ADAPTIVE);
+        break;
       default:
         break;
     }
@@ -266,6 +282,12 @@ struct Index {
       sample = DemoSample.LIST_PERF;
     } else if (sceneId === 'a11y') {
       sample = DemoSample.A11Y;
+    } else if (sceneId === 'waterflow') {
+      sample = DemoSample.LAYOUT_WATERFLOW;
+    } else if (sceneId === 'grid') {
+      sample = DemoSample.LAYOUT_GRID;
+    } else if (sceneId === 'adaptive') {
+      sample = DemoSample.LAYOUT_ADAPTIVE;
     }
     this.openDemoPage(sample);
   }
@@ -639,6 +661,86 @@ struct Index {
         content: {
           title: {
             mainTitle: '无障碍'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.DEMO_LAYOUT_WATERFLOW) {
+      HdsNavDestination() {
+        LayoutWaterFlowView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '瀑布流'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.DEMO_LAYOUT_LIST) {
+      HdsNavDestination() {
+        LayoutListView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '列表布局'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.DEMO_LAYOUT_GRID) {
+      HdsNavDestination() {
+        LayoutGridView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '网格布局'
+          }
+        },
+        style: {
+          systemMaterialEffect: {
+            materialType: hdsMaterial.MaterialType.ADAPTIVE,
+            materialLevel: hdsMaterial.MaterialLevel.ADAPTIVE
+          }
+        },
+        avoidLayoutSafeArea: true,
+        enableComponentSafeArea: true
+      })
+      .ignoreLayoutSafeArea([LayoutSafeAreaType.SYSTEM], [LayoutSafeAreaEdge.TOP, LayoutSafeAreaEdge.BOTTOM])
+    } else if (name === AppRoute.DEMO_LAYOUT_ADAPTIVE) {
+      HdsNavDestination() {
+        LayoutAdaptiveView()
+      }
+      .titleBar({
+        content: {
+          title: {
+            mainTitle: '自适应七能力'
           }
         },
         style: {

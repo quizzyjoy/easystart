@@ -267,6 +267,46 @@
     {
       "name": "engineering_a11y_desc",
       "value": "Four APIs compared wrong vs right: text, level, group, description"
+    },
+    {
+      "name": "examples_card_layout_title",
+      "value": "Layouts"
+    },
+    {
+      "name": "examples_card_layout_desc",
+      "value": "WaterFlow, grouped lists, grid spans, seven adaptive capabilities"
+    },
+    {
+      "name": "layout_waterflow_title",
+      "value": "WaterFlow"
+    },
+    {
+      "name": "layout_waterflow_desc",
+      "value": "Staggered cards, 2/3/4 columns, SLIDING_WINDOW keeps data on column change"
+    },
+    {
+      "name": "layout_list_title",
+      "value": "List Layout"
+    },
+    {
+      "name": "layout_list_desc",
+      "value": "Sticky group headers, lanes, swipe actions, scroll to group"
+    },
+    {
+      "name": "layout_grid_title",
+      "value": "Grid Layout"
+    },
+    {
+      "name": "layout_grid_desc",
+      "value": "Columns only (scrolls) vs rows+columns (fixed) vs spanning cells"
+    },
+    {
+      "name": "layout_adaptive_title",
+      "value": "Seven Adaptive Capabilities"
+    },
+    {
+      "name": "layout_adaptive_desc",
+      "value": "Stretch, even spacing, weight, aspect ratio, overflow, priority, wrap"
     }
   ]
 }

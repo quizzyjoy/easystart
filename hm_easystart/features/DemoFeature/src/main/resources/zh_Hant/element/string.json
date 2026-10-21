@@ -227,6 +227,46 @@
     {
       "name": "engineering_a11y_desc",
       "value": "text / level / group / description 的「錯誤 vs 正確」對照"
+    },
+    {
+      "name": "examples_card_layout_title",
+      "value": "佈局範例"
+    },
+    {
+      "name": "examples_card_layout_desc",
+      "value": "瀑布流 / 列表分組 / 網格跨格 / 自適應七能力：一多佈局的可運行範式"
+    },
+    {
+      "name": "layout_waterflow_title",
+      "value": "瀑布流"
+    },
+    {
+      "name": "layout_waterflow_desc",
+      "value": "不等高卡片 + 欄數 2/3/4 + SLIDING_WINDOW 切欄不重建"
+    },
+    {
+      "name": "layout_list_title",
+      "value": "列表佈局"
+    },
+    {
+      "name": "layout_list_desc",
+      "value": "分組吸頂 + lanes 多欄 + 側滑 + 分組定位"
+    },
+    {
+      "name": "layout_grid_title",
+      "value": "網格佈局"
+    },
+    {
+      "name": "layout_grid_desc",
+      "value": "只設欄可滾 / 欄列都設定死 / 跨列跨行"
+    },
+    {
+      "name": "layout_adaptive_title",
+      "value": "自適應七能力"
+    },
+    {
+      "name": "layout_adaptive_desc",
+      "value": "拉伸 / 均分 / 佔比 / 縮放 / 延伸 / 隱藏 / 折行"
     }
   ]
 }

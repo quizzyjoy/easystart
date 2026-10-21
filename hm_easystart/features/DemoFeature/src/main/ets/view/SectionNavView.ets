@@ -53,7 +53,7 @@ export struct SectionNavView {
    * - `gallery` / `vitalui`：行对应一个组件分组 → 走 onOpenGroup（分组型）
    */
   private handleRow(row: SectionNavRow): void {
-    if (this.sectionId === 'scene' || this.sectionId === 'engineering') {
+    if (this.sectionId === 'scene' || this.sectionId === 'engineering' || this.sectionId === 'layout') {
       this.onOpenScene(row.id);
       return;
     }

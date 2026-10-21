@@ -27,5 +27,13 @@ export enum DemoSample {
   /** 长列表性能（v3.79 独立页：ForEach vs LazyForEach 计数对照） */
   LIST_PERF,
   /** 无障碍四件套（v3.79 独立页：text / level / group / description） */
-  A11Y
+  A11Y,
+  /** 瀑布流布局（v3.80 独立页） */
+  LAYOUT_WATERFLOW,
+  /** 列表布局（v3.80 独立页） */
+  LAYOUT_LIST,
+  /** 网格布局（v3.80 独立页） */
+  LAYOUT_GRID,
+  /** 自适应七能力（v3.80 独立页） */
+  LAYOUT_ADAPTIVE
 }

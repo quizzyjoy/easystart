@@ -30,6 +30,14 @@ export class AppRoute {
   static readonly DEMO_LIST_PERF: string = 'demoListPerf';
   /** 无障碍示例（v3.79） */
   static readonly DEMO_A11Y: string = 'demoA11y';
+  /** 瀑布流布局示例（v3.80） */
+  static readonly DEMO_LAYOUT_WATERFLOW: string = 'demoLayoutWaterflow';
+  /** 列表布局示例（v3.80） */
+  static readonly DEMO_LAYOUT_LIST: string = 'demoLayoutList';
+  /** 网格布局示例（v3.80） */
+  static readonly DEMO_LAYOUT_GRID: string = 'demoLayoutGrid';
+  /** 自适应布局示例（v3.80） */
+  static readonly DEMO_LAYOUT_ADAPTIVE: string = 'demoLayoutAdaptive';
   /** 设置页（v3.12，独立子页；入口为首页 titleBar 齿轮，pageMap 注册名） */
   /** 示例·组件示例分组页（v3.37，pageMap 注册名；param = basic/visual/platform/app） */
   static readonly GALLERY_GROUP: string = 'GALLERY_GROUP';
